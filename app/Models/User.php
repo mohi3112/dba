@@ -57,4 +57,21 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    /**
+     * Check if the user has any of the roles passed in parameter
+     *
+     * @param array $roles The roles to check
+     *
+     * @return bool
+     */
+    public function hasAnyRole(array $roles)
+    {
+        /**
+         * Check if the user has at least one of the roles passed in parameter
+         *
+         * @return null|Model
+         */
+        return null !== $this->roles()->whereIn('name', $roles)->first();
+    }
 }

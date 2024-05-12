@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,10 +14,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'Auth\LoginController@showLoginForm');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('/dashboard', 'DashboardController@index');
+    // Define routes that require authentication here
+    // Route::get('/admin/dashboard', 'AdminController@dashboard');
+    // ->middleware('checkrole:superadmin');
+    // Add more routes as needed
+});
