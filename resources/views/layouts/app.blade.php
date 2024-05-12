@@ -32,9 +32,15 @@
 
     <div id="app" class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            @include('layouts.sidemenu')
-            <div class="layout-page">
 
+            @if(auth()->check())
+            <!-- side menu -->
+            @include('layouts.sidemenu')
+            @endif
+
+            <div class="layout-page">
+                @if(auth()->check())
+                <!-- top nav bar -->
                 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
                     <div class="container">
                         <a class="navbar-brand" href="{{ url('/') }}">
@@ -84,7 +90,7 @@
                         </div>
                     </div>
                 </nav>
-
+                @endif
                 <main class="py-4">
                     @yield('content')
                 </main>
