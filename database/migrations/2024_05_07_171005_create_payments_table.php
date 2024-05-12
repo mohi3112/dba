@@ -15,15 +15,12 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->integer('user_id');
             $table->float('payment_amount');
             $table->date('payment_date');
             $table->date('expiry_date')->nullable();
             $table->text('payment_proof')->nullable();
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

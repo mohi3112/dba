@@ -15,16 +15,11 @@ class CreateBookIssuesTable extends Migration
     {
         Schema::create('book_issues', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('book_id');
-            $table->unsignedBigInteger('user_id');
+            $table->integer('book_id');
+            $table->integer('user_id');
             $table->date('issue_date')->nullable();
             $table->date('return_date')->nullable();
             $table->timestamps();
-
-            // Foreign key constraints
-            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
-            // Assuming 'users' table exists for user_id foreign key
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

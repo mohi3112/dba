@@ -15,12 +15,9 @@ class CreateAddressProofsTable extends Migration
     {
         Schema::create('address_proofs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->integer('user_id');
             $table->text('filename');
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
