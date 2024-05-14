@@ -14,6 +14,9 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/helpers.js') }}" defer></script>
     <script src="{{ asset('js/config.js') }}" defer></script>
+    <!-- Font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -76,7 +79,7 @@
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                                 document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
 
@@ -91,9 +94,11 @@
                     </div>
                 </nav>
                 @endif
-                <main class="py-4">
-                    @yield('content')
-                </main>
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="content-wrapper">
+                        @yield('content')
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -101,6 +106,7 @@
     <script src="{{ asset('js/popper.js') }}" defer></script>
     <script src="{{ asset('js/menu.js') }}" defer></script>
     <script src="{{ asset('js/main.js') }}" defer></script>
+    <script src="{{ asset('js/bootstrap.js') }}" defer></script>
 </body>
 
 </html>

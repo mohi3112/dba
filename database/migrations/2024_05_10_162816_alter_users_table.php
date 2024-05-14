@@ -23,11 +23,11 @@ class AlterUsersTable extends Migration
             $table->string('father_first_name')->after('email')->nullable();
             $table->string('father_last_name')->after('father_first_name')->nullable();
             $table->integer('gender')->comment('Male = 1, Female = 2, Other = 3')->after('father_last_name');
-            $table->integer('mobile1')->after('gender');
-            $table->integer('mobile2')->nullable()->after('mobile1');
+            $table->string('mobile1')->nullable()->after('gender');
+            $table->string('mobile2')->nullable()->after('mobile1');
             $table->string('designation')->nullable()->after('mobile2');
             $table->string('degrees')->nullable()->after('designation');
-            $table->string('address')->after('degrees');
+            $table->string('address')->nullable()->after('degrees');
             $table->string('chamber_number')->nullable()->after('address');
             $table->integer('floor_number')->nullable()->after('chamber_number');
             $table->string('building')->nullable()->after('floor_number');

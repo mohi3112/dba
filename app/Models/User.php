@@ -10,6 +10,24 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    // Define static array for gender
+    public static $genders = [
+        1 => 'Male',
+        2 => 'Female',
+        3 => 'Other'
+    ];
+
+    // Define static array for designation
+    public static $designations = [
+        1 => 'Lawyer/Attorney',
+        2 => 'Legal Secretary',
+        3 => 'Paralegal',
+        4 => 'Legal Assistant',
+        5 => 'Legal Clerk',
+        6 => 'Legal Intern',
+        7 => 'Legal Researcher',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
