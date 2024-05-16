@@ -14,11 +14,13 @@ class AddAddressFieldsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('picture')->nullable()->after('mobile2');
+            $table->string('aadhaar_no')->nullable()->after('mobile2');
+            $table->longText('picture')->nullable()->after('mobile2');
             $table->string('city')->nullable()->after('address');
             $table->string('state')->nullable()->after('city');
             $table->string('country')->nullable()->after('state');
             $table->string('zip')->nullable()->after('country');
+            $table->integer('status')->default(1)->after('zip');
         });
     }
 

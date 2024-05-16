@@ -16,7 +16,7 @@ class CreateDegreeImagesTable extends Migration
         Schema::create('degree_images', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->text('filename');
+            $table->longText('image');
             $table->timestamps();
         });
     }

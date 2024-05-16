@@ -13,7 +13,7 @@ class CreateBookIssuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('book_issues', function (Blueprint $table) {
+        Schema::create('issued_books', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('book_id');
             $table->integer('user_id');
@@ -30,6 +30,6 @@ class CreateBookIssuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('book_issues');
+        Schema::dropIfExists('issued_books');
     }
 }

@@ -5,16 +5,26 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
 
     // Define static array for gender
     public static $genders = [
         1 => 'Male',
         2 => 'Female',
         3 => 'Other'
+    ];
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_IN_ACTIVE = 2;
+
+    public static $statuses = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_IN_ACTIVE => 'In-active'
     ];
 
     // Define static array for designation
@@ -34,21 +44,28 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'email',
-        'father_first_name',
-        'father_last_name',
-        'gender',
-        'mobile1',
-        'mobile2',
-        'designation',
-        'degrees',
-        'address',
-        'chamber_number',
-        'floor_number',
-        'building',
+        "first_name",
+        "middle_name",
+        "last_name",
+        "email",
+        "father_first_name",
+        "father_last_name",
+        "gender",
+        "mobile1",
+        "mobile2",
+        "aadhaar_no",
+        "picture",
+        "designation",
+        "degrees",
+        "address",
+        "city",
+        "state",
+        "country",
+        "zip",
+        "status",
+        "chamber_number",
+        "floor_number",
+        "building"
     ];
 
     /**
@@ -91,5 +108,16 @@ class User extends Authenticatable
          * @return null|Model
          */
         return null !== $this->roles()->whereIn('name', $roles)->first();
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    // Define your scope
+    public function scopeStatusActive($query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 }

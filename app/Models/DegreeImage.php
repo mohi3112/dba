@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DegreeImage extends Model
 {
-    protected $fillable = ['user_id', 'filename'];
+    protected $fillable = ['user_id', 'image'];
 
     // Define relationship with User model
     public function user()

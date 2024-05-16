@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AddressProof extends Model
+class Subscription extends Model
 {
-    protected $fillable = ['user_id', 'image'];
+    protected $fillable = ['user_id', 'subscription_type', 'start_date', 'end_date'];
 
-    // Define relationship with User model
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAddressProofsTable extends Migration
+class CreateSubscriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateAddressProofsTable extends Migration
      */
     public function up()
     {
-        Schema::create('address_proofs', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->longText('image');
+            $table->string('subscription_type')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateAddressProofsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address_proofs');
+        Schema::dropIfExists('subscriptions');
     }
 }

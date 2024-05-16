@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAddressProofsTable extends Migration
+class AddDeletedAtToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateAddressProofsTable extends Migration
      */
     public function up()
     {
-        Schema::create('address_proofs', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('user_id');
-            $table->longText('image');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateAddressProofsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address_proofs');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }
