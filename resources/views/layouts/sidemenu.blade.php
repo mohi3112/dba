@@ -57,18 +57,18 @@
         </li>
 
         <!-- Layouts -->
-        <li class="menu-item {{ request()->is('users*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Lawyers">Lawyers</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ request()->is('users') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('lawyers') ? 'active' : '' }}">
                     <a href="{{route('users')}}" class="menu-link">
                         <div data-i18n="Summary">Summary</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('users/add') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('lawyers/add') ? 'active' : '' }}">
                     <a href="{{route('users.add')}}" class="menu-link">
                         <div data-i18n="Add Lawyer">Add Lawyer</div>
                     </a>

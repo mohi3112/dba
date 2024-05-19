@@ -38,6 +38,13 @@ class User extends Authenticatable
         7 => 'Legal Researcher',
     ];
 
+    // Define static array for userRoles
+    public static $userRoles = [
+        1 => 'Super Admin',
+        2 => 'Admin',
+        3 => 'Lawyer User',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -60,6 +67,7 @@ class User extends Authenticatable
         "address",
         "status",
         "chamber_number",
+        "deleted_by"
     ];
 
     /**
@@ -109,9 +117,19 @@ class User extends Authenticatable
         return $this->roles()->where('name', $role)->exists();
     }
 
-    // Define your scope
+    // Scope for active users only
     public function scopeStatusActive($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function address_proof()
+    {
+        return $this->hasMany(AddressProof::class, 'user_id', 'id');
+    }
+
+    public function degree_images()
+    {
+        return $this->hasMany(DegreeImage::class, 'user_id', 'id');
     }
 }

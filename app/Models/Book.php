@@ -11,6 +11,6 @@ class Book extends Model
     // Define relationship with BookIssue model
     public function issues()
     {
-        return $this->hasMany(BookIssue::class);
+        return $this->hasMany(IssuedBook::class);
     }
 }

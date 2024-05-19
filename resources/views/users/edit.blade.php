@@ -2,13 +2,12 @@
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Edit Lawyer</h4>
 @if ($errors->any())
-<div>
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible" role="alert">
+    {{ $error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+@endforeach
 @endif
 <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
@@ -123,11 +122,24 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        @if(auth()->user()->hasRole('superadmin'))
+                        <div class="mb-3 col-md-6">
+                            <label for="user_role" class="form-label">User Role</label>
+                            <select id="user_role" name="user_role" class="select2 form-select">
+                                <option value="">Select Role</option>
+                                @foreach(\App\Models\User::$userRoles as $key => $userRole)
+                                <option value="{{$key}}" {{ $user->roles->first()->pivot->role_id == $key ? 'selected' : '' }}>{{$userRole}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
                         <div class="mb-3 col-md-6">
                             <label for="image" class="form-label">Picture</label>
                             <div class="input-group">
                                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
                             </div>
+                            @if($user->picture)
                             <div class="d-flex justify-content-end pt-1">
                                 <span type="button" class="text-danger" data-bs-toggle="modal" data-bs-target="#profilePictureModal">Check Uploaded Picture</span>
                             </div>
@@ -142,24 +154,79 @@
                                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                                 Close
                                             </button>
-                                            <button type="button" class="btn btn-danger">Delete Image</button>
+                                            <button type="button" parent-btn="#profilePictureModal" data-url="delete-lawyer-image" data-image-id="{{ $user->id }}" class="btn btn-danger delete-image">Delete Image</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Modal -->
+                            @endif
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="address_proof" class="form-label">Address proof (Images)</label>
                             <div class="input-group">
                                 <input type="file" class="form-control" id="address_proof" name="address_proofs[]" multiple accept="image/*">
                             </div>
+                            @if($user->address_proof->count() > 0)
+                            <div class="d-flex justify-content-end pt-1">
+                                @php($i=1)
+                                @foreach($user->address_proof as $proof)
+                                <span type="button" class="text-danger pl-2" data-bs-toggle="modal" data-bs-target="#addressProofModal{{ $proof->id }}">Check Uploaded Document - {{ $i }}</span>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="addressProofModal{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="button" parent-btn="#addressProofModal{{ $proof->id }}" data-url="delete-address-proof-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                @php($i++)
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="degree_pictures" class="form-label">Upload Degrees (Images)</label>
                             <div class="input-group">
                                 <input type="file" class="form-control" id="degree_pictures" name="degree_pictures[]" multiple accept="image/*">
                             </div>
+                            @if($user->degree_images->count() > 0)
+                            <div class="d-flex justify-content-end pt-1">
+                                @php($j=1)
+                                @foreach($user->degree_images as $proof)
+                                <span type="button" class="text-danger pl-2" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Check Uploaded Document - {{ $j }}</span>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="lawyerDegreeProof{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="button" parent-btn="#lawyerDegreeProof{{ $proof->id }}" data-url="delete-degree-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                @php($j++)
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                     </div>
                     <div class="mt-2">
@@ -187,6 +254,34 @@
 
             // Update input value
             $(this).val(numericValue);
+        });
+
+        $('.delete-image').click(function() {
+            // Get image id
+            let imageId = $(this).data('image-id');
+            let url = $(this).data('url');
+            let ajaxUrl = '/' + url + '/' + imageId;
+
+            // Get parent button
+            var modalButton = $(this).attr('parent-btn');
+
+            // Ask for confirmation
+            var confirmation = confirm("Are you sure to delete this image?");
+
+            if (confirmation) {
+                $.ajax({
+                    url: ajaxUrl,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        $("[data-bs-dismiss='modal']").trigger('click');
+                        $('[data-bs-target="' + modalButton + '"]').remove();
+                    }
+                });
+            }
         });
     });
 </script>

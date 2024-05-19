@@ -2,13 +2,12 @@
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add Lawyer</h4>
 @if ($errors->any())
-<div>
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible" role="alert">
+    {{ $error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+@endforeach
 @endif
 <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
@@ -115,13 +114,24 @@
                             <textarea id="address" class="form-control" id="address" name="address" placeholder="Residence address"></textarea>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="gender" class="form-label">Status</label>
-                            <select id="gender" name="gender" class="select2 form-select">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" name="status" class="select2 form-select">
                                 @foreach(\App\Models\User::$statuses as $key => $status)
                                 <option value="{{$key}}">{{$status}}</option>
                                 @endforeach
                             </select>
                         </div>
+                        @if(auth()->user()->hasRole('superadmin'))
+                        <div class="mb-3 col-md-6">
+                            <label for="user_role" class="form-label">User Role</label>
+                            <select id="user_role" name="user_role" class="select2 form-select">
+                                <option value="">Select Role</option>
+                                @foreach(\App\Models\User::$userRoles as $key => $userRole)
+                                <option value="{{$key}}">{{$userRole}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
                         <div class="mb-3 col-md-6">
                             <label for="image" class="form-label">Picture</label>
                             <div class="input-group">
@@ -143,7 +153,7 @@
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                        <a type="reset" href="{{route('users')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                     <!-- </form> -->
                 </div>

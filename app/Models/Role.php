@@ -11,6 +11,6 @@ class Role extends Model
     // Define relationship with User model
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class)->withPivot('role_id');
     }
 }

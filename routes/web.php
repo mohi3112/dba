@@ -28,13 +28,21 @@ Route::middleware('auth')->group(function () {
     // Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     // Route::resource('users', 'UserController');
 
-    // Routes for User
-    Route::get('users', [UserController::class, 'index'])->name('users');
-    Route::get('users/add', [UserController::class, 'create'])->name('users.add');
-    Route::post('user/store',  [UserController::class, 'store'])->name('user.store');
-    Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::post('user/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    // Routes for Lawyer / User
+    Route::get('lawyers', [UserController::class, 'index'])->name('users');
+    Route::get('lawyers/add', [UserController::class, 'create'])->name('users.add');
+    Route::post('lawyer/store',  [UserController::class, 'store'])->name('user.store');
+    Route::get('lawyer/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('lawyers/update/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::post('lawyer/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
+
+    // Routes for Address Proof
+    Route::delete('delete-address-proof-image/{id}', [UserController::class, 'deleteAddressProofImage'])->name('delete-address-proof-image');
+
+    // Routes for Address Proof
+    Route::delete('delete-degree-image/{id}', [UserController::class, 'deleteDegreeImage'])->name('delete-degree-image');
+
 
 
     // Routes for Subscription

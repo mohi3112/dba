@@ -53,20 +53,16 @@
                             @endif
                         </td>
                         <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                    <!-- Icon for three dots -->
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                        @csrf
-                                        <a class="dropdown-item delete-user" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
-                                    </form>
-
-                                </div>
+                            <div class="d-flex align-items-center">
+                                <!-- edit -->
+                                <a class="color-unset" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
+                                <!-- view -->
+                                <a class="pl-3 color-unset" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                <!-- delete -->
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                    @csrf
+                                    <a class="pl-3 delete-user color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                </form>
                             </div>
                         </td>
                     </tr>

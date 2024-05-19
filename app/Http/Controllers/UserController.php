@@ -7,9 +7,28 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    protected $validationMessages;
+
+    public function __construct()
+    {
+        $this->validationMessages = [
+            'first_name.required' => 'The first name field is required.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'Please enter a valid email address.',
+            'mobile1.required' => 'The mobile number field is required.',
+            'mobile1.numeric' => 'The mobile number must be numeric.',
+            'aadhaar_no.required' => 'The Aadhaar number field is required.',
+            'aadhaar_no.numeric' => 'The Aadhaar number must be numeric.',
+            'image.image' => 'The image must be a file of type: jpeg, png, jpg, gif.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
+            'image.max' => 'The image may not be greater than 2048 kilobytes.',
+        ];
+    }
+
     // Display a listing of the resource.
     public function index()
     {
@@ -39,12 +58,12 @@ class UserController extends Controller
         $request->validate([
             'first_name' => 'required',
             'email' => 'required|email|unique:users,email', // Ensure email is unique
-            'mobile1' => 'nullable|numeric',
+            'mobile1' => 'required|nullable|numeric',
             'aadhaar_no' => 'required|numeric|unique:users,aadhaar_no', // Ensure Aadhaar number is unique
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        ], $this->validationMessages);
 
         try {
             // Start a database transaction
@@ -57,11 +76,14 @@ class UserController extends Controller
                 $request->merge(['picture' => $base64Picture]);
             }
 
+            // Handle user role
+            $userRole = $request->input('user_role') ?? 3; //Assign default user/lawyer role (role_id 3)
+
             // Create the user
             $user = User::create($request->all());
 
             // Assign default role (role_id 3)
-            $user->roles()->attach(3);
+            $user->roles()->attach($userRole);
 
             // Handle address proofs
             if ($request->hasFile('address_proofs')) {
@@ -134,7 +156,7 @@ class UserController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        ], $this->validationMessages);
 
         try {
             // Start a database transaction
@@ -164,15 +186,13 @@ class UserController extends Controller
             $user->designation = $request->input('designation');
             $user->degrees = $request->input('degrees');
             $user->address = $request->input('address');
-            $user->city = $request->input('city');
-            $user->state = $request->input('state');
-            $user->country = $request->input('country');
-            $user->zip = $request->input('zip');
             $user->status = $request->input('status');
             $user->chamber_number = $request->input('chamber_number');
-            $user->floor_number = $request->input('floor_number');
-            $user->building = $request->input('building');
             $user->save();
+
+            if ($request->input('user_role')) {
+                $user->roles()->sync($request->input('user_role'));
+            }
 
             // Handle address proofs
             if ($request->hasFile('address_proofs')) {
@@ -221,7 +241,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             // Rollback the transaction on error
             DB::rollback();
-
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'Failed to update user. Please try again.');
         }
     }
@@ -229,9 +249,60 @@ class UserController extends Controller
     // Remove the specified resource from storage.
     public function destroy($id)
     {
+        // Find the user by ID
         $user = User::findOrFail($id);
+
+        // Set the deleted_by field with the authenticated user's ID
+        $user->deleted_by = Auth::id();
+        $user->save(); // Save the user to update the deleted_by field
+
+        // Soft delete the user
         $user->delete();
 
         return redirect()->route('users')->with('success', 'User deleted successfully!');
+    }
+
+    public function deleteImage($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            $user->picture = NULL;
+            $user->save();
+
+            $message = 'Image deleted successfully.';
+        } catch (\Exception $e) {
+            $message = 'Something went wrong. Please try again.';
+        }
+
+        return response()->json(['message' => $message]);
+    }
+
+    public function deleteAddressProofImage($id)
+    {
+        try {
+            $addressProofRecord = AddressProof::findOrFail($id);
+            $addressProofRecord->delete();
+
+            $message = 'Image deleted successfully.';
+        } catch (\Exception $e) {
+            $message = 'Something went wrong. Please try again.';
+        }
+
+        return response()->json(['message' => $message]);
+    }
+
+    public function deleteDegreeImage($id)
+    {
+        try {
+            $addressProofRecord = DegreeImage::findOrFail($id);
+            $addressProofRecord->delete();
+
+            $message = 'Image deleted successfully.';
+        } catch (\Exception $e) {
+            $message = 'Something went wrong. Please try again.';
+        }
+
+        return response()->json(['message' => $message]);
     }
 }
