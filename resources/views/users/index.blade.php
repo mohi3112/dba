@@ -31,16 +31,10 @@
                 <?php
                 $i = 1;
                 foreach ($users as $user) {
-                    $userName = $user->first_name;
-                    if ($user->middle_name) {
-                        $userName .= ' ' . $user->middle_name . ' ' . $user->last_name;
-                    } else {
-                        $userName .= ' ' . $user->last_name;
-                    }
                 ?>
                     <tr>
                         <td> {{ $i }} </td>
-                        <td> {{ $userName }} </td>
+                        <td> {{ $user->full_name }} </td>
                         <td> {{ ($user->father_first_name) ? $user->father_first_name . ' ' . $user->father_last_name : '--' }}</td>
                         <td>
                             {{ \App\Models\User::$designations[$user->designation] ?? '--' }}

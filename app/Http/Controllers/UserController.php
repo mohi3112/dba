@@ -241,7 +241,6 @@ class UserController extends Controller
         } catch (\Exception $e) {
             // Rollback the transaction on error
             DB::rollback();
-            dd($e->getMessage());
             return redirect()->back()->with('error', 'Failed to update user. Please try again.');
         }
     }

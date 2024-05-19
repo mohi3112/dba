@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Subscription;
+use App\Models\User;
+use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
@@ -14,8 +17,10 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $subscriptions = Subscription::all();
-        return view('subscriptions.index', compact('subscriptions'));
+        $activeLawyers = $this->getActiveLawyers();
+        $subscriptions = Subscription::paginate(10);
+
+        return view('subscriptions.index', compact('subscriptions', 'activeLawyers'));
     }
 
     /**
@@ -25,7 +30,20 @@ class SubscriptionController extends Controller
      */
     public function create()
     {
-        return view('subscriptions.create');
+        $activeLawyers = $this->getActiveLawyers();
+
+        return view('subscriptions.create', compact('activeLawyers'));
+    }
+
+    private function getActiveLawyers()
+    {
+        $all_lawyers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'user');
+        })->statusActive()->get();
+
+        return $all_lawyers->mapWithKeys(function ($user) {
+            return [$user->id => $user->full_name];
+        })->toArray();
     }
 
     /**
@@ -37,15 +55,17 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required',
             'subscription_type' => 'required',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
         ]);
+        $startDate = Carbon::parse($request->start_date);
+
+        $request['end_date'] = $startDate->addMonths($request->subscription_duration);
 
         Subscription::create($request->all());
 
-        return redirect()->route('subscriptions.index')->with('success', 'Subscription created successfully.');
+        return redirect()->route('subscriptions')->with('success', 'Subscription created successfully.');
     }
 
     /**
@@ -54,9 +74,23 @@ class SubscriptionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subscription $subscription)
+    public function edit($id)
     {
-        return view('subscriptions.edit', compact('subscription'));
+        $subscription = Subscription::findOrFail($id);
+
+        $activeLawyers = $this->getActiveLawyers();
+
+        return view('subscriptions.edit', compact('subscription', 'activeLawyers'));
+    }
+
+    // Display the specified resource.
+    public function show($id)
+    {
+        $subscription = Subscription::findOrFail($id);
+
+        $activeLawyers = $this->getActiveLawyers();
+
+        return view('subscriptions.show', compact('subscription', 'activeLawyers'));
     }
 
     /**
@@ -66,29 +100,40 @@ class SubscriptionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Subscription $subscription)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required',
             'subscription_type' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'start_date' => 'required|date'
         ]);
 
-        $subscription->update($request->all());
+        $startDate = Carbon::parse($request->start_date);
+        $end_date = $startDate->addMonths($request->subscription_duration);
 
-        return redirect()->route('subscriptions.index')->with('success', 'Subscription updated successfully.');
+        $subscription = Subscription::findOrFail($id);
+        $subscription->user_id = $request->user_id;
+        $subscription->subscription_type = $request->subscription_type;
+        $subscription->subscription_duration = $request->subscription_duration;
+        $subscription->start_date = $request->start_date;
+        $subscription->end_date = $end_date;
+        $subscription->save();
+
+        return redirect()->route('subscriptions')->with('success', 'Subscription updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Subscription $subscription)
+    public function destroy($id)
     {
+        // Find the user by ID
+        $subscription = Subscription::findOrFail($id);
+
+        // Set the deleted_by field with the authenticated subs$subscription's ID
+        $subscription->deleted_by = Auth::id();
+        $subscription->save(); // Save the subs$subscription to update the deleted_by field
+
+        // Soft delete the subs$subscription
         $subscription->delete();
-        return redirect()->route('subscriptions.index')->with('success', 'Subscription deleted successfully.');
+
+        return redirect()->route('subscriptions')->with('success', 'Subscription deleted successfully!');
     }
 }

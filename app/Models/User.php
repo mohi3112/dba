@@ -95,6 +95,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function getFullNameAttribute()
+    {
+        $middleName = $this->middle_name ? ' ' . $this->middle_name : '';
+        $lastName = $this->last_name ? ' ' . $this->last_name : '';
+        return "{$this->first_name}{$middleName} {$lastName}";
+    }
+
     /**
      * Check if the user has any of the roles passed in parameter
      *

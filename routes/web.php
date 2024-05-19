@@ -46,7 +46,13 @@ Route::middleware('auth')->group(function () {
 
 
     // Routes for Subscription
-    Route::resource('subscriptions', SubscriptionController::class);
+    Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions');
+    Route::get('subscription/{id}', [SubscriptionController::class, 'show'])->name('subscription.view');
+    Route::get('subscriptions/add', [SubscriptionController::class, 'create'])->name('subscriptions.add');
+    Route::post('subscription/store',  [SubscriptionController::class, 'store'])->name('subscription.store');
+    Route::get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscriptions.edit');
+    Route::put('subscriptions/update/{id}', [SubscriptionController::class, 'update'])->name('subscriptions.update');
+    Route::post('subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

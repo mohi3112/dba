@@ -57,6 +57,7 @@
         </li>
 
         <!-- Layouts -->
+        <!-- Start Lawyers -->
         <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -75,40 +76,27 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item">
+        <!-- End Lawyers -->
+        <!-- Start Subscriptions -->
+        <li class="menu-item {{ request()->is('subscription*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="Layouts">Layouts</div>
+                <div data-i18n="subscriptions">Subscriptions</div>
             </a>
-
             <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="layouts-without-menu.html" class="menu-link">
-                        <div data-i18n="Without menu">Without menu</div>
+                <li class="menu-item {{ request()->is('subscriptions') ? 'active' : '' }}">
+                    <a href="{{route('subscriptions')}}" class="menu-link">
+                        <div data-i18n="subscriptions">All Subscriptions</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="layouts-without-navbar.html" class="menu-link">
-                        <div data-i18n="Without navbar">Without navbar</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="layouts-container.html" class="menu-link">
-                        <div data-i18n="Container">Container</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="layouts-fluid.html" class="menu-link">
-                        <div data-i18n="Fluid">Fluid</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="layouts-blank.html" class="menu-link">
-                        <div data-i18n="Blank">Blank</div>
+                <li class="menu-item {{ request()->is('subscriptions/add') ? 'active' : '' }}">
+                    <a href="{{route('subscriptions.add')}}" class="menu-link">
+                        <div data-i18n="Add subscriptions">Add subscriptions</div>
                     </a>
                 </li>
             </ul>
         </li>
+        <!-- End Subscriptions -->
     </ul>
 </aside>
 <!-- / Menu -->
