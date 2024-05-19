@@ -21,7 +21,7 @@ class UserController extends Controller
 
         $users = User::whereDoesntHave('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
-        })->statusActive()->get();
+        })->statusActive()->paginate(10);
 
         return view('users.index', compact('users'));
     }
@@ -38,64 +38,73 @@ class UserController extends Controller
         // Validate form data
         $request->validate([
             'first_name' => 'required',
-            'email' => 'required|email',
-            'mobile1' => 'numeric',
-            'aadhaar_no' => 'required|numeric',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'email' => 'required|email|unique:users,email', // Ensure email is unique
+            'mobile1' => 'nullable|numeric',
+            'aadhaar_no' => 'required|numeric|unique:users,aadhaar_no', // Ensure Aadhaar number is unique
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
             // Start a database transaction
             DB::beginTransaction();
 
+            // Handle the profile image
             if ($request->hasFile('image')) {
-                // Get the picture file
                 $file = $request->file('image');
-
-                // Convert the picture to base64
                 $base64Picture = base64_encode(file_get_contents($file->getPathname()));
-
-                // Add base64 image data to the request
                 $request->merge(['picture' => $base64Picture]);
             }
 
+            // Create the user
             $user = User::create($request->all());
 
-            $user->roles()->attach(3); // default role_id 3 corresponds to assign 'user' role
+            // Assign default role (role_id 3)
+            $user->roles()->attach(3);
 
+            // Handle address proofs
             if ($request->hasFile('address_proofs')) {
-                $imageDataArray = []; // Array to store base64 encoded image data
+                $addressProofsData = [];
 
-                foreach ($request->file('address_proofs') as $address_image) {
-                    // Convert image to base64
-                    $imageData = base64_encode(file_get_contents($address_image->getPathname()));
-                    $imageDataArray[] = ['user_id' => $user->id, 'image' => $imageData, 'created_at' => now(), 'updated_at' => now()];
+                foreach ($request->file('address_proofs') as $addressImage) {
+                    $imageData = base64_encode(file_get_contents($addressImage->getPathname()));
+                    $addressProofsData[] = [
+                        'user_id' => $user->id,
+                        'image' => $imageData,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
                 }
 
-                // Bulk insert into address_proofs table
-                AddressProof::insert($imageDataArray);
+                AddressProof::insert($addressProofsData);
             }
 
+            // Handle degree pictures
             if ($request->hasFile('degree_pictures')) {
-                $degreeImagesData = []; // Array to store base64 encoded image data
+                $degreeImagesData = [];
 
-                foreach ($request->file('degree_pictures') as $degree_image) {
-                    // Convert image to base64
-                    $degreeImageData = base64_encode(file_get_contents($degree_image->getPathname()));
-                    $degreeImagesData[] = ['user_id' => $user->id, 'image' => $degreeImageData, 'created_at' => now(), 'updated_at' => now()];
+                foreach ($request->file('degree_pictures') as $degreeImage) {
+                    $imageData = base64_encode(file_get_contents($degreeImage->getPathname()));
+                    $degreeImagesData[] = [
+                        'user_id' => $user->id,
+                        'image' => $imageData,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
                 }
 
-                // Bulk insert into degree_pictures table
                 DegreeImage::insert($degreeImagesData);
             }
 
+            // Commit the transaction
             DB::commit();
 
             return redirect()->route('users')->with('success', 'User created successfully.');
         } catch (\Exception $e) {
-            // If an error occurs, rollback the transaction
+            // Rollback the transaction on error
             DB::rollback();
-            // dd($e->getMessage());
+
             return redirect()->back()->with('error', 'Failed to add user. Please try again.');
         }
     }
@@ -116,17 +125,105 @@ class UserController extends Controller
     // Update the specified resource in storage.
     public function update(Request $request, $id)
     {
+        // Validate form data
         $request->validate([
             'first_name' => 'required',
-            'email' => 'required|email',
-            'mobile1' => 'numeric',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'email' => 'required|email|unique:users,email,' . $id, // Ensure email is unique except for the current user
+            'mobile1' => 'nullable|numeric',
+            'aadhaar_no' => 'required|numeric|unique:users,aadhaar_no,' . $id, // Ensure Aadhaar number is unique except for the current user
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // $user->update($request->all());
+        try {
+            // Start a database transaction
+            DB::beginTransaction();
 
-        return redirect()->route('users.edit')
-            ->with('success', 'User updated successfully.');
+            // Find the user by ID
+            $user = User::findOrFail($id);
+
+            // Handle the profile image
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $base64Picture = base64_encode(file_get_contents($file->getPathname()));
+                $user->picture = $base64Picture;
+            }
+
+            // Update user data
+            $user->first_name = $request->input('first_name');
+            $user->middle_name = $request->input('middle_name');
+            $user->last_name = $request->input('last_name');
+            $user->email = $request->input('email');
+            $user->father_first_name = $request->input('father_first_name');
+            $user->father_last_name = $request->input('father_last_name');
+            $user->gender = $request->input('gender');
+            $user->mobile1 = $request->input('mobile1');
+            $user->mobile2 = $request->input('mobile2');
+            $user->aadhaar_no = $request->input('aadhaar_no');
+            $user->designation = $request->input('designation');
+            $user->degrees = $request->input('degrees');
+            $user->address = $request->input('address');
+            $user->city = $request->input('city');
+            $user->state = $request->input('state');
+            $user->country = $request->input('country');
+            $user->zip = $request->input('zip');
+            $user->status = $request->input('status');
+            $user->chamber_number = $request->input('chamber_number');
+            $user->floor_number = $request->input('floor_number');
+            $user->building = $request->input('building');
+            $user->save();
+
+            // Handle address proofs
+            if ($request->hasFile('address_proofs')) {
+                // Delete old address proofs
+                // AddressProof::where('user_id', $user->id)->delete();
+
+                $addressProofsData = [];
+                foreach ($request->file('address_proofs') as $addressImage) {
+                    $imageData = base64_encode(file_get_contents($addressImage->getPathname()));
+                    $addressProofsData[] = [
+                        'user_id' => $user->id,
+                        'image' => $imageData,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+
+                // Insert new address proofs
+                AddressProof::insert($addressProofsData);
+            }
+
+            // Handle degree pictures
+            if ($request->hasFile('degree_pictures')) {
+                // Delete old degree pictures
+                // DegreeImage::where('user_id', $user->id)->delete();
+
+                $degreeImagesData = [];
+                foreach ($request->file('degree_pictures') as $degreeImage) {
+                    $imageData = base64_encode(file_get_contents($degreeImage->getPathname()));
+                    $degreeImagesData[] = [
+                        'user_id' => $user->id,
+                        'image' => $imageData,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+
+                // Insert new degree pictures
+                DegreeImage::insert($degreeImagesData);
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            return redirect()->route('users')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollback();
+
+            return redirect()->back()->with('error', 'Failed to update user. Please try again.');
+        }
     }
 
     // Remove the specified resource from storage.

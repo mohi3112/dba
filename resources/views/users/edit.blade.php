@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Edit User</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Edit Lawyer</h4>
 @if ($errors->any())
 <div>
     <ul>
@@ -40,7 +40,7 @@
                     <!-- <form id="formUserAccount" method="POST" enctype="multipart/form-data"> -->
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label for="first_name" class="form-label">First Name</label>
+                            <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
                             <input class="form-control" type="text" id="first_name" placeholder="First Name" name="first_name" value="{{$user->first_name}}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
@@ -49,10 +49,10 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="lastName" class="form-label">Last Name</label>
-                            <input class="form-control" type="text" name="last_name" placeholder="Last name" id="lastName" value="{{$user->fsdsdfsd}}">
+                            <input class="form-control" type="text" name="last_name" placeholder="Last name" id="lastName" value="{{$user->last_name}}">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
+                            <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
                             <input class="form-control" type="text" id="email" name="email" value="{{$user->email}}" placeholder="Email">
                         </div>
                         <div class="mb-3 col-md-6">
@@ -72,13 +72,13 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="aadhaar_no">Aadhaar number</label>
+                            <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{$user->aadhaar_no}}" maxlength="12" class="form-control numeric-input" placeholder="Aadhaar number">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="mobile1">Mobile</label>
+                            <label class="form-label" for="mobile1">Mobile <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
                                 <input type="text" id="mobile1" name="mobile1" value="{{$user->mobile1}}" maxlength="10" class="form-control numeric-input" placeholder="Mobile number">
@@ -112,36 +112,8 @@
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label for="floor_number" class="form-label">Floor Number</label>
-                            <input type="text" class="form-control numeric-input" id="floor_number" placeholder="Floor number" name="floor_number" value="{{$user->floor_number}}">
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label for="building" class="form-label">Building</label>
-                            <input type="text" class="form-control" placeholder="Building" id="building" name="building" value="{{$user->building}}">
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label" for="address">Address</label>
-                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Address">{{$user->address}}</textarea>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="city" class="form-label">City</label>
-                            <input class="form-control" type="text" id="city" name="city" value="city" placeholder="City">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label">State</label>
-                            <input class="form-control" type="text" id="state" name="state" value="state" placeholder="State">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label" for="country">Country</label>
-                            <select id="country" class="select2 form-select">
-                                <option value="India" selected>India</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="zipCode" class="form-label">Zip Code</label>
-                            <input type="text" class="form-control numeric-input" id="zipCode" name="zipCode" value="zipCode" placeholder="Zip code" maxlength="6">
+                            <label class="form-label" for="address">Residence Address</label>
+                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Residence address">{{$user->address}}</textarea>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="status" class="form-label">Status</label>
@@ -156,6 +128,26 @@
                             <div class="input-group">
                                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
                             </div>
+                            <div class="d-flex justify-content-end pt-1">
+                                <span type="button" class="text-danger" data-bs-toggle="modal" data-bs-target="#profilePictureModal">Check Uploaded Picture</span>
+                            </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="profilePictureModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <img src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 750px;">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="button" class="btn btn-danger">Delete Image</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal -->
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="address_proof" class="form-label">Address proof (Images)</label>

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
 
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users</span></h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers</span></h4>
 <ul class="nav nav-pills flex-column flex-md-row mb-3">
     <li class="nav-item">
-        <a class="nav-link active" href="{{route('users.add')}}"><i class="bx bx-user me-1"></i> Add User</a>
+        <a class="nav-link active" href="{{route('users.add')}}"><i class="bx bx-user me-1"></i> Add Lawyer</a>
     </li>
 </ul>
 @if(session('success'))
@@ -76,6 +76,10 @@
                 ?>
             </tbody>
         </table>
+        <div class="d-flex justify-content-end pt-3">
+            <!-- Add pagination links -->
+            {{ $users->links() }}
+        </div>
     </div>
 </div>
 <!--/ Striped Rows -->

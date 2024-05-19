@@ -58,14 +58,8 @@ class User extends Authenticatable
         "designation",
         "degrees",
         "address",
-        "city",
-        "state",
-        "country",
-        "zip",
         "status",
         "chamber_number",
-        "floor_number",
-        "building"
     ];
 
     /**

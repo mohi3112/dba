@@ -60,7 +60,7 @@
         <li class="menu-item {{ request()->is('users*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="Users">Users</div>
+                <div data-i18n="Lawyers">Lawyers</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {{ request()->is('users') ? 'active' : '' }}">
@@ -70,7 +70,7 @@
                 </li>
                 <li class="menu-item {{ request()->is('users/add') ? 'active' : '' }}">
                     <a href="{{route('users.add')}}" class="menu-link">
-                        <div data-i18n="Add User">Add User</div>
+                        <div data-i18n="Add Lawyer">Add Lawyer</div>
                     </a>
                 </li>
             </ul>

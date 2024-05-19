@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Users /</span> Add User</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add Lawyer</h4>
 @if ($errors->any())
 <div>
     <ul>
@@ -111,36 +111,8 @@
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label for="floor_number" class="form-label">Floor Number</label>
-                            <input type="text" class="form-control numeric-input" id="floor_number" placeholder="Floor number" name="floor_number" value="">
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label for="building" class="form-label">Building</label>
-                            <input type="text" class="form-control" placeholder="Building" id="building" name="building" value="">
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label" for="address">Address</label>
-                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Address"></textarea>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="city" class="form-label">City</label>
-                            <input class="form-control" type="text" id="city" name="city" placeholder="City">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label">State</label>
-                            <input class="form-control" type="text" id="state" name="state" placeholder="State">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label" for="country">Country</label>
-                            <select id="country" name="country" class="select2 form-select">
-                                <option value="India">India</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="zip" class="form-label">Zip Code</label>
-                            <input type="text" class="form-control numeric-input" id="zip" name="zip" placeholder="Zip code" maxlength="6">
+                            <label class="form-label" for="address">Residence Address</label>
+                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Residence address"></textarea>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="gender" class="form-label">Status</label>
