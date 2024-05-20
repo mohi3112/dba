@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\BookController;
 
 
 /*
@@ -44,8 +45,6 @@ Route::middleware('auth')->group(function () {
     // Routes for Address Proof
     Route::delete('delete-degree-image/{id}', [UserController::class, 'deleteDegreeImage'])->name('delete-degree-image');
 
-
-
     // Routes for Subscription
     Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions');
     Route::get('subscription/{id}', [SubscriptionController::class, 'show'])->name('subscription.view');
@@ -54,6 +53,15 @@ Route::middleware('auth')->group(function () {
     Route::get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscriptions.edit');
     Route::put('subscriptions/update/{id}', [SubscriptionController::class, 'update'])->name('subscriptions.update');
     Route::post('subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+
+    // Routes for Books
+    Route::get('books', [BookController::class, 'index'])->name('books');
+    Route::get('book/{id}', [BookController::class, 'show'])->name('book.view');
+    Route::get('books/add', [BookController::class, 'create'])->name('books.add');
+    Route::post('book/store',  [BookController::class, 'store'])->name('book.store');
+    Route::get('book/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('books/update/{id}', [BookController::class, 'update'])->name('books.update');
+    Route::post('book/{id}', [BookController::class, 'destroy'])->name('books.destroy');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

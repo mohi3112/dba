@@ -97,6 +97,26 @@
             </ul>
         </li>
         <!-- End Subscriptions -->
+        <!-- Start Books -->
+        <li class="menu-item {{ request()->is('book*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="books">Books</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('books') ? 'active' : '' }}">
+                    <a href="{{route('books')}}" class="menu-link">
+                        <div data-i18n="books">All Books</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('books/add') ? 'active' : '' }}">
+                    <a href="{{route('books.add')}}" class="menu-link">
+                        <div data-i18n="Add books">Add Books</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Books -->
     </ul>
 </aside>
 <!-- / Menu -->

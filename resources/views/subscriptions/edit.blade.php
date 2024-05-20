@@ -38,7 +38,7 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="start_date">Subscription Duration <span class="text-danger">*</span></label>
+                            <label class="form-label" for="start_date">Subscription Start <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <input class="form-control" type="date" name="start_date" value="{{$subscription->start_date}}" id="">
                             </div>
