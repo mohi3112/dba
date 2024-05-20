@@ -139,4 +139,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DegreeImage::class, 'user_id', 'id');
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

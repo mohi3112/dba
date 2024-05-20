@@ -132,8 +132,9 @@ class UserController extends Controller
     }
 
     // Display the specified resource.
-    public function show(User $user)
+    public function show($id)
     {
+        $user = User::with(['roles', 'subscriptions'])->findOrFail($id);
         return view('users.show', compact('user'));
     }
 

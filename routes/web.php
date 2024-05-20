@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('lawyer/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::put('lawyers/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::post('lawyer/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('lawyer/{id}', [UserController::class, 'show'])->name('user.view');
     Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
 
     // Routes for Address Proof

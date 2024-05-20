@@ -51,7 +51,7 @@
                                 <!-- edit -->
                                 <a class="color-unset" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
                                 <!-- view -->
-                                <a class="pl-3 color-unset" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                <a class="pl-3 color-unset" href="{{ route('user.view', $user->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                 <!-- delete -->
                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                     @csrf
