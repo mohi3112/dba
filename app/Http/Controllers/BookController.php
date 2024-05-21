@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\IssuedBook;
+use App\Services\LawyerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
+    protected $lawyerService;
+
+    public function __construct(LawyerService $lawyerService)
+    {
+        $this->lawyerService = $lawyerService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +24,20 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::paginate(10);
+        // Fetch books with issued books
+        $books = Book::with(['issuedBooks' => function ($query) {
+            $query->orderBy('issue_date', 'desc');
+        }])->paginate(10);
 
-        return view('books.index', compact('books'));
+        // Add a flag to each book
+        foreach ($books as $book) {
+            $lastIssuedBook = $book->issuedBooks->first();
+            $book->isLastIssuedBookReturned = $lastIssuedBook ? $lastIssuedBook->return_date !== null : true;
+        }
+
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
+
+        return view('books.index', compact('books', 'activeLawyers'));
     }
 
     /**
@@ -101,37 +120,36 @@ class BookController extends Controller
         return redirect()->route('books')->with('success', 'Book deleted successfully!');
     }
 
-    // Route::post('/issue-book', [IssuedBookController::class, 'issueBook']);
-    // public function issueBook(Request $request)
-    // {
-    //     $request->validate([
-    //         'book_id' => 'required|exists:books,id',
-    //         'user_id' => 'required|exists:users,id',
-    //         'issue_date' => 'required|date',
-    //         'return_date' => 'nullable|date|after_or_equal:issue_date',
-    //     ]);
+    public function issueBook(Request $request)
+    {
+        $request->validate([
+            'book_id' => 'required|exists:books,id',
+            'user_id' => 'required|exists:users,id',
+            'issue_date' => 'required|date',
+            'return_date' => 'nullable|date|after_or_equal:issue_date',
+        ]);
 
-    //     $bookId = $request->input('book_id');
+        $bookId = $request->input('book_id');
 
-    //     // Check if the book is already issued and not returned
-    //     $isBookIssued = IssuedBook::where('book_id', $bookId)
-    //         ->whereNull('return_date')
-    //         ->exists();
+        // Check if the book is already issued and not returned
+        $isBookIssued = IssuedBook::where('book_id', $bookId)
+            ->whereNull('return_date')
+            ->exists();
 
-    //     if ($isBookIssued) {
-    //         return response()->json(['error' => 'Book is already issued and not returned.'], 400);
-    //     }
+        if ($isBookIssued) {
+            return redirect()->route('books')->with('error', 'Book is already issued and not returned.');
+        }
 
-    //     // Issue the book to the user
-    //     IssuedBook::create([
-    //         'book_id' => $request->input('book_id'),
-    //         'user_id' => $request->input('user_id'),
-    //         'issue_date' => $request->input('issue_date'),
-    //         'return_date' => $request->input('return_date'),
-    //     ]);
+        // Issue the book to the user
+        IssuedBook::create([
+            'book_id' => $request->input('book_id'),
+            'user_id' => $request->input('user_id'),
+            'issue_date' => $request->input('issue_date'),
+            'return_date' => $request->input('return_date'),
+        ]);
 
-    //     return response()->json(['message' => 'Book issued successfully.'], 200);
-    // }
+        return redirect()->route('books')->with('success', 'Book issued successfully.');
+    }
 
     // // Route::get('/issued-books', [IssuedBookController::class, 'getAllIssuedBooks']);
     // public function getAllIssuedBooks()

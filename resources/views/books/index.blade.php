@@ -24,6 +24,7 @@
                     <th>Author Name</th>
                     <th>Licence</th>
                     <th>Available</th>
+                    <th>Issue Book</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -45,6 +46,13 @@
                     <td> {{ $book->book_author_name }} </td>
                     <td> {{ $book->book_licence }} </td>
                     <td> <span class='badge {{ $class }} me-1'>{{ $available }}</span> </td>
+                    <td>
+                        @if($book->isLastIssuedBookReturned)
+                        <a class="btn btn-primary issue-book" data-book-id="{{ $book->id }}" href="#">Issue Book</a>
+                        @else
+                        <a class="btn btn-secondary" href="#">Not Available</a>
+                        @endif
+                    </td>
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
@@ -117,6 +125,48 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="issueBookModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form action="{{ route('book.issue') }}" id="issueBookForm" method="POST">
+            @csrf
+            <input type="hidden" class="book_id" name="book_id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel1">Issue Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="lawyer" class="form-label">Lawyer <span class="text-danger">*</span></label>
+                            <select id="lawyer" name="user_id" class="select2 form-select">
+                                <option value="">Select Lawyer</option>
+                                @foreach($activeLawyers as $lawyerId => $lawyerName)
+                                <option value="{{$lawyerId}}">{{$lawyerName}}</option>
+                                @endforeach
+                            </select>
+                            <span id="error-message" style="color:red; display:none;">Please select lawyer name from the dropdown.</span>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="issueDate" class="form-label">Book Issue Date</label>
+                            <input type="date" id="issueDate" name="issue_date" class="form-control" value="{{ now()->format('Y-m-d') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit" class="btn btn-primary issue-book-submit">Issue Book</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!--/ Striped Rows -->
 
 <!-- </div> -->
@@ -135,6 +185,28 @@
                     this.closest('form').submit();
                 }
             });
+        });
+    });
+    $(document).ready(function() {
+        $(document).on('click', '.issue-book', function() {
+            $('#issueBookModal').modal('show');
+            let bookId = $(this).data('book-id');
+            $('.book_id').val(bookId);
+        });
+
+        $('#issueBookForm').on('submit', function(e) {
+            var LawyerName = $('#lawyer').val();
+            if (LawyerName === "") {
+                // Prevent form submission
+                e.preventDefault();
+                // Show error message
+                $('#error-message').show();
+                return;
+            } else {
+                // Hide error message if dropdown is selected
+                $('#error-message').hide();
+            }
+            $(this).closest("form").submit();
         });
     });
 </script>
