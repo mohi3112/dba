@@ -77,6 +77,26 @@
             </ul>
         </li>
         <!-- End Lawyers -->
+        <!-- Start Payments -->
+        <li class="menu-item {{ request()->is('payment*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="payments">Payments</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('payments') ? 'active' : '' }}">
+                    <a href="{{route('payments')}}" class="menu-link">
+                        <div data-i18n="payments">All Payments</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('payments/add') ? 'active' : '' }}">
+                    <a href="{{route('payments.add')}}" class="menu-link">
+                        <div data-i18n="Add payments">Add Payments</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Payments -->
         <!-- Start Subscriptions -->
         <li class="menu-item {{ request()->is('subscription*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

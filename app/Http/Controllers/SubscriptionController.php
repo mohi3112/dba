@@ -6,10 +6,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\LawyerService;
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
+    protected $lawyerService;
+
+    public function __construct(LawyerService $lawyerService)
+    {
+        $this->lawyerService = $lawyerService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +25,7 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $activeLawyers = $this->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
         $subscriptions = Subscription::paginate(10);
 
         return view('subscriptions.index', compact('subscriptions', 'activeLawyers'));
@@ -30,20 +38,9 @@ class SubscriptionController extends Controller
      */
     public function create()
     {
-        $activeLawyers = $this->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
 
         return view('subscriptions.create', compact('activeLawyers'));
-    }
-
-    private function getActiveLawyers()
-    {
-        $all_lawyers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'user');
-        })->statusActive()->get();
-
-        return $all_lawyers->mapWithKeys(function ($user) {
-            return [$user->id => $user->full_name];
-        })->toArray();
     }
 
     /**
@@ -78,7 +75,7 @@ class SubscriptionController extends Controller
     {
         $subscription = Subscription::findOrFail($id);
 
-        $activeLawyers = $this->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
 
         return view('subscriptions.edit', compact('subscription', 'activeLawyers'));
     }
@@ -88,7 +85,7 @@ class SubscriptionController extends Controller
     {
         $subscription = Subscription::findOrFail($id);
 
-        $activeLawyers = $this->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
 
         return view('subscriptions.show', compact('subscription', 'activeLawyers'));
     }

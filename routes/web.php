@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\PaymentController;
 
 
 /*
@@ -62,6 +63,17 @@ Route::middleware('auth')->group(function () {
     Route::get('book/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
     Route::put('books/update/{id}', [BookController::class, 'update'])->name('books.update');
     Route::post('book/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+
+    // Routes for Books
+    Route::get('payments', [PaymentController::class, 'index'])->name('payments');
+    Route::get('payment/{id}', [PaymentController::class, 'show'])->name('payment.view');
+    Route::get('payments/add', [PaymentController::class, 'create'])->name('payments.add');
+    Route::post('payment/store',  [PaymentController::class, 'store'])->name('payment.store');
+    Route::get('payment/edit/{id}', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::put('payments/update/{id}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::post('payment/{id}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+
+    Route::delete('delete-payment-image/{id}', [PaymentController::class, 'deleteImage'])->name('delete-payment-image');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
