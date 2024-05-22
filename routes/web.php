@@ -65,8 +65,10 @@ Route::middleware('auth')->group(function () {
     Route::post('book/{id}', [BookController::class, 'destroy'])->name('books.destroy');
     // issue a book
     Route::post('issue-book', [BookController::class, 'issueBook'])->name('book.issue');
+    Route::get('books/issued-books', [BookController::class, 'getAllIssuedBooks'])->name('books.issued-books');
+    Route::post('return_book/{id}', [BookController::class, 'returnBook'])->name('book.return_book');
 
-    // Routes for Books
+    // Routes for payments
     Route::get('payments', [PaymentController::class, 'index'])->name('payments');
     Route::get('payment/{id}', [PaymentController::class, 'show'])->name('payment.view');
     Route::get('payments/add', [PaymentController::class, 'create'])->name('payments.add');

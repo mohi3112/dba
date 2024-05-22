@@ -151,14 +151,25 @@ class BookController extends Controller
         return redirect()->route('books')->with('success', 'Book issued successfully.');
     }
 
-    // // Route::get('/issued-books', [IssuedBookController::class, 'getAllIssuedBooks']);
-    // public function getAllIssuedBooks()
-    // {
-    //     // Fetch all issued books with the related book and user details
-    //     $issuedBooks = IssuedBook::with(['book', 'user'])
-    //         ->whereNull('return_date')
-    //         ->get();
+    public function returnBook(Request $request, $id)
+    {
+        $request->validate([
+            'return_date' => 'required|date',
+        ]);
 
-    //     return response()->json($issuedBooks);
-    // }
+        $issuedBook = IssuedBook::findOrFail($id);
+        $issuedBook->return_date = $request->input('return_date');
+        $issuedBook->save();
+
+        return redirect()->route('books.issued-books')->with('success', 'Record updated successfully.');
+    }
+
+    public function getAllIssuedBooks()
+    {
+        // Fetch all issued books with the related book and user details
+        $issuedBooks = IssuedBook::with(['book', 'user'])
+            // ->whereNull('return_date')
+            ->orderBy('return_date', 'asc')->paginate(10);
+        return view('books.issuedBooks', compact('issuedBooks'));
+    }
 }

@@ -131,7 +131,12 @@
                 </li>
                 <li class="menu-item {{ request()->is('books/add') ? 'active' : '' }}">
                     <a href="{{route('books.add')}}" class="menu-link">
-                        <div data-i18n="Add books">Add Books</div>
+                        <div data-i18n="Add books">Add Book</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('books/issued-books') ? 'active' : '' }}">
+                    <a href="{{route('books.issued-books')}}" class="menu-link">
+                        <div data-i18n="Issued books">Issued Books</div>
                     </a>
                 </li>
             </ul>
