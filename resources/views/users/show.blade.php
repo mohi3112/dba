@@ -14,11 +14,14 @@
                                     <a class="list-group-item list-group-item-action active" id="list-basic" data-bs-toggle="list" href="#basic-details">Personal Information</a>
                                     <a class="list-group-item list-group-item-action" id="list-uploaded-document" data-bs-toggle="list" href="#uploaded-document">Uploaded Documents</a>
                                     <a class="list-group-item list-group-item-action" id="list-subscriptions" data-bs-toggle="list" href="#all-subscriptions">All subscriptions</a>
+                                    <a class="list-group-item list-group-item-action" id="list-payments" data-bs-toggle="list" href="#all-payments">All Payments</a>
+                                    <a class="list-group-item list-group-item-action" id="list-books" data-bs-toggle="list" href="#all-get-books">All Books</a>
                                     <!-- <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings">Settings</a> -->
                                 </div>
                             </div>
                             <div class="col-md-9 col-12">
                                 <div class="tab-content p-0">
+                                    <!-- basic details -->
                                     <div class="tab-pane fade active show" id="basic-details">
                                         <div class="row">
                                             <div class="col-6">
@@ -75,42 +78,53 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- uploaded documents -->
                                     <div class="tab-pane fade" id="uploaded-document">
                                         <div class="row mb-5">
                                             <div class="col-md">
                                                 <div class="card mb-3">
-                                                    <div class="row g-0">
-                                                        @php($dataFound = false)
-                                                        @if($user->picture)
-                                                        <div class="col-md-4">
+                                                    @php($dataFound = false)
+                                                    @if($user->picture)
+                                                    <div class="pl-3 mt-2 row g-0">
+                                                        <h6 class="mb-2 text-muted">Lawyer Image</h6>
+                                                        <div class="col-md-4 mb-3">
                                                             <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                         </div>
-                                                        @php($dataFound = true)
-                                                        @endif
-                                                        @if($user->address_proof->count() > 0)
+                                                    </div>
+                                                    @php($dataFound = true)
+                                                    @endif
+                                                    @if($user->address_proof->count() > 0)
+                                                    <div class="pl-3 row g-0">
+                                                        <h6 class="mb-2 text-muted">Address Proof(s)</h6>
                                                         @foreach($user->address_proof as $proof)
                                                         <div class="col-md-4">
                                                             <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                         </div>
                                                         @endforeach
-                                                        @php($dataFound = true)
-                                                        @endif
-                                                        @if($user->degree_images->count() > 0)
+                                                    </div>
+                                                    @php($dataFound = true)
+                                                    @endif
+                                                    @if($user->degree_images->count() > 0)
+                                                    <div class="pl-3 mt-2 row g-0">
+                                                        <h6 class="mb-2 text-muted">Uploaded Degree(s)</h6>
                                                         @foreach($user->degree_images as $proof)
                                                         <div class="col-md-4">
                                                             <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                         </div>
                                                         @endforeach
-                                                        @php($dataFound = true)
-                                                        @endif
-                                                        @if(!$dataFound)
-                                                        <h6 class="mt-2 text-muted">No Data Found</h6>
-                                                        @endif
                                                     </div>
+                                                    @php($dataFound = true)
+                                                    @endif
+                                                    @if(!$dataFound)
+                                                    <div class="pl-3 mb-2 row g-0">
+                                                        <h6 class="mb-2 text-muted">No Data Found</h6>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- subscriptions -->
                                     <div class="tab-pane fade" id="all-subscriptions">
                                         <div class="col-12">
                                             <div class="card col-12">
@@ -169,16 +183,123 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Payments -->
+
+                                    <div class="tab-pane fade" id="all-payments">
+                                        <div class="col-12">
+                                            <div class="card col-12">
+                                                <div class="table-responsive text-nowrap">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No.</th>
+                                                                <th>Payment Date</th>
+                                                                <th>Amount</th>
+                                                                <th>View Uploaded Proof</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table-border-bottom-0">
+                                                            @if($user->payments->count() > 0)
+                                                            @php($i = 1)
+                                                            @foreach($user->payments as $payment)
+                                                            <tr>
+                                                                <td> {{ $i }} </td>
+                                                                <td> {{ \Carbon\Carbon::parse($payment->payment_date)->format('d-M-Y') }} </td>
+                                                                <td> {{ $payment->payment_amount }} </td>
+                                                                <td>
+                                                                    <a class="pl-3 color-unset" href="#"><i class="fa fa-eye show-image" img-src="data:image/jpeg;base64,{{ $payment->payment_proof }}" aria-hidden="true"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                            @php($i++)
+                                                            @endforeach
+                                                            @else
+                                                            <tr>
+                                                                <td colspan="5">No Data Found</td>
+                                                            </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="d-flex justify-content-end pt-3"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Books -->
+
+                                    <div class="tab-pane fade" id="all-get-books">
+                                        <div class="col-12">
+                                            <div class="card col-12">
+                                                <div class="table-responsive text-nowrap">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No.</th>
+                                                                <th>Book - Author Name</th>
+                                                                <th>Issue Date</th>
+                                                                <th>Return Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table-border-bottom-0">
+                                                            @if($user->issuedBooks->count() > 0)
+                                                            @php($i = 1)
+                                                            @foreach($user->issuedBooks as $issuedBook)
+                                                            <tr>
+                                                                <td> {{ $i }} </td>
+                                                                <td> {{ $issuedBook->book->book_name }} - {{ $issuedBook->book->book_author_name }} </td>
+                                                                <td> {{ \Carbon\Carbon::parse($issuedBook->issue_date)->format('d-M-Y') }} </td>
+                                                                <td> {{ ($issuedBook->return_date) ? \Carbon\Carbon::parse($issuedBook->return_date)->format('d-M-Y') : '--' }} </td>
+                                                            </tr>
+                                                            @php($i++)
+                                                            @endforeach
+                                                            @else
+                                                            <tr>
+                                                                <td colspan="5">No Data Found</td>
+                                                            </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="d-flex justify-content-end pt-3"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <!-- <div class="tab-pane fade" id="list-settings"></div> -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+
+<!-- show image modal -->
+<div class="modal fade" id="showImage" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" id="showImageSrc" alt="Description of Image" style="max-width: 750px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+<!-- show image modal -->
+@endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.show-image').click(function() {
+            let imgSrc = $(this).attr('img-src');
+            $('#showImageSrc').attr('src', imgSrc);
+            $('#showImage').modal('show');
+        });
+    });
+</script>
 @endsection
