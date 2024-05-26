@@ -57,6 +57,28 @@
         </li>
 
         <!-- Layouts -->
+
+        <!-- Start locations -->
+        <li class="menu-item {{ request()->is('location*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="locations">Locations</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('locations') ? 'active' : '' }}">
+                    <a href="{{route('locations')}}" class="menu-link">
+                        <div data-i18n="locations">All Locations</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('locations/add') ? 'active' : '' }}">
+                    <a href="{{route('locations.add')}}" class="menu-link">
+                        <div data-i18n="Add location">Add Location</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End locations -->
+
         <!-- Start Lawyers -->
         <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -77,6 +99,31 @@
             </ul>
         </li>
         <!-- End Lawyers -->
+        <!-- Start Books -->
+        <li class="menu-item {{ request()->is('book*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="books">Books</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('books') ? 'active' : '' }}">
+                    <a href="{{route('books')}}" class="menu-link">
+                        <div data-i18n="books">All Books</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('books/add') ? 'active' : '' }}">
+                    <a href="{{route('books.add')}}" class="menu-link">
+                        <div data-i18n="Add books">Add Book</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('books/issued-books') ? 'active' : '' }}">
+                    <a href="{{route('books.issued-books')}}" class="menu-link">
+                        <div data-i18n="Issued books">Issued Books</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Books -->
         <!-- Start Payments -->
         <li class="menu-item {{ request()->is('payment*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -117,31 +164,6 @@
             </ul>
         </li>
         <!-- End Subscriptions -->
-        <!-- Start Books -->
-        <li class="menu-item {{ request()->is('book*') ? 'active open' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="books">Books</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item {{ request()->is('books') ? 'active' : '' }}">
-                    <a href="{{route('books')}}" class="menu-link">
-                        <div data-i18n="books">All Books</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ request()->is('books/add') ? 'active' : '' }}">
-                    <a href="{{route('books.add')}}" class="menu-link">
-                        <div data-i18n="Add books">Add Book</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ request()->is('books/issued-books') ? 'active' : '' }}">
-                    <a href="{{route('books.issued-books')}}" class="menu-link">
-                        <div data-i18n="Issued books">Issued Books</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <!-- End Books -->
     </ul>
 </aside>
 <!-- / Menu -->

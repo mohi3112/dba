@@ -30,7 +30,7 @@ class UserController extends Controller
     }
 
     // Display a listing of the resource.
-    public function index()
+    public function index(Request $request)
     {
         $authUser = auth()->user();
         $roles = ['admin', 'superadmin'];
@@ -38,9 +38,24 @@ class UserController extends Controller
             $roles = ['superadmin'];
         }
 
-        $users = User::whereDoesntHave('roles', function ($query) use ($roles) {
+        $usersQuery = User::whereDoesntHave('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
-        })->statusActive()->paginate(10);
+        });
+        if ($request->filled('name')) {
+            $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('designation')) {
+            $usersQuery->where('designation', $request->designation);
+        }
+
+        if (count($_GET) > 0 && !$request->filled('is_active')) {
+            $usersQuery->where('status', User::STATUS_IN_ACTIVE);
+        } else {
+            $usersQuery->statusActive();
+        }
+
+        $users = $usersQuery->paginate(10);
 
         return view('users.index', compact('users'));
     }
@@ -134,11 +149,13 @@ class UserController extends Controller
     // Display the specified resource.
     public function show($id)
     {
-        $user = User::with(['roles', 'subscriptions' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'payments' => function ($q) {
-            $q->orderBy('created_at', 'desc');
-        }, 'issuedBooks' => function ($qry) {
+        $user = User::with(['roles',
+        // 'subscriptions' => function ($query) {
+        //     $query->orderBy('created_at', 'desc');
+        // }, 'payments' => function ($q) {
+        //     $q->orderBy('created_at', 'desc');
+        // },
+        'issuedBooks' => function ($qry) {
             $qry->with('book');
             $qry->orderBy('created_at', 'desc');
         }])->findOrFail($id);
@@ -161,7 +178,7 @@ class UserController extends Controller
             'first_name' => 'required',
             'email' => 'required|email|unique:users,email,' . $id, // Ensure email is unique except for the current user
             'mobile1' => 'nullable|numeric',
-            'aadhaar_no' => 'required|numeric|unique:users,aadhaar_no,' . $id, // Ensure Aadhaar number is unique except for the current user
+            'aadhaar_no' => 'required|numeric', // Ensure Aadhaar number is unique except for the current user
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -205,8 +222,6 @@ class UserController extends Controller
 
             // Handle address proofs
             if ($request->hasFile('address_proofs')) {
-                // Delete old address proofs
-                // AddressProof::where('user_id', $user->id)->delete();
 
                 $addressProofsData = [];
                 foreach ($request->file('address_proofs') as $addressImage) {
@@ -225,8 +240,6 @@ class UserController extends Controller
 
             // Handle degree pictures
             if ($request->hasFile('degree_pictures')) {
-                // Delete old degree pictures
-                // DegreeImage::where('user_id', $user->id)->delete();
 
                 $degreeImagesData = [];
                 foreach ($request->file('degree_pictures') as $degreeImage) {

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 
 
@@ -78,6 +79,15 @@ Route::middleware('auth')->group(function () {
     Route::post('payment/{id}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
     Route::delete('delete-payment-image/{id}', [PaymentController::class, 'deleteImage'])->name('delete-payment-image');
+
+    // Routes for locations
+    Route::get('locations', [LocationController::class, 'index'])->name('locations');
+    Route::get('location/{id}', [LocationController::class, 'show'])->name('location.view');
+    Route::get('locations/add', [LocationController::class, 'create'])->name('locations.add');
+    Route::post('location/store',  [LocationController::class, 'store'])->name('location.store');
+    Route::get('location/edit/{id}', [LocationController::class, 'edit'])->name('locations.edit');
+    Route::put('locations/update/{id}', [LocationController::class, 'update'])->name('locations.update');
+    Route::post('location/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

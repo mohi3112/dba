@@ -24,7 +24,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $activeLawyers = $this->lawyerService->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers(false);
         $payments = Payment::paginate(10);
 
         return view('payments.index', compact('payments', 'activeLawyers'));

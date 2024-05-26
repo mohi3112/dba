@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Subscription;
-use App\Models\User;
 use App\Services\LawyerService;
 use Carbon\Carbon;
 
@@ -25,7 +24,7 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $activeLawyers = $this->lawyerService->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getActiveLawyers(false);
         $subscriptions = Subscription::paginate(10);
 
         return view('subscriptions.index', compact('subscriptions', 'activeLawyers'));

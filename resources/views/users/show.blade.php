@@ -13,8 +13,8 @@
                                 <div class="list-group">
                                     <a class="list-group-item list-group-item-action active" id="list-basic" data-bs-toggle="list" href="#basic-details">Personal Information</a>
                                     <a class="list-group-item list-group-item-action" id="list-uploaded-document" data-bs-toggle="list" href="#uploaded-document">Uploaded Documents</a>
-                                    <a class="list-group-item list-group-item-action" id="list-subscriptions" data-bs-toggle="list" href="#all-subscriptions">All subscriptions</a>
-                                    <a class="list-group-item list-group-item-action" id="list-payments" data-bs-toggle="list" href="#all-payments">All Payments</a>
+                                    <!-- <a class="list-group-item list-group-item-action" id="list-subscriptions" data-bs-toggle="list" href="#all-subscriptions">All subscriptions</a> -->
+                                    <!-- <a class="list-group-item list-group-item-action" id="list-payments" data-bs-toggle="list" href="#all-payments">All Payments</a> -->
                                     <a class="list-group-item list-group-item-action" id="list-books" data-bs-toggle="list" href="#all-get-books">All Books</a>
                                     <!-- <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings">Settings</a> -->
                                 </div>

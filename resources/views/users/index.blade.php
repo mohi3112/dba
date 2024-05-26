@@ -13,6 +13,46 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('users') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-3">
+                    <label for="name" class="form-label">First Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name" value="{{@$_GET['name']}}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="designation" class="form-label">Designation</label>
+                    <select id="designation" name="designation" class="select2 form-select">
+                        <option value="">Select Designation</option>
+                        @foreach(\App\Models\User::$designations as $key => $designation)
+                        <option value="{{$key}}" @if(@$_GET['designation']==$key) selected @endif>{{$designation}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 13%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_active" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_active'])) ? '' : 'checked' }}>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('users') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Striped Rows -->
 <div class="card">
     <div class="table-responsive text-nowrap">
