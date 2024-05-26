@@ -25,9 +25,9 @@
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="floor_number">Floor number <span class="text-danger">*</span></label>
+                            <label class="form-label" for="floor_number">Floor <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="floor_number" name="floor_number" class="form-control" placeholder="Floor number">
+                                <input type="text" id="floor_number" name="floor_number" class="form-control" placeholder="Floor">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">

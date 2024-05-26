@@ -21,7 +21,7 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>shop number</th>
-                    <th>floor number</th>
+                    <th>floor</th>
                     <th>complex</th>
                     <th>rent</th>
                     <th>Actions</th>

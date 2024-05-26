@@ -7,7 +7,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
-
+use App\Http\Controllers\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +88,15 @@ Route::middleware('auth')->group(function () {
     Route::get('location/edit/{id}', [LocationController::class, 'edit'])->name('locations.edit');
     Route::put('locations/update/{id}', [LocationController::class, 'update'])->name('locations.update');
     Route::post('location/{id}', [LocationController::class, 'destroy'])->name('locations.destroy');
+
+    // Routes for locations
+    Route::get('vendors', [VendorController::class, 'index'])->name('vendors');
+    Route::get('vendor/{id}', [VendorController::class, 'show'])->name('vendor.view');
+    Route::get('vendors/add', [VendorController::class, 'create'])->name('vendors.add');
+    Route::post('vendor/store',  [VendorController::class, 'store'])->name('vendor.store');
+    Route::get('vendor/edit/{id}', [VendorController::class, 'edit'])->name('vendors.edit');
+    Route::put('vendors/update/{id}', [VendorController::class, 'update'])->name('vendors.update');
+    Route::post('vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

@@ -21,4 +21,11 @@ class Location extends Model
     {
         return $this->belongsTo(Vendor::class);
     }
+
+    public function getFullLocationNameAttribute()
+    {
+        $complex = $this->complex ? ', ' . $this->complex : '';
+        $floor_number = $this->floor_number ? ', ' . $this->floor_number : '';
+        return "{$this->shop_number}{$floor_number}{$complex}";
+    }
 }

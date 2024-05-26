@@ -99,6 +99,28 @@
             </ul>
         </li>
         <!-- End Lawyers -->
+
+        <!-- Start vendors -->
+        <li class="menu-item {{ request()->is('vendor*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="vendors">Vendors</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('vendors') ? 'active' : '' }}">
+                    <a href="{{route('vendors')}}" class="menu-link">
+                        <div data-i18n="vendors">All Vendors</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('vendors/add') ? 'active' : '' }}">
+                    <a href="{{route('vendors.add')}}" class="menu-link">
+                        <div data-i18n="Add vendor">Add Vendor</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End vendors -->
+
         <!-- Start Books -->
         <li class="menu-item {{ request()->is('book*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
