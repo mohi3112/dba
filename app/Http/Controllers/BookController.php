@@ -167,7 +167,9 @@ class BookController extends Controller
     public function getAllIssuedBooks()
     {
         // Fetch all issued books with the related book and user details
-        $issuedBooks = IssuedBook::with(['book', 'user'])
+        $issuedBooks = IssuedBook::with(['book', 'user' => function ($query) {
+            $query->withTrashed();
+        }])
             // ->whereNull('return_date')
             ->orderBy('return_date', 'asc')->paginate(10);
         return view('books.issuedBooks', compact('issuedBooks'));
