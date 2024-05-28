@@ -62,6 +62,12 @@
                             <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" name="father_last_name" value="" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label class="form-label" for="dob">Date of Birth <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="date" name="dob" value="">
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label for="gender" class="form-label">Gender</label>
                             <select id="gender" name="gender" class="select2 form-select">
                                 @foreach(\App\Models\User::$genders as $key => $gender)
@@ -111,16 +117,14 @@
 
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="address">Residence Address</label>
-                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Residence address"></textarea>
+                            <textarea class="form-control" id="address" name="address" placeholder="Residence address"></textarea>
                         </div>
+
                         <div class="mb-3 col-md-6">
-                            <label for="status" class="form-label">Status</label>
-                            <select id="status" name="status" class="select2 form-select">
-                                @foreach(\App\Models\User::$statuses as $key => $status)
-                                <option value="{{$key}}">{{$status}}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label" for="other_details">Other details</label>
+                            <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details"></textarea>
                         </div>
+
                         @if(auth()->user()->hasRole('superadmin'))
                         <div class="mb-3 col-md-6">
                             <label for="user_role" class="form-label">User Role</label>
@@ -132,6 +136,39 @@
                             </select>
                         </div>
                         @endif
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1" name="status" checked="">
+                                        <label class="form-check-label" for="status"> Active </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1" name="is_deceased">
+                                        <label class="form-check-label" for="is_deceased"> Is Deceased?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1" name="is_physically_disabled">
+                                        <label class="form-check-label" for="is_physically_disabled"> Is Physically Disabled? </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider divider-primary">
+                            <div class="divider-text">Upload Documents</div>
+                        </div>
                         <div class="mb-3 col-md-6">
                             <label for="image" class="form-label">Picture</label>
                             <div class="input-group">

@@ -91,6 +91,19 @@ class UserController extends Controller
                 $request->merge(['picture' => $base64Picture]);
             }
 
+            if (!$request->has('status')) {
+                $request->merge(['status' => User::STATUS_IN_ACTIVE]);
+            } else {
+                $request->merge(['status' => User::STATUS_ACTIVE]);
+            }
+
+            if (!$request->has('is_deceased')) {
+                $request->merge(['is_deceased' => false]);
+            }
+
+            if (!$request->has('is_physically_disabled')) {
+                $request->merge(['is_physically_disabled' => false]);
+            }
             // Handle user role
             $userRole = $request->input('user_role') ?? 3; //Assign default user/lawyer role (role_id 3)
 
@@ -150,14 +163,14 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::with(['roles',
-        // 'subscriptions' => function ($query) {
-        //     $query->orderBy('created_at', 'desc');
-        // }, 'payments' => function ($q) {
-        //     $q->orderBy('created_at', 'desc');
-        // },
-        'issuedBooks' => function ($qry) {
-            $qry->with('book');
-            $qry->orderBy('created_at', 'desc');
+            // 'subscriptions' => function ($query) {
+            //     $query->orderBy('created_at', 'desc');
+            // }, 'payments' => function ($q) {
+            //     $q->orderBy('created_at', 'desc');
+            // },
+            'issuedBooks' => function ($qry) {
+                $qry->with('book');
+                $qry->orderBy('created_at', 'desc');
         }])->findOrFail($id);
 
         return view('users.show', compact('user'));
@@ -198,6 +211,24 @@ class UserController extends Controller
                 $user->picture = $base64Picture;
             }
 
+            if (!$request->has('status') || $request->status == User::STATUS_IN_ACTIVE) {
+                $request->merge(['status' => User::STATUS_IN_ACTIVE]);
+            } else {
+                $request->merge(['status' => User::STATUS_ACTIVE]);
+            }
+
+            if (!$request->has('is_deceased') || $request->is_deceased == false) {
+                $request->merge(['is_deceased' => false]);
+            } else {
+                $request->merge(['is_deceased' => true]);
+            }
+
+            if (!$request->has('is_physically_disabled') || $request->is_physically_disabled == false) {
+                $request->merge(['is_physically_disabled' => false]);
+            } else {
+                $request->merge(['is_physically_disabled' => true]);
+            }
+
             // Update user data
             $user->first_name = $request->input('first_name');
             $user->middle_name = $request->input('middle_name');
@@ -205,6 +236,7 @@ class UserController extends Controller
             $user->email = $request->input('email');
             $user->father_first_name = $request->input('father_first_name');
             $user->father_last_name = $request->input('father_last_name');
+            $user->dob = $request->input('dob');
             $user->gender = $request->input('gender');
             $user->mobile1 = $request->input('mobile1');
             $user->mobile2 = $request->input('mobile2');
@@ -214,6 +246,9 @@ class UserController extends Controller
             $user->address = $request->input('address');
             $user->status = $request->input('status');
             $user->chamber_number = $request->input('chamber_number');
+            $user->status = $request->input('status');
+            $user->is_deceased = $request->input('is_deceased');
+            $user->is_physically_disabled = $request->input('is_physically_disabled');
             $user->save();
 
             if ($request->input('user_role')) {

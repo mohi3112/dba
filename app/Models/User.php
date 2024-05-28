@@ -57,6 +57,7 @@ class User extends Authenticatable
         "email",
         "father_first_name",
         "father_last_name",
+        "dob",
         "gender",
         "mobile1",
         "mobile2",
@@ -67,7 +68,10 @@ class User extends Authenticatable
         "address",
         "status",
         "chamber_number",
-        "deleted_by"
+        "deleted_by",
+        "is_deceased",
+        "is_physically_disabled",
+        "other_details",
     ];
 
     /**
