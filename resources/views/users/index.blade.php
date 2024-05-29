@@ -24,6 +24,14 @@
                         <input type="text" class="form-control" name="name" value="{{@$_GET['name']}}">
                     </div>
                 </div>
+
+                <div class="col-md-3">
+                    <label for="l_name" class="form-label">Last Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="l_name" value="{{@$_GET['l_name']}}">
+                    </div>
+                </div>
+
                 <div class="col-md-3">
                     <label for="designation" class="form-label">Designation</label>
                     <select id="designation" name="designation" class="select2 form-select">
@@ -33,18 +41,65 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="col-md-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select id="gender" name="gender" class="select2 form-select">
+                        <option value="">Select Gender</option>
+                        @foreach(\App\Models\User::$genders as $ky => $gender)
+                        <option value="{{$ky}}" @if(@$_GET['gender']==$ky) selected @endif>{{$gender}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="age">Age</label>
+                    <div class="row">
+                        <div class="col-md-6 pr-0">
+                            <select id="ageOperator" name="ageOperator" class="select2 form-select">
+                                @foreach(\App\Models\User::$ageOperator as $k => $operator)
+                                <option value="{{$k}}" @if(@$_GET['ageOperator']==$k) selected @endif>{{$operator}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group input-group-merge">
+                                <input type="text" class="form-control" id="age" value="{{@$_GET['age']}}" name="age" placeholder="Enter Age" aria-label="Age">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 13%;">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
                         <input class="form-check-input" name="is_active" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_active'])) ? '' : 'checked' }}>
                         <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
                     </div>
                 </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_deceased" type="checkbox" id="flexSwitchCheckDeceased" {{ (count($_GET) > 0 && isset($_GET['is_deceased'])) ? "checked" : "" }}>
+                        <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_physically_disabled" type="checkbox" id="flexSwitchCheckPhysicallyDisabled" {{ (count($_GET) > 0 && isset($_GET['is_physically_disabled'])) ? "checked" : "" }}>
+                        <label class="form-check-label" for="flexSwitchCheckPhysicallyDisabled">Physically Disabled</label>
+                    </div>
+                </div>
+
                 <div class="col-md-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
                     <button class="btn btn-primary">Filter</button>
                 </div>
-                <div class="col-md-1">
+
+                <div class="col-md-1 ml-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
                     <a href="{{ route('users') }}" class="btn btn-secondary">Reset</a>
                 </div>
@@ -62,8 +117,12 @@
                     <th>Sr. No.</th>
                     <th>Name</th>
                     <th>Father'S Name</th>
+                    <th>DOB (Age)</th>
+                    <th>Gender</th>
                     <th>DESIGNATION</th>
                     <th>Status</th>
+                    <th>Deceased</th>
+                    <th>Handicaped</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -76,6 +135,8 @@
                         <td> {{ $i }} </td>
                         <td> {{ $user->full_name }} </td>
                         <td> {{ ($user->father_first_name) ? $user->father_first_name . ' ' . $user->father_last_name : '--' }}</td>
+                        <td> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }}</td>
+                        <td> {{ ($user->gender) ? \App\Models\User::$genders[$user->gender] : '--' }} </td>
                         <td>
                             {{ \App\Models\User::$designations[$user->designation] ?? '--' }}
                         </td>
@@ -86,6 +147,8 @@
                             <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                             @endif
                         </td>
+                        <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
+                        <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <!-- edit -->

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,12 @@ class User extends Authenticatable
     public static $statuses = [
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_IN_ACTIVE => 'In-active'
+    ];
+
+    public static $ageOperator = [
+        'eq' => 'Equals To',
+        'gt' => 'Greater Then',
+        'lt' => 'Less Then'
     ];
 
     // Define static array for designation
@@ -91,19 +98,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    /**
-     * The roles that belong to the user.
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
 
     public function getFullNameAttribute()
     {
         $middleName = $this->middle_name ? ' ' . $this->middle_name : '';
         $lastName = $this->last_name ? ' ' . $this->last_name : '';
         return "{$this->first_name}{$middleName} {$lastName}";
+    }
+
+    public function getAgeAttribute()
+    {
+        return Carbon::parse($this->attributes['dob'])->age;
+    }
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }
 
     /**
@@ -157,5 +170,25 @@ class User extends Authenticatable
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public static function getAgeOperator($key)
+    {
+        switch ($key) {
+            case 'eq':
+                return '=';
+            case 'gt':
+                return '>';
+            case 'lt':
+                return '<';
+            default:
+                return '=';
+        }
+    }
+
+    public function scopeAge(Builder $query, $age, $operatorKey = 'eq')
+    {
+        $operator = User::getAgeOperator($operatorKey);
+        return $query->whereRaw("TIMESTAMPDIFF(YEAR, dob, CURDATE()) $operator ?", [$age]);
     }
 }

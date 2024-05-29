@@ -41,6 +41,9 @@
                                                             <label for=""> Gender: </label> <span> {{ \App\Models\User::$genders[$user->gender] }} </span>
                                                         </li>
                                                         <li class="list-group-item">
+                                                            <label for=""> DOB (Age): </label> <span> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }} </span>
+                                                        </li>
+                                                        <li class="list-group-item">
                                                             <label for=""> Aadhaar number: </label> <span> {{ $user->aadhaar_no }} </span>
                                                         </li>
                                                         <li class="list-group-item">
@@ -63,6 +66,20 @@
                                                                 @elseif($user->status == 2)
                                                                 <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                                                                 @endif
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <label for=""> Deceased: </label> <span>
+                                                                @if(!$user->is_deceased)
+                                                                <span class="badge bg-label-success me-1">No</span>
+                                                                @else
+                                                                <span class="badge bg-label-warning me-1">Yes</span>
+                                                                @endif
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <label for=""> Physically Disabled: </label> <span>
+                                                                {{ (!$user->is_physically_disabled) ? 'No' : 'Yes' }}
                                                             </span>
                                                         </li>
                                                         @if(auth()->user()->hasRole('superadmin'))

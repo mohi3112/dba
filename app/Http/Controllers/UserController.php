@@ -41,8 +41,13 @@ class UserController extends Controller
         $usersQuery = User::whereDoesntHave('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
         });
+
         if ($request->filled('name')) {
             $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('l_name')) {
+            $usersQuery->where('last_name', 'like', '%' . $request->l_name . '%');
         }
 
         if ($request->filled('designation')) {
@@ -53,6 +58,22 @@ class UserController extends Controller
             $usersQuery->where('status', User::STATUS_IN_ACTIVE);
         } else {
             $usersQuery->statusActive();
+        }
+
+        if ($request->filled('age')) {
+            $usersQuery->age($request->age, $request->ageOperator);
+        }
+
+        if ($request->filled('gender')) {
+            $usersQuery->where('gender', $request->gender);
+        }
+
+        if ($request->filled('is_deceased')) {
+            $usersQuery->where('is_deceased', true);
+        }
+
+        if ($request->filled('is_physically_disabled')) {
+            $usersQuery->where('is_physically_disabled', true);
         }
 
         $users = $usersQuery->paginate(10);
@@ -162,7 +183,8 @@ class UserController extends Controller
     // Display the specified resource.
     public function show($id)
     {
-        $user = User::with(['roles',
+        $user = User::with([
+            'roles',
             // 'subscriptions' => function ($query) {
             //     $query->orderBy('created_at', 'desc');
             // }, 'payments' => function ($q) {
@@ -171,7 +193,8 @@ class UserController extends Controller
             'issuedBooks' => function ($qry) {
                 $qry->with('book');
                 $qry->orderBy('created_at', 'desc');
-        }])->findOrFail($id);
+            }
+        ])->findOrFail($id);
 
         return view('users.show', compact('user'));
     }
