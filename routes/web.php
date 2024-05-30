@@ -7,6 +7,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VendorController;
 
 /*
@@ -56,6 +57,13 @@ Route::middleware('auth')->group(function () {
     Route::get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscriptions.edit');
     Route::put('subscriptions/update/{id}', [SubscriptionController::class, 'update'])->name('subscriptions.update');
     Route::post('subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+
+    // Routes for Roles
+    Route::get('roles', [UserRoleController::class, 'index'])->name('roles');
+    Route::get('roles/add', [UserRoleController::class, 'create'])->name('roles.add');
+    Route::post('role/store',  [UserRoleController::class, 'store'])->name('role.store');
+    Route::get('role/edit/{id}', [UserRoleController::class, 'edit'])->name('roles.edit');
+    Route::put('roles/update/{id}', [UserRoleController::class, 'update'])->name('roles.update');
 
     // Routes for Books
     Route::get('books', [BookController::class, 'index'])->name('books');

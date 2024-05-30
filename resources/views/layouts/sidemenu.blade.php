@@ -58,6 +58,27 @@
 
         <!-- Layouts -->
 
+        <!-- Start roles -->
+        <li class="menu-item {{ request()->is('role*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="roles">Roles</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('roles') ? 'active' : '' }}">
+                    <a href="{{route('roles')}}" class="menu-link">
+                        <div data-i18n="roles">All Roles</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('roles/add') ? 'active' : '' }}">
+                    <a href="{{route('roles.add')}}" class="menu-link">
+                        <div data-i18n="Add role">Add Role</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End locations -->
+
         <!-- Start locations -->
         <li class="menu-item {{ request()->is('location*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
