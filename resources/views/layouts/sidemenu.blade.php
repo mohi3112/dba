@@ -96,6 +96,11 @@
                         <div data-i18n="Add Lawyer">Add Lawyer</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('lawyers/telephone-directory') ? 'active' : '' }}">
+                    <a href="{{route('users.telephone-directory')}}" class="menu-link">
+                        <div data-i18n="telephone-directory">Telephone Directory</div>
+                    </a>
+                </li>
             </ul>
         </li>
         <!-- End Lawyers -->

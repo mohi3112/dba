@@ -384,4 +384,35 @@ class UserController extends Controller
 
         return response()->json(['message' => $message]);
     }
+
+    public function telephoneDirectory(Request $request)
+    {
+        $usersQuery = User::select('id', 'first_name', 'middle_name', 'last_name', 'mobile1', 'mobile2', 'status', 'is_deceased', 'is_physically_disabled');
+
+        if ($request->filled('name')) {
+            $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('l_name')) {
+            $usersQuery->where('last_name', 'like', '%' . $request->l_name . '%');
+        }
+
+        if (count($_GET) > 0 && !$request->filled('is_active')) {
+            $usersQuery->where('status', User::STATUS_IN_ACTIVE);
+        } else {
+            $usersQuery->statusActive();
+        }
+
+        if ($request->filled('is_deceased')) {
+            $usersQuery->where('is_deceased', true);
+        }
+
+        if ($request->filled('is_physically_disabled')) {
+            $usersQuery->where('is_physically_disabled', true);
+        }
+
+        $users = $usersQuery->paginate(10);
+
+        return view('users.telephone-directory', compact('users'));
+    }
 }
