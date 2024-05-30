@@ -3,7 +3,16 @@
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Lawyer Details</h4>
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card mb-4">
-        <h5 class="card-header">Lawyer Details</h5>
+        <div class="row">
+            <div class="col-md-10">
+                <h5 class="card-header">Lawyer Details</h5>
+            </div>
+            <div class="col-md-2 d-flex" style="flex-direction: column;">
+                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary mt-3 ml-3">
+                    Edit
+                </a>
+            </div>
+        </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-12 mb-4 mb-xl-0">
