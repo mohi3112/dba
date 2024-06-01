@@ -59,6 +59,7 @@
         <!-- Layouts -->
 
         <!-- Start roles -->
+        @if(auth()->user()->hasRole('superadmin'))
         <li class="menu-item {{ request()->is('role*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -77,6 +78,7 @@
                 </li>
             </ul>
         </li>
+        @endif
         <!-- End locations -->
 
         <!-- Start locations -->

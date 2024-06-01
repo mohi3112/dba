@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="mb-3 col-md-6">
                         <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" id="name" placeholder="First Name" name="name" value="{{$role->name}}" autofocus="">
+                        <input class="form-control" type="text" disabled id="name" placeholder="First Name" name="name" value="{{$role->name}}" autofocus="">
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="description">Description</label>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="mt-2">
                     <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                    <a type="reset" href="{{route('payments')}}" class="btn btn-outline-secondary">Cancel</a>
+                    <a type="reset" href="{{route('roles')}}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </div>
         </div>

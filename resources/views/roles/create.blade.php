@@ -29,7 +29,7 @@
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <a type="reset" href="{{route('payments')}}" class="btn btn-outline-secondary">Cancel</a>
+                        <a type="reset" href="{{route('roles')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </div>
             </div>

@@ -26,6 +26,10 @@ class UserRoleController extends Controller
             'name' => 'required'
         ]);
 
+        // Process role name / Remove space and make it lowercase
+        $processedRoleName = strtolower(str_replace(' ', '_', $request->name));
+        $request->merge(['name' => $processedRoleName]);
+
         Role::create($request->all());
 
         return redirect()->route('roles')->with('success', 'Role added successfully.');
@@ -43,6 +47,10 @@ class UserRoleController extends Controller
         $request->validate([
             'name' => 'required'
         ]);
+
+        // Process role name / Remove space and make it lowercase
+        $processedRoleName = strtolower(str_replace(' ', '_', $request->name));
+        $request->merge(['name' => $processedRoleName]);
 
         $role = Role::findOrFail($id);
         $role->name = $request->name;

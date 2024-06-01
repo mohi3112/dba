@@ -30,9 +30,9 @@ class UsersTableSeeder extends Seeder
 
         // Create admin user
         $admin = User::create([
-            'first_name' => 'Admin',
+            'first_name' => 'President',
             'last_name' => 'User',
-            'email' => 'admin@example.com',
+            'email' => 'president@example.com',
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
@@ -44,7 +44,7 @@ class UsersTableSeeder extends Seeder
 
         // Create regular user
         $user = User::create([
-            'first_name' => 'Regular',
+            'first_name' => 'Lawyer',
             'last_name' => 'User',
             'email' => 'user@example.com',
             'gender' => 1,
@@ -54,6 +54,6 @@ class UsersTableSeeder extends Seeder
         ]);
 
         // Assign role
-        $user->roles()->attach(3); // role_id 3 corresponds to 'user'
+        $user->roles()->attach(8); // role_id 8 corresponds to 'user'
     }
 }

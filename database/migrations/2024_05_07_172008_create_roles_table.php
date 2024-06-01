@@ -23,8 +23,14 @@ class CreateRolesTable extends Migration
 
         DB::table('roles')->insert([
             ['name' => 'superadmin', 'description' => 'Super Admin Role'],
-            ['name' => 'admin', 'description' => 'Admin Role'],
-            ['name' => 'user', 'description' => 'User Role'],
+            ['name' => 'president', 'description' => 'President Role'],
+            ['name' => 'vice_president', 'description' => 'Vice President Role'],
+            ['name' => 'finance_secretry', 'description' => 'Finance Secretry Role'],
+            ['name' => 'secretry', 'description' => 'Secretry Role'],
+            ['name' => 'manager', 'description' => 'Manager Role'],
+            ['name' => 'librarian', 'description' => 'Librarian Role'],
+            ['name' => 'lawyer', 'description' => 'Lawyer Role'],
+            ['name' => 'vendor', 'description' => 'Vendor Role'],
         ]);
     }
 
