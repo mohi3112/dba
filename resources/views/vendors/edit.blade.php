@@ -1,14 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Vendors /</span> Edit Vendor</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
 <form method="POST" action="{{ route('vendors.update', $vendor->id) }}" id="formVendor">
     @csrf
     @method('PUT')
@@ -22,19 +14,34 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="first_name">first name <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="first_name" value="{{$vendor->first_name}}" name="first_name" class="form-control" placeholder="First name">
+                                <input type="text" id="first_name" value="{{$vendor->first_name}}" name="first_name" class="form-control @error('first_name') is-invalid @enderror" placeholder="First name">
+                                @error('first_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="last_name">last name <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="last_name" value="{{$vendor->last_name}}" name="last_name" class="form-control" placeholder="Last name">
+                                <input type="text" id="last_name" value="{{$vendor->last_name}}" name="last_name" class="form-control @error('last_name') is-invalid @enderror" placeholder="Last name">
+                                @error('last_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="father_first_name">father's first name <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="father_first_name" value="{{$vendor->father_first_name}}" name="father_first_name" class="form-control" placeholder="Father's first name">
+                                <input type="text" id="father_first_name" value="{{$vendor->father_first_name}}" name="father_first_name" class="form-control @error('father_first_name') is-invalid @enderror" placeholder="Father's first name">
+                                @error('father_first_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -60,7 +67,12 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="mobile">Mobile number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="mobile" name="mobile" class="form-control" value="{{$vendor->mobile}}" placeholder="Mobile number">
+                                <input type="text" id="mobile" name="mobile" class="form-control @error('mobile') is-invalid @enderror" value="{{$vendor->mobile}}" placeholder="Mobile number">
+                                @error('mobile')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -71,23 +83,38 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="business_name">Business name <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="business_name" name="business_name" value="{{$vendor->business_name}}" class="form-control" placeholder="Business name">
+                                <input type="text" id="business_name" name="business_name" value="{{$vendor->business_name}}" class="form-control @error('business_name') is-invalid @enderror" placeholder="Business name">
+                                @error('business_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="employees">Employees <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" name="employees" class="form-control" value="{{$vendor->employees}}" placeholder="Employees">
+                                <input type="text" name="employees" class="form-control @error('employees') is-invalid @enderror" value="{{$vendor->employees}}" placeholder="Employees">
+                                @error('employees')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
-                            <select name="location_id" class="select2 form-select">
+                            <select name="location_id" class="select2 form-select  @error('location_id') is-invalid @enderror">
                                 <option value="">Select Location (Shop number, Floor, Complex)</option>
                                 @foreach($activeLocations as $locationId => $location)
                                 <option value="{{$locationId}}" @if($vendor->location_id == $locationId) selected @endif>{{$location}}</option>
                                 @endforeach
                             </select>
+                            @error('location_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="showToastPlacement">&nbsp;</label>

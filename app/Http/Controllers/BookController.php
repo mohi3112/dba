@@ -60,7 +60,8 @@ class BookController extends Controller
     {
         $request->validate([
             'book_name' => 'required',
-            'book_author_name' => 'required'
+            'book_author_name' => 'required',
+            'book_licence_valid_upto' => 'required'
         ]);
 
         Book::create($request->all());
@@ -93,6 +94,7 @@ class BookController extends Controller
         $request->validate([
             'book_name' => 'required',
             'book_author_name' => 'required',
+            'book_licence_valid_upto' => 'required'
         ]);
 
         $book = Book::findOrFail($id);

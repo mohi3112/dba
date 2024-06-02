@@ -1,14 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Edit Lawyer</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
 <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
     @method('PUT')
@@ -40,7 +32,12 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="first_name" placeholder="First Name" name="first_name" value="{{$user->first_name}}" autofocus="">
+                            <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" placeholder="First Name" name="first_name" value="{{$user->first_name}}" autofocus="">
+                            @error('first_name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="middle_name" class="form-label">Middle Name <span>(Optional)</span></label>
@@ -52,7 +49,12 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="email" name="email" value="{{$user->email}}" placeholder="Email">
+                            <input class="form-control  @error('email') is-invalid @enderror" type="text" id="email" name="email" value="{{$user->email}}" placeholder="Email">
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="father_first_name" class="form-label">Father's First Name</label>
@@ -79,14 +81,24 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{$user->aadhaar_no}}" maxlength="12" class="form-control numeric-input" placeholder="Aadhaar number">
+                                <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{$user->aadhaar_no}}" maxlength="12" class="form-control numeric-input  @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
+                                @error('aadhaar_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="mobile1">Mobile <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
-                                <input type="text" id="mobile1" name="mobile1" value="{{$user->mobile1}}" maxlength="10" class="form-control numeric-input" placeholder="Mobile number">
+                                <input type="text" id="mobile1" name="mobile1" value="{{$user->mobile1}}" maxlength="10" class="form-control numeric-input @error('mobile1') is-invalid @enderror" placeholder="Mobile number">
+                                @error('mobile1')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">

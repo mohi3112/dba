@@ -1,14 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Roles /</span> Add Role</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
 <form method="POST" action="{{ route('role.store') }}" id="formRole">
     @csrf
     <div class="row">
@@ -20,7 +12,12 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="name" placeholder="First Name" name="name" value="" autofocus="">
+                            <input class="form-control @error('name') is-invalid @enderror" type="text" id="name" placeholder="First Name" name="name" value="{{ old('name') }}" autofocus="">
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="description">Description</label>

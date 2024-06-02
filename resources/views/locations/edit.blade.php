@@ -1,14 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Locations /</span> Edit Location</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
 <form method="POST" action="{{ route('locations.update', $location->id) }}" id="formLocation">
     @csrf
     @method('PUT')
@@ -22,13 +14,23 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="shop_number">Shop number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="shop_number" value="{{$location->shop_number}}" name="shop_number" class="form-control" placeholder="Shop number">
+                                <input type="text" id="shop_number" value="{{$location->shop_number}}" name="shop_number" class="form-control @error('shop_number') is-invalid @enderror" placeholder="Shop number">
+                                @error('shop_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="floor_number">Floor <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="floor_number" value="{{$location->floor_number}}" name="floor_number" class="form-control" placeholder="Floor">
+                                <input type="text" id="floor_number @error('floor_number') is-invalid @enderror" value="{{$location->floor_number}}" name="floor_number" class="form-control" placeholder="Floor">
+                                @error('floor_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -42,8 +44,13 @@
                             <label for="rent" class="form-label">Rent <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">₹</span>
-                                <input type="number" class="form-control" min="0" value="{{$location->rent}}" name="rent" placeholder="Rent">
+                                <input type="number" class="form-control @error('rent') is-invalid @enderror" min="0" value="{{$location->rent}}" name="rent" placeholder="Rent">
                                 <span class="input-group-text">.00</span>
+                                @error('rent')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                     </div>

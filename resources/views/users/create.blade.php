@@ -1,14 +1,6 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add Lawyer</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
 <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
     <div class="row">
@@ -39,60 +31,80 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="first_name" placeholder="First Name" name="first_name" value="" autofocus="">
+                            <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" placeholder="First Name" name="first_name" value="{{ old('first_name') }}" autofocus="">
+                            @error('first_name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="middle_name" class="form-label">Middle Name <span>(Optional)</span></label>
-                            <input class="form-control" type="text" name="middle_name" placeholder="Middle Name" id="middle_name" value="">
+                            <input class="form-control" type="text" name="middle_name" value="{{ old('middle_name') }}" placeholder="Middle Name" id="middle_name">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="lastName" class="form-label">Last Name</label>
-                            <input class="form-control" type="text" name="last_name" placeholder="Last name" id="lastName" value="">
+                            <input class="form-control" type="text" name="last_name" value="{{ old('last_name') }}" placeholder="Last name" id="lastName">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
-                            <input class="form-control" type="text" id="email" name="email" value="" placeholder="Email">
+                            <input class="form-control @error('email') is-invalid @enderror" type="text" id="email" name="email" value="{{ old('email') }}" placeholder="Email">
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="father_first_name" class="form-label">Father's First Name</label>
-                            <input class="form-control" type="text" id="father_first_name" placeholder="Father's first name" name="father_first_name" value="" autofocus="">
+                            <input class="form-control" type="text" id="father_first_name" placeholder="Father's first name" name="father_first_name" value="{{ old('father_first_name') }}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="father_last_name" class="form-label">Father's Last Name</label>
-                            <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" name="father_last_name" value="" autofocus="">
+                            <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" name="father_last_name" value="{{ old('father_last_name') }}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="dob">Date of Birth <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input class="form-control" type="date" name="dob" value="">
+                                <input class="form-control" type="date" name="dob" value="{{ old('dob') }}">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="gender" class="form-label">Gender</label>
                             <select id="gender" name="gender" class="select2 form-select">
                                 @foreach(\App\Models\User::$genders as $key => $gender)
-                                <option value="{{$key}}">{{$gender}}</option>
+                                <option value="{{$key}}" {{ old('gender') == $key ? 'selected' : '' }} >{{$gender}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="aadhaar_no" name="aadhaar_no" maxlength="12" class="form-control numeric-input" placeholder="Aadhaar number">
+                                <input type="text" id="aadhaar_no" name="aadhaar_no" maxlength="12" value="{{ old('aadhaar_no') }}" class="form-control numeric-input @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
+                                @error('aadhaar_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="mobile1">Mobile <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
-                                <input type="text" id="mobile1" name="mobile1" maxlength="10" class="form-control numeric-input" placeholder="Mobile number">
+                                <input type="text" id="mobile1" name="mobile1" maxlength="10" value="{{ old('mobile1') }}" class="form-control numeric-input @error('mobile1') is-invalid @enderror" placeholder="Mobile number">
+                                @error('mobile1')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="mobile2">Alternate Mobile <span>(Optional)</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
-                                <input type="text" id="mobile2" name="mobile2" maxlength="10" class="form-control numeric-input" placeholder="Alternate mobile number">
+                                <input type="text" id="mobile2" name="mobile2" maxlength="10" value="{{ old('mobile2') }}" class="form-control numeric-input" placeholder="Alternate mobile number">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -100,29 +112,29 @@
                             <select id="designation" name="designation" class="select2 form-select">
                                 <option value="">Select Designation</option>
                                 @foreach(\App\Models\User::$designations as $key => $designation)
-                                <option value="{{$key}}">{{$designation}}</option>
+                                <option value="{{$key}}" {{ old('designation') == $key ? 'selected' : '' }}>{{$designation}}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="degrees" class="form-label">Degrees</label>
-                            <input type="text" class="form-control" placeholder="Degrees" id="degrees" name="degrees" value="">
+                            <input type="text" class="form-control" placeholder="Degrees" value="{{ old('degrees') }}" id="degrees" name="degrees">
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="chamber_number" class="form-label">Chamber Number</label>
-                            <input type="text" class="form-control" placeholder="Chamber number" id="chamber_number" name="chamber_number" value="">
+                            <input type="text" class="form-control" placeholder="Chamber number" value="{{ old('chamber_number') }}" id="chamber_number" name="chamber_number">
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="address">Residence Address</label>
-                            <textarea class="form-control" id="address" name="address" placeholder="Residence address"></textarea>
+                            <textarea class="form-control" id="address" name="address" placeholder="Residence address"> {{ old('address') }} </textarea>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="other_details">Other details</label>
-                            <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details"></textarea>
+                            <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details"> {{ old('other_details') }} </textarea>
                         </div>
 
                         @if(auth()->user()->hasRole('superadmin'))
@@ -131,7 +143,7 @@
                             <select id="user_role" name="user_role" class="select2 form-select">
                                 <option value="">Select Role</option>
                                 @foreach(\App\Models\User::$userRoles as $key => $userRole)
-                                <option value="{{$key}}">{{$userRole}}</option>
+                                <option value="{{$key}}" {{ old('user_role') == $key ? 'selected' : '' }}>{{$userRole}}</option>
                                 @endforeach
                             </select>
                         </div>

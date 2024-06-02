@@ -35,14 +35,16 @@ class User extends Authenticatable
     ];
 
     // Define static array for designation
+    // Note: the keys are exists same in DB
     public static $designations = [
-        1 => 'Lawyer/Attorney',
-        2 => 'Legal Secretary',
-        3 => 'Paralegal',
-        4 => 'Legal Assistant',
-        5 => 'Legal Clerk',
-        6 => 'Legal Intern',
-        7 => 'Legal Researcher',
+        2 => 'President',
+        3 => 'Vice President',
+        4 => 'Finance Secretry',
+        5 => 'Secretry',
+        6 => 'Manager',
+        7 => 'Librarian',
+        8 => 'Lawyer',
+        9 => 'Vendor',
     ];
 
     // Define static array for userRoles
