@@ -93,11 +93,11 @@
                                                         </li>
                                                         @if(auth()->user()->hasRole('superadmin'))
                                                         <li class="list-group-item">
-                                                            <label for=""> Role: </label> <span> {{ \App\Models\User::$userRoles[$user->roles->first()->pivot->role_id] }} </span>
+                                                            <label for=""> Role: </label> <span> {{ \App\Models\User::$designationRoles[$user->roles->first()->pivot->role_id] ?? '' }} </span>
                                                         </li>
                                                         @endif
                                                         <li class="list-group-item">
-                                                            <label for=""> Designation: </label> <span> {{ ($user->designation) ? \App\Models\User::$designations[$user->designation] : '' }} </span>
+                                                            <label for=""> Designation: </label> <span> {{ ($user->designation) ? \App\Models\User::$designationRoles[$user->designation] : '' }} </span>
                                                         </li>
                                                     </ul>
                                                 </div>

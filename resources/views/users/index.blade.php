@@ -36,7 +36,7 @@
                     <label for="designation" class="form-label">Designation</label>
                     <select id="designation" name="designation" class="select2 form-select">
                         <option value="">Select Designation</option>
-                        @foreach(\App\Models\User::$designations as $key => $designation)
+                        @foreach(\App\Models\User::$designationRoles as $key => $designation)
                         <option value="{{$key}}" @if(@$_GET['designation']==$key) selected @endif>{{$designation}}</option>
                         @endforeach
                     </select>
@@ -138,7 +138,7 @@
                         <td> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }}</td>
                         <td> {{ ($user->gender) ? \App\Models\User::$genders[$user->gender] : '--' }} </td>
                         <td>
-                            {{ \App\Models\User::$designations[$user->designation] ?? '--' }}
+                            {{ \App\Models\User::$designationRoles[$user->designation] ?? '--' }}
                         </td>
                         <td>
                             @if($user->status == 1)

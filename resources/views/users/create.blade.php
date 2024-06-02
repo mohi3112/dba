@@ -111,7 +111,7 @@
                             <label for="designation" class="form-label">Designation</label>
                             <select id="designation" name="designation" class="select2 form-select">
                                 <option value="">Select Designation</option>
-                                @foreach(\App\Models\User::$designations as $key => $designation)
+                                @foreach(\App\Models\User::$designationRoles as $key => $designation)
                                 <option value="{{$key}}" {{ old('designation') == $key ? 'selected' : '' }}>{{$designation}}</option>
                                 @endforeach
                             </select>
@@ -142,7 +142,7 @@
                             <label for="user_role" class="form-label">User Role</label>
                             <select id="user_role" name="user_role" class="select2 form-select">
                                 <option value="">Select Role</option>
-                                @foreach(\App\Models\User::$userRoles as $key => $userRole)
+                                @foreach(\App\Models\User::$designationRoles as $key => $userRole)
                                 <option value="{{$key}}" {{ old('user_role') == $key ? 'selected' : '' }}>{{$userRole}}</option>
                                 @endforeach
                             </select>

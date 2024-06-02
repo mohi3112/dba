@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     // Define static array for designation
     // Note: the keys are exists same in DB
-    public static $designations = [
+    public static $designationRoles = [
         2 => 'President',
         3 => 'Vice President',
         4 => 'Finance Secretry',
@@ -45,13 +45,6 @@ class User extends Authenticatable
         7 => 'Librarian',
         8 => 'Lawyer',
         9 => 'Vendor',
-    ];
-
-    // Define static array for userRoles
-    public static $userRoles = [
-        1 => 'Super Admin',
-        2 => 'Admin',
-        3 => 'Lawyer User',
     ];
 
     /**
