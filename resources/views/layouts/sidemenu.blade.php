@@ -58,6 +58,27 @@
 
         <!-- Layouts -->
 
+        <!-- Start locations -->
+        <li class="menu-item {{ request()->is('account*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="account">Account Settings</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('account') ? 'active' : '' }}">
+                    <a href="{{route('account')}}" class="menu-link">
+                        <div data-i18n="account">Account</div>
+                    </a>
+                </li>
+                <!-- <li class="menu-item {{ request()->is('locations/add') ? 'active' : '' }}">
+                    <a href="{{route('locations.add')}}" class="menu-link">
+                        <div data-i18n="Add location">Add Location</div>
+                    </a>
+                </li> -->
+            </ul>
+        </li>
+        <!-- End locations -->
+
         <!-- Start roles -->
         @if(auth()->user()->hasRole('superadmin'))
         <li class="menu-item {{ request()->is('role*') ? 'active open' : '' }}">

@@ -126,7 +126,7 @@ class UserController extends Controller
                 $request->merge(['is_physically_disabled' => false]);
             }
             // Handle user role
-            $userRole = $request->input('user_role') ?? 3; //Assign default user/lawyer role (role_id 3)
+            $userRole = $request->input('user_role') ?? User::DESIGNATION_LAWYER; //Assign default user/lawyer role (role_id 3)
 
             // Create the user
             $user = User::create($request->all());
@@ -204,6 +204,14 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return view('users.edit', compact('user'));
+    }
+
+    // Show the form for editing the specified resource.
+    public function myAccount()
+    {
+        $userId = Auth::id();
+        $user = User::find($userId);
+        return view('users.myAccount', compact('user'));
     }
 
     // Update the specified resource in storage.

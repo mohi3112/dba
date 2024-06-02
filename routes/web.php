@@ -106,7 +106,8 @@ Route::middleware('auth')->group(function () {
     Route::get('vendor/edit/{id}', [VendorController::class, 'edit'])->name('vendors.edit');
     Route::put('vendors/update/{id}', [VendorController::class, 'update'])->name('vendors.update');
     Route::post('vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
-
+    
+    Route::get('account', [UserController::class, 'myAccount'])->name('account');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

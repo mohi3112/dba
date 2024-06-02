@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\User;
+use App\Models\User;
+use App\Models\UserUpdateRequest;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,9 +51,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'gender' => ['required'],
+            'designation' => ['required'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
 
@@ -64,10 +68,29 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        $payload = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'gender' => $data['gender'],
             'email' => $data['email'],
+            'account_approved' => 0,
+            'status' => User::STATUS_ACTIVE,
             'password' => Hash::make($data['password']),
-        ]);
+        ];
+
+        // create user
+        $user = User::create($payload);
+
+        // attach role
+        $user->roles()->attach($data['designation']);
+
+        // user submitted for approval
+        $payload['user_id'] = $user->id;
+        $payload['changes_requested_by'] = $user->id;
+
+        // user submitted for approval
+        UserUpdateRequest::create($payload);
+
+        return $user;
     }
 }

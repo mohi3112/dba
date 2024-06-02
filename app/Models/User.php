@@ -20,9 +20,11 @@ class User extends Authenticatable
         3 => 'Other'
     ];
 
+    // Define constants for status
     const STATUS_ACTIVE = 1;
     const STATUS_IN_ACTIVE = 2;
 
+    // Define static array for status
     public static $statuses = [
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_IN_ACTIVE => 'In-active'
@@ -34,17 +36,27 @@ class User extends Authenticatable
         'lt' => 'Less Then'
     ];
 
+    // Define constants for deisgnations/Roles
+    const DESIGNATION_PRESIDENT = 2;
+    const DESIGNATION_VICE_PRESIDENT = 3;
+    const DESIGNATION_FINANCE_SECRETARY = 4;
+    const DESIGNATION_SECRETARY = 5;
+    const DESIGNATION_MANAGER = 6;
+    const DESIGNATION_LIBRARIAN = 7;
+    const DESIGNATION_LAWYER = 8;
+    const DESIGNATION_VENDOR = 9;
+
     // Define static array for designation
     // Note: the keys are exists same in DB
     public static $designationRoles = [
-        2 => 'President',
-        3 => 'Vice President',
-        4 => 'Finance Secretry',
-        5 => 'Secretry',
-        6 => 'Manager',
-        7 => 'Librarian',
-        8 => 'Lawyer',
-        9 => 'Vendor',
+        self::DESIGNATION_PRESIDENT => 'President',
+        self::DESIGNATION_VICE_PRESIDENT => 'Vice President',
+        self::DESIGNATION_FINANCE_SECRETARY => 'Finance Secretry',
+        self::DESIGNATION_SECRETARY => 'Secretry',
+        self::DESIGNATION_MANAGER => 'Manager',
+        self::DESIGNATION_LIBRARIAN => 'Librarian',
+        self::DESIGNATION_LAWYER => 'Lawyer',
+        self::DESIGNATION_VENDOR => 'Vendor',
     ];
 
     /**
@@ -74,6 +86,9 @@ class User extends Authenticatable
         "is_deceased",
         "is_physically_disabled",
         "other_details",
+        "account_approved",
+        "account_modified",
+        "password"
     ];
 
     /**
