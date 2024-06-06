@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\BooksCategory;
 use App\Models\IssuedBook;
 use App\Services\LawyerService;
 use Illuminate\Http\Request;
@@ -37,7 +38,9 @@ class BookController extends Controller
 
         $activeLawyers = $this->lawyerService->getActiveLawyers();
 
-        return view('books.index', compact('books', 'activeLawyers'));
+        $categories = self::getCategoriesList();
+
+        return view('books.index', compact('books', 'activeLawyers', 'categories'));
     }
 
     /**
@@ -47,7 +50,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('books.create');
+        $categories = self::getCategoriesList();
+
+        return view('books.create', compact('categories'));
     }
 
     /**
@@ -59,6 +64,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'book_category_id' => 'required',
             'book_name' => 'required',
             'book_author_name' => 'required',
             'book_licence_valid_upto' => 'required'
@@ -79,7 +85,9 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
 
-        return view('books.edit', compact('book'));
+        $categories = self::getCategoriesList();
+
+        return view('books.edit', compact('book', 'categories'));
     }
 
     /**
@@ -103,6 +111,10 @@ class BookController extends Controller
         $book->book_licence = $request->book_licence;
         $book->book_licence_valid_upto = $request->book_licence_valid_upto;
         $book->available = $request->available;
+        $book->book_category_id = $request->book_category_id;
+        $book->book_volume = $request->book_volume;
+        $book->publish_date = $request->publish_date;
+        $book->price = $request->price;
         $book->save();
 
         return redirect()->route('books')->with('success', 'Book updated successfully.');
@@ -125,6 +137,7 @@ class BookController extends Controller
     public function issueBook(Request $request)
     {
         $request->validate([
+            'book_category_id' => 'required',
             'book_id' => 'required|exists:books,id',
             'user_id' => 'required|exists:users,id',
             'issue_date' => 'required|date',
@@ -175,5 +188,10 @@ class BookController extends Controller
             // ->whereNull('return_date')
             ->orderBy('return_date', 'asc')->paginate(10);
         return view('books.issuedBooks', compact('issuedBooks'));
+    }
+
+    public function getCategoriesList()
+    {
+        return BooksCategory::pluck('category_name', 'id');
     }
 }

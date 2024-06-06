@@ -11,8 +11,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label for="book_name" class="form-label">Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control  @error('book_name') is-invalid @enderror" placeholder="Book Name" id="book_name" value="{{ old('book_name') }}" name="book_name">
+                            <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select id="category" name="book_category_id" class="select2 form-select @error('book_category_id') is-invalid @enderror">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $categoryId => $categoryName)
+                                <option value="{{$categoryId}}" {{ old('book_category_id') == $categoryId ? 'selected' : ''}}>{{$categoryName}}</option>
+                                @endforeach
+                            </select>
+                            @error('book_category_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class=" mb-3 col-md-6">
+                            <label for="book_name" class="form-label">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('book_name') is-invalid @enderror" placeholder="Book Name" id="book_name" value="{{ old('book_name') }}" name="book_name">
                             @error('book_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -29,6 +43,14 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label for="price" class="form-label">price </label>
+                            <input type="number" class="form-control" placeholder="Price" id="price" value="{{ old('price') }}" name="price">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="book_volume" class="form-label">Book Volume</label>
+                            <input type="text" class="form-control" placeholder="Book Volume" id="book_volume" value="{{ old('book_volume') }}" name="book_volume">
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label for="book_licence" class="form-label">Licence</label>
                             <input type="text" class="form-control" placeholder="Book Licence" id="book_licence" value="{{ old('book_licence') }}" name="book_licence">
                         </div>
@@ -37,6 +59,17 @@
                             <div class="input-group input-group-merge">
                                 <input class="form-control @error('book_licence_valid_upto') is-invalid @enderror" type="date" value="{{ old('book_licence_valid_upto') }}" name="book_licence_valid_upto">
                                 @error('book_licence_valid_upto')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="publish_date">Publish Date </label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control @error('publish_date') is-invalid @enderror" type="date" value="{{ old('publish_date') }}" name="publish_date">
+                                @error('publish_date')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

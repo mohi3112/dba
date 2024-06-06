@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BooksCategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserRoleController;
@@ -65,6 +66,15 @@ Route::middleware('auth')->group(function () {
     Route::get('role/edit/{id}', [UserRoleController::class, 'edit'])->name('roles.edit');
     Route::put('roles/update/{id}', [UserRoleController::class, 'update'])->name('roles.update');
 
+    // Routes for Book categoris
+    Route::get('bookCatgories', [BooksCategoryController::class, 'index'])->name('bookCatgories');
+    Route::get('bookCatgory/{id}', [BooksCategoryController::class, 'show'])->name('bookCatgory.view');
+    Route::get('bookCatgories/add', [BooksCategoryController::class, 'create'])->name('bookCatgories.add');
+    Route::post('bookCatgory/store',  [BooksCategoryController::class, 'store'])->name('bookCatgory.store');
+    Route::get('bookCatgory/edit/{id}', [BooksCategoryController::class, 'edit'])->name('bookCatgories.edit');
+    Route::put('bookCatgories/update/{id}', [BooksCategoryController::class, 'update'])->name('bookCatgories.update');
+    Route::post('bookCatgory/{id}', [BooksCategoryController::class, 'destroy'])->name('bookCatgories.destroy');
+
     // Routes for Books
     Route::get('books', [BookController::class, 'index'])->name('books');
     Route::get('book/{id}', [BookController::class, 'show'])->name('book.view');
@@ -106,7 +116,7 @@ Route::middleware('auth')->group(function () {
     Route::get('vendor/edit/{id}', [VendorController::class, 'edit'])->name('vendors.edit');
     Route::put('vendors/update/{id}', [VendorController::class, 'update'])->name('vendors.update');
     Route::post('vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
-    
+
     Route::get('account', [UserController::class, 'myAccount'])->name('account');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

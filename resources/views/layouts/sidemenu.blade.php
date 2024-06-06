@@ -171,7 +171,28 @@
         <!-- End vendors -->
 
         <!-- Start Books -->
-        <li class="menu-item {{ request()->is('book*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->is('bookCatgor*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="bookCatgories">Books Catgory</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('bookCatgories') ? 'active' : '' }}">
+                    <a href="{{route('bookCatgories')}}" class="menu-link">
+                        <div data-i18n="bookCatgories">All Books Catgories</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('bookCatgories/add') ? 'active' : '' }}">
+                    <a href="{{route('bookCatgories.add')}}" class="menu-link">
+                        <div data-i18n="Add bookCatgories">Add Books Catgory</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Books -->
+
+        <!-- Start Books -->
+        <li class="menu-item {{ request()->is('books*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="books">Books</div>

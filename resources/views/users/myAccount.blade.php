@@ -4,11 +4,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-pills flex-column flex-md-row mb-3">
+        <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
             <li class="nav-item">
                 <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Account</a>
             </li>
-        </ul>
+        </ul> -->
         <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
             @csrf
             @method('PUT')

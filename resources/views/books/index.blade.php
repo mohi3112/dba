@@ -21,10 +21,12 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Book Name</th>
+                    <th>Category Name</th>
                     <th>Author Name</th>
                     <th>Licence</th>
                     <th>Available</th>
-                    <th>Issue Book</th>
+                    <th>Published On</th>
+                    <!-- <th>Issue Book</th> -->
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -43,15 +45,17 @@
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $book->book_name }} </td>
+                    <td> {{ $categories[$book->book_category_id] }} </td>
                     <td> {{ $book->book_author_name }} </td>
                     <td> {{ $book->book_licence }} </td>
                     <td> <span class='badge {{ $class }} me-1'>{{ $available }}</span> </td>
                     <td>
-                        @if($book->isLastIssuedBookReturned)
+                        {{ \Carbon\Carbon::parse($book->publish_date)->format('d-M-Y') }}
+                        {{-- @if($book->isLastIssuedBookReturned)
                         <a class="btn btn-primary issue-book" data-book-id="{{ $book->id }}" href="#">Issue Book</a>
                         @else
                         <a class="btn btn-secondary" href="#">Not Available</a>
-                        @endif
+                        @endif --}}
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
@@ -67,6 +71,14 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="nameWithTitle" class="form-label">Category Name:</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{ $categories[$book->book_category_id] }}
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label for="nameWithTitle" class="form-label">Book Name:</label>
@@ -85,6 +97,22 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
+                                                    <label for="nameWithTitle" class="form-label">Price:</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{ $book->price }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="nameWithTitle" class="form-label">Book Volume:</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{ $book->book_volume }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
                                                     <label for="nameWithTitle" class="form-label">Book Licence:</label>
                                                 </div>
                                                 <div class="col-md-8">
@@ -97,6 +125,14 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     {{ \Carbon\Carbon::parse($book->book_licence_valid_upto)->format('d-M-Y') }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="nameWithTitle" class="form-label">Publish Date:</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    {{ \Carbon\Carbon::parse($book->publish_date)->format('d-M-Y') }}
                                                 </div>
                                             </div>
                                         </div>
