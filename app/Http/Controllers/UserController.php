@@ -275,6 +275,7 @@ class UserController extends Controller
             $user->designation = $request->input('designation');
             $user->degrees = $request->input('degrees');
             $user->address = $request->input('address');
+            $user->other_details = $request->input('other_details');
             $user->status = $request->input('status');
             $user->chamber_number = $request->input('chamber_number');
             $user->status = $request->input('status');
@@ -325,7 +326,7 @@ class UserController extends Controller
             // Commit the transaction
             DB::commit();
 
-            return redirect()->route('users')->with('success', 'User updated successfully.');
+            return redirect()->back()->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             // Rollback the transaction on error
             DB::rollback();

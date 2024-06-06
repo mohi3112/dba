@@ -8,9 +8,6 @@
             <li class="nav-item">
                 <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Account</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"><i class="bx bx-bell me-1"></i> Uploaded Documents</a>
-            </li>
         </ul>
         <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
             @csrf
@@ -19,20 +16,47 @@
                 <h5 class="card-header">Edit Profile Details</h5>
                 <div class="card-body">
                     <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        <img src="{{ asset('images/user.webp') }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                        @php
+                        $profilePicture = asset('images/user.webp');
+                        if($user->picture){
+                        $profilePicture = "data:image/jpeg;base64,".$user->picture;
+                        }
+                        @endphp
+                        <img src="{{ $profilePicture }}" alt="user-avatar" data-bs-toggle="modal" data-bs-target="#profilePictureModal" class="d-block rounded" height="100" width="100" style="cursor: pointer;" id="uploadedAvatar">
                         <div class="button-wrapper">
-                            <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                            <label for="profilePicture" class="btn btn-primary me-2 mb-4" tabindex="0">
                                 <span class="d-none d-sm-block">Upload new photo</span>
                                 <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                                <input type="file" id="profilePicture" name="image" class="account-file-input" hidden="" accept="image/png, image/jpeg">
                             </label>
-                            <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                            <button type="button" id="resetButton" class="btn btn-outline-secondary account-image-reset mb-4">
                                 <i class="bx bx-reset d-block d-sm-none"></i>
                                 <span class="d-none d-sm-block">Reset</span>
                             </button>
 
                             <p class="text-muted mb-0">Allowed JPG, GIF or PNG.</p>
                         </div>
+
+                        @if($user->picture)
+                        <!-- Modal -->
+                        <div class="modal fade" id="profilePictureModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <img src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 750px;">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button type="button" parent-btn="#profilePictureModal" data-url="delete-lawyer-image" data-image-id="{{ $user->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        @endif
+
                     </div>
                 </div>
                 <hr class="my-0">
@@ -191,34 +215,6 @@
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label for="image" class="form-label">Picture</label>
-                            <div class="input-group">
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                            </div>
-                            @if($user->picture)
-                            <div class="d-flex justify-content-end pt-1">
-                                <span type="button" class="text-danger" data-bs-toggle="modal" data-bs-target="#profilePictureModal">Check Uploaded Picture</span>
-                            </div>
-                            <!-- Modal -->
-                            <div class="modal fade" id="profilePictureModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-body">
-                                            <img src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 750px;">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                                Close
-                                            </button>
-                                            <button type="button" parent-btn="#profilePictureModal" data-url="delete-lawyer-image" data-image-id="{{ $user->id }}" class="btn btn-danger delete-image">Delete Image</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal -->
-                            @endif
-                        </div>
-                        <div class="mb-3 col-md-6">
                             <label for="address_proof" class="form-label">Address proof (Images)</label>
                             <div class="input-group">
                                 <input type="file" class="form-control" id="address_proof" name="address_proofs[]" multiple accept="image/*">
@@ -226,28 +222,30 @@
                             @if($user->address_proof->count() > 0)
                             <div class="d-flex justify-content-end pt-1">
                                 @php($i=1)
-                                @foreach($user->address_proof as $proof)
-                                <span type="button" class="text-danger pl-2" data-bs-toggle="modal" data-bs-target="#addressProofModal{{ $proof->id }}">Check Uploaded Document - {{ $i }}</span>
+                                <div class="demo-inline-spacing">
+                                    @foreach($user->address_proof as $proof)
+                                    <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#addressProofModal{{ $proof->id }}">Uploaded Document - {{ $i }}</span>
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="addressProofModal{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body">
-                                                <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button type="button" parent-btn="#addressProofModal{{ $proof->id }}" data-url="delete-address-proof-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="addressProofModal{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="button" parent-btn="#addressProofModal{{ $proof->id }}" data-url="delete-address-proof-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Modal -->
+                                    @php($i++)
+                                    @endforeach
                                 </div>
-                                <!-- Modal -->
-                                @php($i++)
-                                @endforeach
                             </div>
                             @endif
                         </div>
@@ -259,28 +257,30 @@
                             @if($user->degree_images->count() > 0)
                             <div class="d-flex justify-content-end pt-1">
                                 @php($j=1)
-                                @foreach($user->degree_images as $proof)
-                                <span type="button" class="text-danger pl-2" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Check Uploaded Document - {{ $j }}</span>
+                                <div class="demo-inline-spacing">
+                                    @foreach($user->degree_images as $proof)
+                                    <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Uploaded Document - {{ $j }}</span>
 
-                                <!-- Modal -->
-                                <div class="modal fade" id="lawyerDegreeProof{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-body">
-                                                <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button type="button" parent-btn="#lawyerDegreeProof{{ $proof->id }}" data-url="delete-degree-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="lawyerDegreeProof{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                        <div class="modal-dialog modal-lg" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <img src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 750px;">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <button type="button" parent-btn="#lawyerDegreeProof{{ $proof->id }}" data-url="delete-degree-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Modal -->
+                                    @php($j++)
+                                    @endforeach
                                 </div>
-                                <!-- Modal -->
-                                @php($j++)
-                                @endforeach
                             </div>
                             @endif
                         </div>
@@ -310,6 +310,10 @@
 
             // Update input value
             $(this).val(numericValue);
+        });
+
+        document.getElementById('resetButton').addEventListener('click', function() {
+            document.getElementById('profilePicture').value = '';
         });
 
         $('.delete-image').click(function() {
