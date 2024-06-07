@@ -9,7 +9,18 @@ class LawyerService
     public function getActiveLawyers($onlyActive = true)
     {
         $lawyers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'user');
+            $query->whereIn(
+                'id',
+                [
+                    User::DESIGNATION_PRESIDENT,
+                    User::DESIGNATION_VICE_PRESIDENT,
+                    User::DESIGNATION_FINANCE_SECRETARY,
+                    User::DESIGNATION_SECRETARY,
+                    User::DESIGNATION_MANAGER,
+                    User::DESIGNATION_LIBRARIAN,
+                    User::DESIGNATION_LAWYER
+                ]
+            );
         });
 
         if ($onlyActive) {

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -423,5 +424,42 @@ class UserController extends Controller
         $users = $usersQuery->paginate(10);
 
         return view('users.telephone-directory', compact('users'));
+    }
+
+    public function votingList(Request $request)
+    {
+        // Get today's date
+        $today = Carbon::today();
+
+        $usersQuery = User::whereHas('subscriptions', function ($query) use ($today) {
+            $query->whereNotNull('end_date')
+                ->where('end_date', '>', $today);
+        })->select('id', 'first_name', 'middle_name', 'last_name', 'aadhaar_no', 'status', 'is_deceased');
+
+        if ($request->filled('name')) {
+            $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('l_name')) {
+            $usersQuery->where('last_name', 'like', '%' . $request->l_name . '%');
+        }
+
+        if ($request->filled('aadhaarNo')) {
+            $usersQuery->where('aadhaar_no', 'like', '%' . $request->aadhaarNo . '%');
+        }
+
+        if (count($_GET) > 0 && !$request->filled('is_active')) {
+            $usersQuery->where('status', User::STATUS_IN_ACTIVE);
+        } else {
+            $usersQuery->statusActive();
+        }
+
+        if ($request->filled('is_deceased')) {
+            $usersQuery->where('is_deceased', true);
+        }
+
+        $users = $usersQuery->paginate(10);
+
+        return view('users.voting-list', compact('users'));
     }
 }

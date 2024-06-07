@@ -145,6 +145,11 @@
                         <div data-i18n="telephone-directory">Telephone Directory</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('lawyers/voting-list') ? 'active' : '' }}">
+                    <a href="{{route('users.voting-list')}}" class="menu-link">
+                        <div data-i18n="voting-list">Voting List</div>
+                    </a>
+                </li>
             </ul>
         </li>
         <!-- End Lawyers -->
@@ -250,7 +255,7 @@
                 </li>
                 <li class="menu-item {{ request()->is('subscriptions/add') ? 'active' : '' }}">
                     <a href="{{route('subscriptions.add')}}" class="menu-link">
-                        <div data-i18n="Add subscriptions">Add subscriptions</div>
+                        <div data-i18n="Add subscriptions">Add Subscriptions</div>
                     </a>
                 </li>
             </ul>

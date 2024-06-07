@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('lawyer/{id}', [UserController::class, 'show'])->name('user.view');
     Route::get('lawyers/telephone-directory', [UserController::class, 'telephoneDirectory'])->name('users.telephone-directory');
     Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
+    Route::get('lawyers/voting-list', [UserController::class, 'votingList'])->name('users.voting-list');
 
     // Routes for Address Proof
     Route::delete('delete-address-proof-image/{id}', [UserController::class, 'deleteAddressProofImage'])->name('delete-address-proof-image');

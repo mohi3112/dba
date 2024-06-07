@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
 
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Telephone Directory</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Voting List</h4>
+
 @if(session('success'))
 <div class="alert alert-success alert-dismissible" role="alert">
     {{ session('success') }}
@@ -27,6 +28,13 @@
                     </div>
                 </div>
 
+                <div class="col-md-3">
+                    <label for="aadhaarNo" class="form-label">Aadhaar No</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="aadhaarNo" value="{{@$_GET['aadhaarNo']}}">
+                    </div>
+                </div>
+
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
@@ -40,14 +48,6 @@
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
                         <input class="form-check-input" name="is_deceased" type="checkbox" id="flexSwitchCheckDeceased" {{ (count($_GET) > 0 && isset($_GET['is_deceased'])) ? "checked" : "" }}>
                         <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 25%;">
-                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                        <input class="form-check-input" name="is_physically_disabled" type="checkbox" id="flexSwitchCheckPhysicallyDisabled" {{ (count($_GET) > 0 && isset($_GET['is_physically_disabled'])) ? "checked" : "" }}>
-                        <label class="form-check-label" for="flexSwitchCheckPhysicallyDisabled">Physically Disabled</label>
                     </div>
                 </div>
 
@@ -73,10 +73,9 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Name</th>
-                    <th>Mobile (Alternate Number)</th>
+                    <th>Aadhaar No</th>
                     <th>Status</th>
                     <th>Deceased</th>
-                    <th>Handicaped</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -92,10 +91,7 @@
                             </a>
                         </td>
                         <td>
-                            {{ $user->mobile1 ?? NULL }}
-                            @if($user->mobile2)
-                            ({{$user->mobile2}})
-                            @endif
+                            {{ $user->aadhaar_no ?? NULL }}
                         </td>
                         <td>
                             @if($user->status == 1)
@@ -105,7 +101,6 @@
                             @endif
                         </td>
                         <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
-                        <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
                     </tr>
                 <?php
                     $i++;
