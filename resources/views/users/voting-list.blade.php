@@ -12,7 +12,7 @@
 <div class="card mb-4">
     <h5 class="card-header">Filters</h5>
     <div class="card-body">
-        <form method="GET" action="{{ route('users.telephone-directory') }}">
+        <form method="GET" action="{{ route('users.voting-list') }}">
             <div class="row gx-3 gy-2 align-items-center">
                 <div class="col-md-3">
                     <label for="name" class="form-label">First Name</label>
@@ -58,7 +58,7 @@
 
                 <div class="col-md-1 ml-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                    <a href="{{ route('users.telephone-directory') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('users.voting-list') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
