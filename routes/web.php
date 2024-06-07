@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BooksCategoryController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserRoleController;
@@ -28,11 +29,9 @@ Auth::routes();
 Route::get('/', 'Auth\LoginController@showLoginForm');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/home', 'HomeController@index')->name('dashboard');
+    Route::get('/home', [HomeController::class, 'index'])->name('dashboard');
 
     // Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-    // Route::resource('users', 'UserController');
-
     // Routes for Lawyer / User
     Route::get('lawyers', [UserController::class, 'index'])->name('users');
     Route::get('lawyers/add', [UserController::class, 'create'])->name('users.add');
