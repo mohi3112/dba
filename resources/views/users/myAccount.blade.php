@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account </h4>
-
+@php
+$disabled = "";
+if(isset($user->latestUpdateRequest) && $user->latestUpdateRequest->approved_by_secretary == 1 && $user->latestUpdateRequest->approved_by_president == 0) {
+$disabled = "disabled";
+}
+@endphp
 <div class="row">
     <div class="col-md-12">
         <!-- <ul class="nav nav-pills flex-column flex-md-row mb-3">
@@ -9,17 +14,22 @@
                 <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Account</a>
             </li>
         </ul> -->
-        <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
+        <form method="POST" action="{{ route('users.update', $user['id']) }}" enctype="multipart/form-data" id="formUserAccount">
             @csrf
             @method('PUT')
             <div class="card mb-4">
                 <h5 class="card-header">Edit Profile Details</h5>
+                @if($user['account_modified'])
+                <div class="alert alert-warning" role="alert">Your profile is under review!</div>
+                @else
+                <div class="alert alert-info" role="alert">Note: Any updates or changes to your profile will require a review.</div>
+                @endif
                 <div class="card-body">
                     <div class="d-flex align-items-start align-items-sm-center gap-4">
                         @php
                         $profilePicture = asset('images/user.webp');
-                        if($user->picture){
-                        $profilePicture = "data:image/jpeg;base64,".$user->picture;
+                        if($user['picture']){
+                        $profilePicture = "data:image/jpeg;base64,".$user['picture'];
                         }
                         @endphp
                         <img src="{{ $profilePicture }}" alt="user-avatar" data-bs-toggle="modal" data-bs-target="#profilePictureModal" class="d-block rounded" height="100" width="100" style="cursor: pointer;" id="uploadedAvatar">
@@ -27,7 +37,7 @@
                             <label for="profilePicture" class="btn btn-primary me-2 mb-4" tabindex="0">
                                 <span class="d-none d-sm-block">Upload new photo</span>
                                 <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file" id="profilePicture" name="image" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                                <input type="file" id="profilePicture" {{$disabled}} name="image" class="account-file-input" hidden="" accept="image/png, image/jpeg">
                             </label>
                             <button type="button" id="resetButton" class="btn btn-outline-secondary account-image-reset mb-4">
                                 <i class="bx bx-reset d-block d-sm-none"></i>
@@ -37,19 +47,19 @@
                             <p class="text-muted mb-0">Allowed JPG, GIF or PNG.</p>
                         </div>
 
-                        @if($user->picture)
+                        @if($user['picture'])
                         <!-- Modal -->
                         <div class="modal fade" id="profilePictureModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        <img src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 750px;">
+                                        <img src="data:image/jpeg;base64,{{ $user['picture'] }}" alt="Description of Image" style="max-width: 750px;">
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                             Close
                                         </button>
-                                        <button type="button" parent-btn="#profilePictureModal" data-url="delete-lawyer-image" data-image-id="{{ $user->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                        <button type="button" parent-btn="#profilePictureModal" data-url="delete-lawyer-image" data-image-id="{{ $user['id'] }}" class="btn btn-danger delete-image">Delete Image</button>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +74,7 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
-                            <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" placeholder="First Name" name="first_name" value="{{$user->first_name}}" autofocus="">
+                            <input class="form-control @error('first_name') is-invalid @enderror" type="text" id="first_name" placeholder="First Name" {{$disabled}} name="first_name" value="{{$user['first_name']}}" autofocus="">
                             @error('first_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -73,15 +83,15 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="middle_name" class="form-label">Middle Name <span>(Optional)</span></label>
-                            <input class="form-control" type="text" name="middle_name" placeholder="Middle Name" id="middle_name" value="{{$user->middle_name}}">
+                            <input class="form-control" type="text" {{$disabled}} name="middle_name" placeholder="Middle Name" id="middle_name" value="{{$user['middle_name']}}">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="lastName" class="form-label">Last Name</label>
-                            <input class="form-control" type="text" name="last_name" placeholder="Last name" id="lastName" value="{{$user->last_name}}">
+                            <input class="form-control" type="text" {{$disabled}} name="last_name" placeholder="Last name" id="lastName" value="{{$user['last_name']}}">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
-                            <input class="form-control  @error('email') is-invalid @enderror" type="text" id="email" name="email" value="{{$user->email}}" placeholder="Email">
+                            <input class="form-control  @error('email') is-invalid @enderror" type="text" id="email" {{$disabled}} name="email" value="{{$user['email']}}" placeholder="Email">
                             @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -90,30 +100,30 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="father_first_name" class="form-label">Father's First Name</label>
-                            <input class="form-control" type="text" id="father_first_name" placeholder="Father's first name" name="father_first_name" value="{{$user->father_first_name}}" autofocus="">
+                            <input class="form-control" type="text" id="father_first_name" placeholder="Father's first name" {{$disabled}} name="father_first_name" value="{{$user['father_first_name']}}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="father_last_name" class="form-label">Father's Last Name</label>
-                            <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" name="father_last_name" value="{{$user->father_last_name}}" autofocus="">
+                            <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" {{$disabled}} name="father_last_name" value="{{$user['father_last_name']}}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="dob">Date of Birth <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input class="form-control" type="date" name="dob" value="{{$user->dob}}">
+                                <input class="form-control" type="date" {{$disabled}} name="dob" value="{{$user['dob']}}">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="gender" class="form-label">Gender</label>
-                            <select id="gender" name="gender" class="select2 form-select">
+                            <select id="gender" {{$disabled}} name="gender" class="select2 form-select">
                                 @foreach(\App\Models\User::$genders as $key => $gender)
-                                <option value="{{$key}}" {{ $user->gender == $key ? 'selected' : '' }}>{{$gender}}</option>
+                                <option value="{{$key}}" {{ $user['gender'] == $key ? 'selected' : '' }}>{{$gender}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{$user->aadhaar_no}}" maxlength="12" class="form-control numeric-input  @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
+                                <input type="text" id="aadhaar_no" {{$disabled}} name="aadhaar_no" value="{{$user['aadhaar_no']}}" maxlength="12" class="form-control numeric-input  @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
                                 @error('aadhaar_no')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -125,7 +135,7 @@
                             <label class="form-label" for="mobile1">Mobile <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
-                                <input type="text" id="mobile1" name="mobile1" value="{{$user->mobile1}}" maxlength="10" class="form-control numeric-input @error('mobile1') is-invalid @enderror" placeholder="Mobile number">
+                                <input type="text" id="mobile1" {{$disabled}} name="mobile1" value="{{$user['mobile1']}}" maxlength="10" class="form-control numeric-input @error('mobile1') is-invalid @enderror" placeholder="Mobile number">
                                 @error('mobile1')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -137,45 +147,45 @@
                             <label class="form-label" for="mobile2">Alternate Mobile <span>(Optional)</span></label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
-                                <input type="text" id="mobile2" name="mobile2" value="{{$user->mobile2}}" maxlength="10" class="form-control numeric-input" placeholder="Alternate mobile number">
+                                <input type="text" id="mobile2" {{$disabled}} name="mobile2" value="{{$user['mobile2']}}" maxlength="10" class="form-control numeric-input" placeholder="Alternate mobile number">
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="designation" class="form-label">Designation</label>
-                            <select id="designation" name="designation" class="select2 form-select">
+                            <select id="designation" {{$disabled}} name="designation" class="select2 form-select">
                                 <option value="">Select Designation</option>
                                 @foreach(\App\Models\User::$designationRoles as $key => $designation)
-                                <option value="{{$key}}" {{ $user->designation == $key ? 'selected' : '' }}>{{$designation}}</option>
+                                <option value="{{$key}}" {{ $user['designation'] == $key ? 'selected' : '' }}>{{$designation}}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="degrees" class="form-label">Degrees</label>
-                            <input type="text" class="form-control" placeholder="Degrees" id="degrees" name="degrees" value="{{$user->degrees}}">
+                            <input type="text" class="form-control" placeholder="Degrees" id="degrees" {{$disabled}} name="degrees" value="{{$user['degrees']}}">
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="chamber_number" class="form-label">Chamber Number</label>
-                            <input type="text" class="form-control" placeholder="Chamber number" id="chamber_number" name="chamber_number" value="{{$user->chamber_number}}">
+                            <input type="text" class="form-control" placeholder="Chamber number" id="chamber_number" {{$disabled}} name="chamber_number" value="{{$user['chamber_number']}}">
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="address">Residence Address</label>
-                            <textarea id="address" class="form-control" id="address" name="address" placeholder="Residence address">{{$user->address}}</textarea>
+                            <textarea id="address" class="form-control" id="address" {{$disabled}} name="address" placeholder="Residence address">{{$user['address']}}</textarea>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="other_details">Other details</label>
-                            <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details">{{$user->other_details}}</textarea>
+                            <textarea id="other_details" class="form-control" {{$disabled}} name="other_details" placeholder="Other details">{{$user['other_details']}}</textarea>
                         </div>
 
                         @if(auth()->user()->hasRole('superadmin'))
                         <div class="mb-3 col-md-6">
                             <label for="user_role" class="form-label">User Role</label>
-                            <select id="user_role" name="user_role" class="select2 form-select">
+                            <select id="user_role" {{$disabled}} name="user_role" class="select2 form-select">
                                 <option value="">Select Role</option>
                                 @foreach(\App\Models\User::$designationRoles as $key => $userRole)
-                                <option value="{{$key}}" {{ $user->roles->first()->pivot->role_id == $key ? 'selected' : '' }}>{{$userRole}}</option>
+                                <option value="{{$key}}" {{ $user['roles']->first()->pivot->role_id == $key ? 'selected' : '' }}>{{$userRole}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -186,13 +196,13 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" {{$user->status == 1 ? 'checked value=1' : 'value=2'}} name="status">
+                                        <input class="form-check-input" type="checkbox" {{$user['status'] == 1 ? 'checked value=1' : 'value=2'}} {{$disabled}} name="status">
                                         <label class="form-check-label" for="status"> Active </label>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" {{$user->is_deceased == 1 ? 'checked value=1' : ''}} name="is_deceased">
+                                        <input class="form-check-input" type="checkbox" {{$user['is_deceased'] == 1 ? 'checked value=1' : ''}} {{$disabled}} name="is_deceased">
                                         <label class="form-check-label" for="is_deceased"> Is Deceased?</label>
                                     </div>
                                 </div>
@@ -203,7 +213,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" {{$user->is_physically_disabled == 1 ? 'checked value=1' : ''}} name="is_physically_disabled">
+                                        <input class="form-check-input" type="checkbox" {{$user['is_physically_disabled'] == 1 ? 'checked value=1' : ''}} {{$disabled}} name="is_physically_disabled">
                                         <label class="form-check-label" for="is_physically_disabled"> Is Physically Disabled? </label>
                                     </div>
                                 </div>
@@ -217,13 +227,13 @@
                         <div class="mb-3 col-md-6">
                             <label for="address_proof" class="form-label">Address proof (Images)</label>
                             <div class="input-group">
-                                <input type="file" class="form-control" id="address_proof" name="address_proofs[]" multiple accept="image/*">
+                                <input type="file" class="form-control" id="address_proof" {{$disabled}} name="address_proofs[]" multiple accept="image/*">
                             </div>
-                            @if($user->address_proof->count() > 0)
+                            @if($user['address_proof']->count() > 0)
                             <div class="d-flex justify-content-end pt-1">
                                 @php($i=1)
                                 <div class="demo-inline-spacing">
-                                    @foreach($user->address_proof as $proof)
+                                    @foreach($user['address_proof'] as $proof)
                                     <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#addressProofModal{{ $proof->id }}">Uploaded Document - {{ $i }}</span>
 
                                     <!-- Modal -->
@@ -252,13 +262,13 @@
                         <div class="mb-3 col-md-6">
                             <label for="degree_pictures" class="form-label">Upload Degrees (Images)</label>
                             <div class="input-group">
-                                <input type="file" class="form-control" id="degree_pictures" name="degree_pictures[]" multiple accept="image/*">
+                                <input type="file" class="form-control" id="degree_pictures" {{$disabled}} name="degree_pictures[]" multiple accept="image/*">
                             </div>
-                            @if($user->degree_images->count() > 0)
+                            @if($user['degree_images']->count() > 0)
                             <div class="d-flex justify-content-end pt-1">
                                 @php($j=1)
                                 <div class="demo-inline-spacing">
-                                    @foreach($user->degree_images as $proof)
+                                    @foreach($user['degree_images'] as $proof)
                                     <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Uploaded Document - {{ $j }}</span>
 
                                     <!-- Modal -->
@@ -286,8 +296,7 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <a type="reset" href="{{route('users')}}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" {{$disabled}} class="btn btn-primary me-2">Save changes</button>
                     </div>
                 </div>
                 <!-- /Account -->

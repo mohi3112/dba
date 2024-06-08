@@ -51,13 +51,17 @@ class User extends Authenticatable
     public static $designationRoles = [
         self::DESIGNATION_PRESIDENT => 'President',
         self::DESIGNATION_VICE_PRESIDENT => 'Vice President',
-        self::DESIGNATION_FINANCE_SECRETARY => 'Finance Secretry',
-        self::DESIGNATION_SECRETARY => 'Secretry',
+        self::DESIGNATION_FINANCE_SECRETARY => 'Finance Secretary',
+        self::DESIGNATION_SECRETARY => 'Secretary',
         self::DESIGNATION_MANAGER => 'Manager',
         self::DESIGNATION_LIBRARIAN => 'Librarian',
         self::DESIGNATION_LAWYER => 'Lawyer',
         self::DESIGNATION_VENDOR => 'Vendor',
     ];
+
+    const PENDING_REQUEST = "Pending";
+    const APPROVED_REQUEST = "Approved";
+    const REJECTED_REQUEST = "Rejected";
 
     /**
      * The attributes that are mass assignable.
@@ -180,6 +184,16 @@ class User extends Authenticatable
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function updateRequest()
+    {
+        return $this->hasMany(UserUpdateRequest::class, 'user_id', 'id');
+    }
+
+    public function latestUpdateRequest()
+    {
+        return $this->hasOne(UserUpdateRequest::class)->latest();
     }
 
     public static function getAgeOperator($key)

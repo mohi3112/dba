@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
+use App\Models\UserUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -211,7 +212,11 @@ class UserController extends Controller
     public function myAccount()
     {
         $userId = Auth::id();
-        $user = User::find($userId);
+        $user = User::wherehas('latestUpdateRequest', function ($query) {
+            $query->whereNull('approved_by_president')->whereIn('approved_by_secretary', [NULL, true]);
+        })->orDoesntHave('latestUpdateRequest')
+            ->with('latestUpdateRequest')->find($userId);
+
         return view('users.myAccount', compact('user'));
     }
 
@@ -237,10 +242,11 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             // Handle the profile image
+            $base64Picture = null;
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $base64Picture = base64_encode(file_get_contents($file->getPathname()));
-                $user->picture = $base64Picture;
+                $request->merge(['picture' => $base64Picture]);
             }
 
             if (!$request->has('status') || $request->status == User::STATUS_IN_ACTIVE) {
@@ -261,31 +267,41 @@ class UserController extends Controller
                 $request->merge(['is_physically_disabled' => true]);
             }
 
-            // Update user data
-            $user->first_name = $request->input('first_name');
-            $user->middle_name = $request->input('middle_name');
-            $user->last_name = $request->input('last_name');
-            $user->email = $request->input('email');
-            $user->father_first_name = $request->input('father_first_name');
-            $user->father_last_name = $request->input('father_last_name');
-            $user->dob = $request->input('dob');
-            $user->gender = $request->input('gender');
-            $user->mobile1 = $request->input('mobile1');
-            $user->mobile2 = $request->input('mobile2');
-            $user->aadhaar_no = $request->input('aadhaar_no');
-            $user->designation = $request->input('designation');
-            $user->degrees = $request->input('degrees');
-            $user->address = $request->input('address');
-            $user->other_details = $request->input('other_details');
-            $user->status = $request->input('status');
-            $user->chamber_number = $request->input('chamber_number');
-            $user->status = $request->input('status');
-            $user->is_deceased = $request->input('is_deceased');
-            $user->is_physically_disabled = $request->input('is_physically_disabled');
-            $user->save();
+            // Update user data if user is president
+            if (auth()->user()->hasRole('president')) {
+                $user->first_name = $request->input('first_name');
+                $user->middle_name = $request->input('middle_name');
+                $user->last_name = $request->input('last_name');
+                $user->email = $request->input('email');
+                $user->father_first_name = $request->input('father_first_name');
+                $user->father_last_name = $request->input('father_last_name');
+                $user->dob = $request->input('dob');
+                $user->gender = $request->input('gender');
+                $user->mobile1 = $request->input('mobile1');
+                $user->mobile2 = $request->input('mobile2');
+                $user->aadhaar_no = $request->input('aadhaar_no');
+                $user->designation = $request->input('designation');
+                $user->degrees = $request->input('degrees');
+                $user->address = $request->input('address');
+                $user->other_details = $request->input('other_details');
+                $user->status = $request->input('status');
+                $user->chamber_number = $request->input('chamber_number');
+                $user->status = $request->input('status');
+                $user->is_deceased = $request->input('is_deceased');
+                $user->is_physically_disabled = $request->input('is_physically_disabled');
+                if ($request->hasFile('image') && $base64Picture) {
+                    $user->picture = $request->input('picture');
+                }
+                $user->save();
 
-            if ($request->input('user_role')) {
-                $user->roles()->sync($request->input('user_role'));
+                if ($request->input('user_role')) {
+                    $user->roles()->sync($request->input('user_role'));
+                }
+            } else {
+                $user->account_modified = true;
+                $user->save();
+
+                $this->userRequestSubmitted($id, $request);
             }
 
             // Handle address proofs
@@ -333,6 +349,18 @@ class UserController extends Controller
             DB::rollback();
             return redirect()->back()->with('error', 'Failed to update user. Please try again.');
         }
+    }
+
+    public function userRequestSubmitted($id, $request)
+    {
+        // user submitted for approval
+        $loggedInUserId = Auth::id();
+        $payload = $request->all();
+        $payload['change_type'] = UserUpdateRequest::CHANGE_TYPE_EDIT;
+        $payload['user_id'] = $id;
+        $payload['changes_requested_by'] = $loggedInUserId;
+        // user submitted for approval
+        UserUpdateRequest::create($payload);
     }
 
     // Remove the specified resource from storage.
@@ -461,5 +489,155 @@ class UserController extends Controller
         $users = $usersQuery->paginate(10);
 
         return view('users.voting-list', compact('users'));
+    }
+
+    public static function getApprovalValue($key)
+    {
+        switch ($key) {
+            case 'yes':
+                return true;
+            case 'no':
+                return false;
+            case 'pending':
+                return null;
+            default:
+                return;
+        }
+    }
+
+    public function allUpdateRequests(Request $request)
+    {
+        $updateRequestsQuery = UserUpdateRequest::query();
+
+        if ($request->filled('name')) {
+            $updateRequestsQuery->where('first_name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('l_name')) {
+            $updateRequestsQuery->where('last_name', 'like', '%' . $request->l_name . '%');
+        }
+
+        if ($request->filled('designation')) {
+            $updateRequestsQuery->where('designation', $request->designation);
+        }
+
+        if ($request->filled('age')) {
+            $updateRequestsQuery->age($request->age, $request->ageOperator);
+        }
+
+        if ($request->filled('gender')) {
+            $updateRequestsQuery->where('gender', $request->gender);
+        }
+
+        if ($request->filled('approvedBySecretary')) {
+            $approvedBySecretaryValue = $this->getApprovalValue($request->approvedBySecretary);
+            $updateRequestsQuery->where('approved_by_secretary', $approvedBySecretaryValue);
+        }
+
+        if ($request->filled('approvedByPresident')) {
+            $approvedByPresidentValue = $this->getApprovalValue($request->approvedByPresident);
+            $updateRequestsQuery->where('approved_by_president', $approvedByPresidentValue);
+        }
+
+        $updateRequests = $updateRequestsQuery->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('users.update-requests', compact('updateRequests'));
+    }
+
+    public function viewUpdateRequest($id)
+    {
+        $updateRequest = UserUpdateRequest::with('user')->findOrFail($id);
+        return view('users.view-update-request', compact('updateRequest'));
+    }
+
+    public function approveRequest(Request $request)
+    {
+        try {
+            $requestId = $request->input('request_id');
+            $isApproved = $request->input('is_approved');
+            // Find the UserUpdateRequest record by ID
+            $userUpdateRequest = UserUpdateRequest::find($requestId);
+
+            if ($userUpdateRequest) {
+                if (auth()->user()->hasRole('president')) {
+                    $userUpdateRequest->approved_by_president = $isApproved;
+                    // update the user data
+                    if ($isApproved == 1) {
+                        $this->updateUserAfterApproval($userUpdateRequest->user_id, $userUpdateRequest);
+                    } else {
+                        $this->declineProfileChanges($userUpdateRequest->user_id);
+                    }
+                } elseif (auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary')) {
+                    $userUpdateRequest->approved_by_secretary = $isApproved;
+                    if ($isApproved != 1) {
+                        $this->declineProfileChanges($userUpdateRequest->user_id);
+                    }
+                }
+
+                $userUpdateRequest->save();
+
+                return response()->json(['message' => 'Request approved successfully!'], 200);
+            } else {
+                return response()->json(['message' => 'Request not found.'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong.'], 500);
+        }
+    }
+
+    public function declineProfileChanges($userId)
+    {
+        $user = User::findOrFail($userId);
+        $user->account_modified = false;
+        $user->save();
+    }
+
+    public function updateUserAfterApproval($userId, $userUpdateRequest)
+    {
+        // Update user data
+        $user = User::findOrFail($userId);
+        $user->first_name = $userUpdateRequest->first_name;
+        $user->middle_name = $userUpdateRequest->middle_name;
+        $user->last_name = $userUpdateRequest->last_name;
+        $user->email = $userUpdateRequest->email;
+        $user->father_first_name = $userUpdateRequest->father_first_name;
+        $user->father_last_name = $userUpdateRequest->father_last_name;
+        $user->dob = $userUpdateRequest->dob;
+        $user->gender = $userUpdateRequest->gender;
+        $user->mobile1 = $userUpdateRequest->mobile1;
+        $user->mobile2 = $userUpdateRequest->mobile2;
+        $user->aadhaar_no = $userUpdateRequest->aadhaar_no;
+        $user->designation = $userUpdateRequest->designation;
+        $user->degrees = $userUpdateRequest->degrees;
+        $user->address = $userUpdateRequest->address;
+        $user->other_details = $userUpdateRequest->other_details;
+        $user->status = $userUpdateRequest->status;
+        $user->chamber_number = $userUpdateRequest->chamber_number;
+        $user->status = $userUpdateRequest->status;
+        $user->is_deceased = $userUpdateRequest->is_deceased ?: false;
+        $user->is_physically_disabled = $userUpdateRequest->is_physically_disabled ?: false;
+        $user->picture = $userUpdateRequest->picture;
+        $user->account_modified = false;
+        $user->account_approved = true;
+        $user->save();
+
+        if ($userUpdateRequest->designation) {
+            $user->roles()->sync($userUpdateRequest->designation);
+        }
+    }
+
+    public function deleteUpdateRequest($id)
+    {
+        // Find the user-update-request by ID
+        $userUpdateRequest = UserUpdateRequest::findOrFail($id);
+
+        // Set the deleted_by field with the authenticated user-update-request's ID
+        $userUpdateRequest->deleted_by = Auth::id();
+        $userUpdateRequest->save(); // Save the user-update-request to update the deleted_by field
+
+        // Soft delete the user-update-request
+        $userUpdateRequest->delete();
+
+        return redirect()->route('users.update-requests')->with('success', 'Request deleted successfully!');
     }
 }

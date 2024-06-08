@@ -38,7 +38,7 @@ class BookController extends Controller
 
         $activeLawyers = $this->lawyerService->getActiveLawyers();
 
-        $categories = self::getCategoriesList();
+        $categories = $this->getCategoriesList();
 
         return view('books.index', compact('books', 'activeLawyers', 'categories'));
     }
@@ -50,7 +50,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        $categories = self::getCategoriesList();
+        $categories = $this->getCategoriesList();
 
         return view('books.create', compact('categories'));
     }
@@ -85,7 +85,7 @@ class BookController extends Controller
     {
         $book = Book::findOrFail($id);
 
-        $categories = self::getCategoriesList();
+        $categories = $this->getCategoriesList();
 
         return view('books.edit', compact('book', 'categories'));
     }

@@ -38,7 +38,7 @@ class CreateUsersUpdateRequestTable extends Migration
             $table->string('other_details')->nullable();
             $table->integer('change_type')->nullable()->comment('Edited = 1, Deleted = 2');
             $table->bigInteger('changes_requested_by');
-            $table->tinyInteger('approved_by_secretry')->nullable();
+            $table->tinyInteger('approved_by_secretary')->nullable();
             $table->tinyInteger('approved_by_president')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->softDeletes();

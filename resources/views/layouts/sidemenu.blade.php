@@ -150,6 +150,13 @@
                         <div data-i18n="voting-list">Voting List</div>
                     </a>
                 </li>
+                @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
+                <li class="menu-item {{ request()->is('lawyers/update-requests') ? 'active' : '' }}">
+                    <a href="{{route('users.update-requests')}}" class="menu-link">
+                        <div data-i18n="update-requests">Update Requests</div>
+                    </a>
+                </li>
+                @endif
             </ul>
         </li>
         <!-- End Lawyers -->

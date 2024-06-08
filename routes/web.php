@@ -44,6 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
     Route::get('lawyers/voting-list', [UserController::class, 'votingList'])->name('users.voting-list');
 
+    Route::get('lawyers/update-requests', [UserController::class, 'allUpdateRequests'])->name('users.update-requests');
+    Route::get('lawyer/view-update-request/{id}', [UserController::class, 'viewUpdateRequest'])->name('user.view-update-request');
+    Route::put('lawyer/approve-request', [UserController::class, 'approveRequest'])->name('user.approveRequest');
+    Route::post('lawyer/delete-update-request/{id}', [UserController::class, 'deleteUpdateRequest'])->name('user.delete-update-request');
+
     // Routes for Address Proof
     Route::delete('delete-address-proof-image/{id}', [UserController::class, 'deleteAddressProofImage'])->name('delete-address-proof-image');
 

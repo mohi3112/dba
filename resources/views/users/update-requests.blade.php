@@ -1,12 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers</span></h4>
-<ul class="nav nav-pills flex-column flex-md-row mb-3">
-    <li class="nav-item">
-        <a class="nav-link active" href="{{route('users.add')}}"><i class="bx bx-user me-1"></i> Add Lawyer</a>
-    </li>
-</ul>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Update Requests</h4>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible" role="alert">
     {{ session('success') }}
@@ -16,7 +11,7 @@
 <div class="card mb-4">
     <h5 class="card-header">Filters</h5>
     <div class="card-body">
-        <form method="GET" action="{{ route('users') }}">
+        <form method="GET" action="{{ route('users.update-requests') }}">
             <div class="row gx-3 gy-2 align-items-center">
                 <div class="col-md-3">
                     <label for="name" class="form-label">First Name</label>
@@ -70,28 +65,24 @@
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 25%;">
-                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                        <input class="form-check-input" name="is_active" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_active'])) ? '' : 'checked' }}>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
-                    </div>
+                <div class="col-md-3">
+                    <label for="approvedBySecretary" class="form-label">Approved By Secretary</label>
+                    <select id="approvedBySecretary" name="approvedBySecretary" class="select2 form-select">
+                        <option value="">Please Select</option>
+                        <option value="yes" @if(@$_GET['approvedBySecretary']=='yes' ) selected @endif>Yes</option>
+                        <option value="no" @if(@$_GET['approvedBySecretary']=='no' ) selected @endif>No</option>
+                        <option value="pending" @if(@$_GET['approvedBySecretary']=='pending' ) selected @endif>Pending</option>
+                    </select>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 25%;">
-                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                        <input class="form-check-input" name="is_deceased" type="checkbox" id="flexSwitchCheckDeceased" {{ (count($_GET) > 0 && isset($_GET['is_deceased'])) ? "checked" : "" }}>
-                        <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 25%;">
-                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                        <input class="form-check-input" name="is_physically_disabled" type="checkbox" id="flexSwitchCheckPhysicallyDisabled" {{ (count($_GET) > 0 && isset($_GET['is_physically_disabled'])) ? "checked" : "" }}>
-                        <label class="form-check-label" for="flexSwitchCheckPhysicallyDisabled">Physically Disabled</label>
-                    </div>
+                <div class="col-md-3">
+                    <label for="approvedByPresident" class="form-label">Approved By President</label>
+                    <select id="approvedByPresident" name="approvedByPresident" class="select2 form-select">
+                        <option value="">Please Select</option>
+                        <option value="yes" @if(@$_GET['approvedByPresident']=='yes' ) selected @endif>Yes</option>
+                        <option value="no" @if(@$_GET['approvedByPresident']=='no' ) selected @endif>No</option>
+                        <option value="pending" @if(@$_GET['approvedByPresident']=='pending' ) selected @endif>Pending</option>
+                    </select>
                 </div>
 
                 <div class="col-md-1">
@@ -101,7 +92,7 @@
 
                 <div class="col-md-1 ml-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                    <a href="{{ route('users') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('users.update-requests') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
@@ -121,51 +112,58 @@
                     <th>Gender</th>
                     <th>DESIGNATION</th>
                     <th>Status</th>
-                    <th>Deceased</th>
-                    <th>Handicaped</th>
-                    <th>Is Approved</th>
+                    <th>Secretary Approval</th>
+                    <th>President Approval</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
                 <?php
                 $i = 1;
-                foreach ($users as $user) {
+                foreach ($updateRequests as $updateRequestUser) {
                 ?>
                     <tr>
                         <td> {{ $i }} </td>
-                        <td> {{ $user->full_name }} </td>
-                        <td> {{ ($user->father_first_name) ? $user->father_first_name . ' ' . $user->father_last_name : '--' }}</td>
-                        <td> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }}</td>
-                        <td> {{ ($user->gender) ? \App\Models\User::$genders[$user->gender] : '--' }} </td>
+                        <td> {{ $updateRequestUser->full_name }} </td>
+                        <td> {{ ($updateRequestUser->father_first_name) ? $updateRequestUser->father_first_name . ' ' . $updateRequestUser->father_last_name : '--' }}</td>
+                        <td> {{ ($updateRequestUser->dob) ? \Carbon\Carbon::parse($updateRequestUser->dob)->format('d-M-Y') . ' (' . $updateRequestUser->age . ')' : '--' }}</td>
+                        <td> {{ ($updateRequestUser->gender) ? \App\Models\User::$genders[$updateRequestUser->gender] : '--' }} </td>
                         <td>
-                            {{ \App\Models\User::$designationRoles[$user->designation] ?? '--' }}
+                            {{ \App\Models\User::$designationRoles[$updateRequestUser->designation] ?? '--' }}
                         </td>
                         <td>
-                            @if($user->status == 1)
-                            <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
-                            @elseif($user->status == 2)
-                            <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
+                            @if($updateRequestUser->status == 1)
+                            <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$updateRequestUser->status] }}</span>
+                            @elseif($updateRequestUser->status == 2)
+                            <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$updateRequestUser->status] }}</span>
                             @endif
                         </td>
-                        <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
-                        <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
-                        <td>
-                            @if($user->account_approved)
-                            <span class="badge bg-label-success me-1">Yes</span>
-                            @else
-                            <span class="badge bg-label-warning me-1">No</span>
-                            @endif
+                        @php
+                        $secretaryApproval = \App\Models\User::PENDING_REQUEST;
+                        if($updateRequestUser->approved_by_secretary == true){
+                        $secretaryApproval = \App\Models\User::APPROVED_REQUEST;
+                        } elseif ($updateRequestUser->approved_by_secretary != NULL &&$updateRequestUser->approved_by_secretary == false) {
+                        $secretaryApproval = \App\Models\User::REJECTED_REQUEST;
+                        }
+                        @endphp
+                        <td> {{ $secretaryApproval }} </td>
+                        @php
+                        $presidentApproval = \App\Models\User::PENDING_REQUEST;
+                        if($updateRequestUser->approved_by_president == true){
+                        $presidentApproval = \App\Models\User::APPROVED_REQUEST;
+                        } elseif ($updateRequestUser->approved_by_president != NULL && $updateRequestUser->approved_by_president == false) {
+                        $presidentApproval = \App\Models\User::REJECTED_REQUEST;
+                        }
+                        @endphp
+                        <td> {{ $presidentApproval }} </td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <!-- edit -->
-                                <a class="color-unset" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
                                 <!-- view -->
-                                <a class="pl-3 color-unset" href="{{ route('user.view', $user->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                                <a class="pl-3 color-unset" href="{{ route('user.view-update-request', $updateRequestUser->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                 <!-- delete -->
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                <form action="{{ route('user.delete-update-request', $updateRequestUser->id) }}" method="POST">
                                     @csrf
-                                    <a class="pl-3 delete-user color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                    <a class="pl-3 delete-request color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 </form>
                             </div>
                         </td>
@@ -178,7 +176,7 @@
         </table>
         <div class="d-flex justify-content-end pt-3">
             <!-- Add pagination links -->
-            {{ $users->links() }}
+            {{ $updateRequests->links() }}
         </div>
     </div>
 </div>
@@ -189,14 +187,14 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // click event listener to all delete buttons with the class 'delete-user'
-        document.querySelectorAll('.delete-user').forEach(function(button) {
+        // click event listener to all delete buttons with the class 'delete-request'
+        document.querySelectorAll('.delete-request').forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent the default form submission
 
                 // Show the confirmation dialog
-                if (confirm('Are you sure you want to delete this user?')) {
-                    // If the user confirms, submit the nearest form
+                if (confirm('Are you sure you want to delete this request?')) {
+                    // If the request confirms, submit the nearest form
                     this.closest('form').submit();
                 }
             });
