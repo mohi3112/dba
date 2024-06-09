@@ -22,6 +22,7 @@ class UsersTableSeeder extends Seeder
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'designation' => 1,
             'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);
@@ -37,6 +38,7 @@ class UsersTableSeeder extends Seeder
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'designation' => User::DESIGNATION_PRESIDENT,
             'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);
@@ -52,6 +54,7 @@ class UsersTableSeeder extends Seeder
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'designation' => User::DESIGNATION_LAWYER,
             'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);

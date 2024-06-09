@@ -72,13 +72,13 @@ Route::middleware('auth')->group(function () {
     Route::put('roles/update/{id}', [UserRoleController::class, 'update'])->name('roles.update');
 
     // Routes for Book categoris
-    Route::get('bookCatgories', [BooksCategoryController::class, 'index'])->name('bookCatgories');
-    Route::get('bookCatgory/{id}', [BooksCategoryController::class, 'show'])->name('bookCatgory.view');
-    Route::get('bookCatgories/add', [BooksCategoryController::class, 'create'])->name('bookCatgories.add');
-    Route::post('bookCatgory/store',  [BooksCategoryController::class, 'store'])->name('bookCatgory.store');
-    Route::get('bookCatgory/edit/{id}', [BooksCategoryController::class, 'edit'])->name('bookCatgories.edit');
-    Route::put('bookCatgories/update/{id}', [BooksCategoryController::class, 'update'])->name('bookCatgories.update');
-    Route::post('bookCatgory/{id}', [BooksCategoryController::class, 'destroy'])->name('bookCatgories.destroy');
+    Route::get('bookCategories', [BooksCategoryController::class, 'index'])->name('bookCategories');
+    Route::get('bookCategory/{id}', [BooksCategoryController::class, 'show'])->name('bookCategory.view');
+    Route::get('bookCategories/add', [BooksCategoryController::class, 'create'])->name('bookCategories.add');
+    Route::post('bookCategory/store',  [BooksCategoryController::class, 'store'])->name('bookCategory.store');
+    Route::get('bookCategory/edit/{id}', [BooksCategoryController::class, 'edit'])->name('bookCategories.edit');
+    Route::put('bookCategories/update/{id}', [BooksCategoryController::class, 'update'])->name('bookCategories.update');
+    Route::post('bookCategory/{id}', [BooksCategoryController::class, 'destroy'])->name('bookCategories.destroy');
 
     // Routes for Books
     Route::get('books', [BookController::class, 'index'])->name('books');

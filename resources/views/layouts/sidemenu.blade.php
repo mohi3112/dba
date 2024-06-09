@@ -183,20 +183,20 @@
         <!-- End vendors -->
 
         <!-- Start Books -->
-        <li class="menu-item {{ request()->is('bookCatgor*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->is('bookCategor*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="bookCatgories">Books Catgory</div>
+                <div data-i18n="bookCategories">Books Category</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ request()->is('bookCatgories') ? 'active' : '' }}">
-                    <a href="{{route('bookCatgories')}}" class="menu-link">
-                        <div data-i18n="bookCatgories">All Books Catgories</div>
+                <li class="menu-item {{ request()->is('bookCategories') ? 'active' : '' }}">
+                    <a href="{{route('bookCategories')}}" class="menu-link">
+                        <div data-i18n="bookCategories">All Books Categories</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('bookCatgories/add') ? 'active' : '' }}">
-                    <a href="{{route('bookCatgories.add')}}" class="menu-link">
-                        <div data-i18n="Add bookCatgories">Add Books Catgory</div>
+                <li class="menu-item {{ request()->is('bookCategories/add') ? 'active' : '' }}">
+                    <a href="{{route('bookCategories.add')}}" class="menu-link">
+                        <div data-i18n="Add bookCategories">Add Books Category</div>
                     </a>
                 </li>
             </ul>

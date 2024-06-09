@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Books Categories /</span> Add Category</h4>
-<form method="POST" action="{{ route('bookCatgory.store') }}" id="formBookCategory">
+<form method="POST" action="{{ route('bookCategory.store') }}" id="formBookCategory">
     @csrf
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-4">
-                <h5 class="card-header">Catgory Details</h5>
+                <h5 class="card-header">Category Details</h5>
                 <hr class="my-0">
                 <div class="card-body">
                     <div class="row">
@@ -35,7 +35,7 @@
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <a type="reset" href="{{route('bookCatgories')}}" class="btn btn-outline-secondary">Cancel</a>
+                        <a type="reset" href="{{route('bookCategories')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </div>
             </div>

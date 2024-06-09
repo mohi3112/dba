@@ -44,7 +44,7 @@ class BooksCategoryController extends Controller
 
         BooksCategory::create($request->all());
 
-        return redirect()->route('bookCatgories')->with('success', 'Books category added successfully.');
+        return redirect()->route('bookCategories')->with('success', 'Books category added successfully.');
     }
 
     /**
@@ -79,7 +79,7 @@ class BooksCategoryController extends Controller
         $book->published_total_volumns = $request->published_total_volumns;
         $book->save();
 
-        return redirect()->route('bookCatgories')->with('success', 'Books category updated successfully.');
+        return redirect()->route('bookCategories')->with('success', 'Books category updated successfully.');
     }
 
     public function destroy($id)
@@ -93,6 +93,6 @@ class BooksCategoryController extends Controller
         // Soft delete the book
         $book->delete();
 
-        return redirect()->route('bookCatgories')->with('success', 'Book category deleted successfully!');
+        return redirect()->route('bookCategories')->with('success', 'Book category deleted successfully!');
     }
 }

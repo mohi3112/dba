@@ -23,10 +23,114 @@
             </div>
         </div>
         @endif
-        <!-- Headings -->
         <div class="col-lg">
             <div class="card mb-4">
-                <h5 class="card-header">Profile</h5>
+                <h5 class="card-header">Existing Profile Information
+                    <!-- <small class="text-muted ms-1">Default</small> -->
+                </h5>
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td> Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->fullname }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Fathers' Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->father_first_name) ? $updateRequest->user->father_first_name . ' ' . $updateRequest->user->father_last_name : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Email:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->email }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Gender:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ \App\Models\User::$genders[$updateRequest->user->gender] }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> DOB (Age):</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->dob) ? \Carbon\Carbon::parse($updateRequest->user->dob)->format('d-M-Y') . ' (' . $updateRequest->user->age . ')' : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Aadhaar number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->aadhaar_no }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Mobile:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->mobile1 }} {{ ($updateRequest->user->mobile2) ? ' ( ' . $updateRequest->user->mobile2 . ' )' : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Residence Address:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->address ?: '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Status:</td>
+                            <td class="py-3">
+                                <h6 class="mb-0">
+                                    @if($updateRequest->user->status == 1)
+                                    <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$updateRequest->user->status] }}</span>
+                                    @elseif($updateRequest->user->status == 2)
+                                    <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$updateRequest->user->status] }}</span>
+                                    @endif
+                                </h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Deceased:</td>
+                            <td class="py-3">
+                                <h6 class="mb-0">
+                                    @if(!$updateRequest->user->is_deceased)
+                                    <span class="badge bg-label-success me-1">No</span>
+                                    @else
+                                    <span class="badge bg-label-warning me-1">Yes</span>
+                                    @endif
+                                </h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Physically Disabled:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ (!$updateRequest->user->is_physically_disabled) ? 'No' : 'Yes' }}</h5>
+                            </td>
+                        </tr>
+                        @if(auth()->user()->hasRole('superadmin'))
+                        <tr>
+                            <td> Role:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ \App\Models\User::$designationRoles[$updateRequest->user->roles->first()->pivot->role_id] ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        @endif
+
+                        <tr>
+                            <td> Designation:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->designation) ? \App\Models\User::$designationRoles[$updateRequest->user->designation] : '' }}</h5>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg">
+            <div class="card mb-4">
+                <h5 class="card-header">Updated Profile Information</h5>
                 <table class="table table-borderless">
                     <tbody>
                         <tr>
@@ -120,111 +224,6 @@
                             <td> Designation:</td>
                             <td class="py-3">
                                 <h5 class="mb-0">{{ ($updateRequest->designation) ? \App\Models\User::$designationRoles[$updateRequest->designation] : '' }}</h5>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- Customizing headings -->
-        <div class="col-lg">
-            <div class="card mb-4">
-                <h5 class="card-header">Updated Profile
-                    <!-- <small class="text-muted ms-1">Default</small> -->
-                </h5>
-                <table class="table table-borderless">
-                    <tbody>
-                        <tr>
-                            <td> Name:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->fullname }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Fathers' Name:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ ($updateRequest->user->father_first_name) ? $updateRequest->user->father_first_name . ' ' . $updateRequest->user->father_last_name : '' }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Email:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->email }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Gender:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$genders[$updateRequest->user->gender] }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> DOB (Age):</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ \Carbon\Carbon::parse($updateRequest->user->dob)->format('d-M-Y') . ' (' . $updateRequest->user->age . ')' }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Aadhaar number:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->aadhaar_no }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Mobile:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->mobile1 }} {{ ($updateRequest->user->mobile2) ? ' ( ' . $updateRequest->user->mobile2 . ' )' : '' }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Residence Address:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->address ?: '' }}</h5>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Status:</td>
-                            <td class="py-3">
-                                <h6 class="mb-0">
-                                    @if($updateRequest->user->status == 1)
-                                    <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$updateRequest->user->status] }}</span>
-                                    @elseif($updateRequest->user->status == 2)
-                                    <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$updateRequest->user->status] }}</span>
-                                    @endif
-                                </h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Deceased:</td>
-                            <td class="py-3">
-                                <h6 class="mb-0">
-                                    @if(!$updateRequest->user->is_deceased)
-                                    <span class="badge bg-label-success me-1">No</span>
-                                    @else
-                                    <span class="badge bg-label-warning me-1">Yes</span>
-                                    @endif
-                                </h6>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> Physically Disabled:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ (!$updateRequest->user->is_physically_disabled) ? 'No' : 'Yes' }}</h5>
-                            </td>
-                        </tr>
-                        @if(auth()->user()->hasRole('superadmin'))
-                        <tr>
-                            <td> Role:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$designationRoles[$updateRequest->user->roles->first()->pivot->role_id] ?? '' }}</h5>
-                            </td>
-                        </tr>
-                        @endif
-
-                        <tr>
-                            <td> Designation:</td>
-                            <td class="py-3">
-                                <h5 class="mb-0">{{ ($updateRequest->user->designation) ? \App\Models\User::$designationRoles[$updateRequest->user->designation] : '' }}</h5>
                             </td>
                         </tr>
                     </tbody>

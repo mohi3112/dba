@@ -35,7 +35,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $authUser = auth()->user();
-        $roles = ['admin', 'superadmin'];
+        $roles = ['president', 'superadmin'];
         if ($authUser->hasRole('superadmin')) {
             $roles = ['superadmin'];
         }

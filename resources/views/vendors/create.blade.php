@@ -66,7 +66,7 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="mobile">Mobile number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="mobile" name="mobile" value="{{ old('mobile') }}" class="form-control @error('mobile') is-invalid @enderror" placeholder="Mobile number">
+                                <input type="text" id="mobile" name="mobile" maxlength="10" value="{{ old('mobile') }}" class="form-control @error('mobile') is-invalid @enderror" placeholder="Mobile number">
                                 @error('mobile')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

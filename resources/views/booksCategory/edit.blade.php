@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Books Categories /</span> Edit Category</h4>
-<form method="POST" action="{{ route('bookCatgories.update', $booksCategory->id) }}" id="formBookCategory">
+<form method="POST" action="{{ route('bookCategories.update', $booksCategory->id) }}" id="formBookCategory">
     @csrf
     @method('PUT')
     <div class="row">

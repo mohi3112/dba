@@ -3,7 +3,7 @@
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Books Categories</span></h4>
 <ul class="nav nav-pills flex-column flex-md-row mb-3">
     <li class="nav-item">
-        <a class="nav-link active" href="{{route('bookCatgories.add')}}"><i class="bx bx-user me-1"></i> Add Books Catgory</a>
+        <a class="nav-link active" href="{{route('bookCategories.add')}}"><i class="bx bx-user me-1"></i> Add Books Category</a>
     </li>
 </ul>
 @if(session('success'))
@@ -40,9 +40,9 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('bookCatgories.edit', $booksCategory->id) }}"><i class="fas fa-edit"></i></a>
+                            <a class="color-unset" href="{{ route('bookCategories.edit', $booksCategory->id) }}"><i class="fas fa-edit"></i></a>
                             <!-- delete -->
-                            <form action="{{ route('bookCatgories.destroy', $booksCategory->id) }}" method="POST">
+                            <form action="{{ route('bookCategories.destroy', $booksCategory->id) }}" method="POST">
                                 @csrf
                                 <a class="pl-3 delete-book-category color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>

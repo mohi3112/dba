@@ -152,7 +152,7 @@ $disabled = "disabled";
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="designation" class="form-label">Designation</label>
-                            <select id="designation" {{$disabled}} name="designation" class="select2 form-select">
+                            <select id="designation" disabled name="designation" class="select2 form-select">
                                 <option value="">Select Designation</option>
                                 @foreach(\App\Models\User::$designationRoles as $key => $designation)
                                 <option value="{{$key}}" {{ $user['designation'] == $key ? 'selected' : '' }}>{{$designation}}</option>
