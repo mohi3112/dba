@@ -130,7 +130,17 @@
 
         <div class="col-lg">
             <div class="card mb-4">
-                <h5 class="card-header">Updated Profile Information</h5>
+                <h5 class="card-header">Updated Profile Information
+                    <small class="text-muted ms-1"> ( Request Type:
+                        @if($updateRequest->change_type == \App\Models\UserUpdateRequest::CHANGE_TYPE_EDIT)
+                        <span class="badge bg-label-warning me-1">Update</span>
+                        @elseif($updateRequest->change_type == \App\Models\UserUpdateRequest::CHANGE_TYPE_DELETE)
+                        <span class="badge bg-label-danger me-1">Delete</span>
+                        @else
+                        <span class="badge bg-label-primary">Registered</span>
+                        @endif)
+                    </small>
+                </h5>
                 <table class="table table-borderless">
                     <tbody>
                         <tr>
@@ -256,7 +266,12 @@
                     },
                     success: function(response) {
                         alert('Request approved successfully!');
-                        location.reload();
+
+                        if (response.success && response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        } else {
+                            location.reload();
+                        }
                     },
                     error: function(xhr) {
                         alert('Error approving request.');

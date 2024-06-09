@@ -368,29 +368,52 @@ class UserController extends Controller
         $payload['user_id'] = $id;
         $payload['changes_requested_by'] = $loggedInUserId;
 
-        $existingRequest = UserUpdateRequest::where('user_id', $id)->where('approved_by_president', NULL)->where('approved_by_secretary', NULL)->first();
+        // Submit Request
+        $this->submitUpdateOrDeleteUserRequest($id, $payload);
+    }
+
+    // Remove the specified resource from storage.
+    public function destroy($id)
+    {
+        try {
+            // Find the user by ID
+            $user = User::findOrFail($id);
+
+            if (auth()->user()->hasRole('president')) {
+                // Set the deleted_by field with the authenticated user's ID
+                $user->deleted_by = Auth::id();
+                $user->save(); // Save the user to update the deleted_by field
+                // Soft delete the user
+                $user->delete();
+            } else {
+
+                $payload = $user->toArray();
+                // unset unnecessary fields
+                unset($payload['id'], $payload['created_at'], $payload['updated_at'], $payload['email_verified_at']);
+
+                $payload['user_id'] = $user->id;
+                $payload['change_type'] = UserUpdateRequest::CHANGE_TYPE_DELETE;
+                $payload['changes_requested_by'] = Auth::id();
+
+                // Submit Request
+                $this->submitUpdateOrDeleteUserRequest($user->id, $payload);
+            }
+
+            return redirect()->route('users')->with('success', 'User delete request submitted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('users')->with('error', 'Something went wrong. Please try again later.');
+        }
+    }
+
+    private function submitUpdateOrDeleteUserRequest($userId, $payload)
+    {
+        $existingRequest = UserUpdateRequest::where('user_id', $userId)->where('approved_by_president', NULL)->where('approved_by_secretary', NULL)->first();
 
         if ($existingRequest) {
             $existingRequest->update($payload);
         } else {
             UserUpdateRequest::create($payload);
         }
-    }
-
-    // Remove the specified resource from storage.
-    public function destroy($id)
-    {
-        // Find the user by ID
-        $user = User::findOrFail($id);
-
-        // Set the deleted_by field with the authenticated user's ID
-        $user->deleted_by = Auth::id();
-        $user->save(); // Save the user to update the deleted_by field
-
-        // Soft delete the user
-        $user->delete();
-
-        return redirect()->route('users')->with('success', 'User deleted successfully!');
     }
 
     public function deleteImage($id)
@@ -403,7 +426,7 @@ class UserController extends Controller
 
             $message = 'Image deleted successfully.';
         } catch (\Exception $e) {
-            $message = 'Something went wrong. Please try again.';
+            $message = 'Something went wrong. Please try again later.';
         }
 
         return response()->json(['message' => $message]);
@@ -560,7 +583,10 @@ class UserController extends Controller
 
     public function viewUpdateRequest($id)
     {
-        $updateRequest = UserUpdateRequest::with('user')->findOrFail($id);
+        $updateRequest = UserUpdateRequest::with(['user' => function ($query) {
+            $query->withTrashed();
+        }])->findOrFail($id);
+
         return view('users.view-update-request', compact('updateRequest'));
     }
 
@@ -574,25 +600,41 @@ class UserController extends Controller
 
             if ($userUpdateRequest) {
                 if (auth()->user()->hasRole('president')) {
+
                     $userUpdateRequest->approved_by_president = $isApproved;
-                    // update the user data
-                    if ($isApproved == 1) {
-                        $this->updateUserAfterApproval($userUpdateRequest->user_id, $userUpdateRequest);
-                    } else {
+
+                    if ($isApproved == 0) {
+                        // decline the request
                         $this->declineProfileChanges($userUpdateRequest->user_id);
+                    } else {
+                        if ($isApproved == 1) {
+
+                            if ($userUpdateRequest->change_type == UserUpdateRequest::CHANGE_TYPE_DELETE) {
+                                // update the user data
+                                $this->deleteUserAfterApproval($userUpdateRequest->user_id, $userUpdateRequest);
+                            } else {
+                                // update the user data
+                                $this->updateUserAfterApproval($userUpdateRequest->user_id, $userUpdateRequest);
+                            }
+                        }
                     }
                 } elseif (auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary')) {
+
                     $userUpdateRequest->approved_by_secretary = $isApproved;
+
                     if ($isApproved != 1) {
                         $this->declineProfileChanges($userUpdateRequest->user_id);
                     }
                 }
-
+                // update the user request
                 $userUpdateRequest->save();
 
-                return response()->json(['message' => 'Request approved successfully!'], 200);
+                if ($userUpdateRequest->change_type == UserUpdateRequest::CHANGE_TYPE_DELETE) {
+                    return response()->json(['success' => true, 'message' => 'Request approved successfully!', 'redirect_url' => route('users.update-requests')]);
+                }
+                return response()->json(['message' => 'Request approved successfully.'], 200);
             } else {
-                return response()->json(['message' => 'Request not found.'], 404);
+                return response()->json(['message' => 'Record not found.'], 404);
             }
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong.'], 500);
@@ -604,6 +646,18 @@ class UserController extends Controller
         $user = User::findOrFail($userId);
         $user->account_modified = false;
         $user->save();
+    }
+
+    // delete user after approve
+    public function deleteUserAfterApproval($userId, $userUpdateRequest)
+    {
+        $user = User::findOrFail($userId);
+
+        // Set the deleted_by field with the authenticated user's ID
+        $user->deleted_by = $userUpdateRequest->changes_requested_by;
+        $user->save(); // Save the user to update the deleted_by field
+        // Soft delete the user
+        $user->delete();
     }
 
     public function updateUserAfterApproval($userId, $userUpdateRequest)

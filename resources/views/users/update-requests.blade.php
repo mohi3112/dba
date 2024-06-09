@@ -111,7 +111,7 @@
                     <th>DOB (Age)</th>
                     <th>Gender</th>
                     <th>DESIGNATION</th>
-                    <th>Status</th>
+                    <th>Request Type</th>
                     <th>Secretary Approval</th>
                     <th>President Approval</th>
                     <th>Actions</th>
@@ -132,17 +132,19 @@
                             {{ \App\Models\User::$designationRoles[$updateRequestUser->designation] ?? '--' }}
                         </td>
                         <td>
-                            @if($updateRequestUser->status == 1)
-                            <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$updateRequestUser->status] }}</span>
-                            @elseif($updateRequestUser->status == 2)
-                            <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$updateRequestUser->status] }}</span>
+                            @if($updateRequestUser->change_type == \App\Models\UserUpdateRequest::CHANGE_TYPE_EDIT)
+                            <span class="badge bg-label-warning me-1">Update</span>
+                            @elseif($updateRequestUser->change_type == \App\Models\UserUpdateRequest::CHANGE_TYPE_DELETE)
+                            <span class="badge bg-label-danger me-1">Delete</span>
+                            @else
+                            <span class="badge bg-label-primary">Registered</span>
                             @endif
                         </td>
                         @php
                         $secretaryApproval = \App\Models\User::PENDING_REQUEST;
                         if($updateRequestUser->approved_by_secretary == true){
                         $secretaryApproval = \App\Models\User::APPROVED_REQUEST;
-                        } elseif ($updateRequestUser->approved_by_secretary != NULL &&$updateRequestUser->approved_by_secretary == false) {
+                        } elseif ($updateRequestUser->approved_by_secretary == false && $updateRequestUser->approved_by_secretary !== NULL) {
                         $secretaryApproval = \App\Models\User::REJECTED_REQUEST;
                         }
                         @endphp
@@ -151,7 +153,7 @@
                         $presidentApproval = \App\Models\User::PENDING_REQUEST;
                         if($updateRequestUser->approved_by_president == true){
                         $presidentApproval = \App\Models\User::APPROVED_REQUEST;
-                        } elseif ($updateRequestUser->approved_by_president != NULL && $updateRequestUser->approved_by_president == false) {
+                        } elseif ($updateRequestUser->approved_by_president == false && $updateRequestUser->approved_by_president !== NULL) {
                         $presidentApproval = \App\Models\User::REJECTED_REQUEST;
                         }
                         @endphp
