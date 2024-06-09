@@ -3,7 +3,7 @@
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account </h4>
 @php
 $disabled = "";
-if(isset($user->latestUpdateRequest) && $user->latestUpdateRequest->approved_by_secretary == 1 && $user->latestUpdateRequest->approved_by_president == 0) {
+if( isset($user['approved_by_secretary']) && isset($user['approved_by_president']) && $user['approved_by_secretary'] == 1 && $user['approved_by_president'] == 0) {
 $disabled = "disabled";
 }
 @endphp

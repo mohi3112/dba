@@ -212,10 +212,18 @@ class UserController extends Controller
     public function myAccount()
     {
         $userId = Auth::id();
-        $user = User::wherehas('latestUpdateRequest', function ($query) {
-            $query->whereNull('approved_by_president')->whereIn('approved_by_secretary', [NULL, true]);
-        })->orDoesntHave('latestUpdateRequest')
-            ->with('latestUpdateRequest')->find($userId);
+
+        $user = User::leftJoin('user_update_requests', function ($join) {
+            $join->on('users.id', '=', 'user_update_requests.user_id')
+                ->where(function ($query) {
+                    $query->whereNull('user_update_requests.approved_by_president')
+                        ->whereIn('user_update_requests.approved_by_secretary', [NULL, TRUE])
+                        ->whereNull('user_update_requests.deleted_at');
+                });
+        })
+            ->select('users.*', 'user_update_requests.approved_by_secretary', 'user_update_requests.approved_by_president')
+            ->where('users.id', $userId)
+            ->first();
 
         return view('users.myAccount', compact('user'));
     }
@@ -359,8 +367,14 @@ class UserController extends Controller
         $payload['change_type'] = UserUpdateRequest::CHANGE_TYPE_EDIT;
         $payload['user_id'] = $id;
         $payload['changes_requested_by'] = $loggedInUserId;
-        // user submitted for approval
-        UserUpdateRequest::create($payload);
+
+        $existingRequest = UserUpdateRequest::where('user_id', $id)->where('approved_by_president', NULL)->where('approved_by_secretary', NULL)->first();
+
+        if ($existingRequest) {
+            $existingRequest->update($payload);
+        } else {
+            UserUpdateRequest::create($payload);
+        }
     }
 
     // Remove the specified resource from storage.
