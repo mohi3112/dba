@@ -22,38 +22,41 @@ class UsersTableSeeder extends Seeder
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);
 
         // Assign role
         $superadmin->roles()->attach(1); // role_id 1 corresponds to 'superadmin'
 
-        // Create admin user
-        $admin = User::create([
+        // Create president user
+        $president = User::create([
             'first_name' => 'President',
             'last_name' => 'User',
             'email' => 'president@example.com',
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);
 
         // Assign role
-        $admin->roles()->attach(2); // role_id 2 corresponds to 'admin'
+        $president->roles()->attach(2); // role_id 2 corresponds to 'president'
 
-        // Create regular user
-        $user = User::create([
+        // Create lawyer user
+        $lawyer = User::create([
             'first_name' => 'Lawyer',
             'last_name' => 'User',
-            'email' => 'user@example.com',
+            'email' => 'lawyer@example.com',
             'gender' => 1,
             'mobile1' => 1234567890,
             'address' => 'Test Address',
+            'account_approved' => true,
             'password' => Hash::make('123456'),
         ]);
 
         // Assign role
-        $user->roles()->attach(8); // role_id 8 corresponds to 'user'
+        $lawyer->roles()->attach(8); // role_id 8 corresponds to 'lawyer'
     }
 }
