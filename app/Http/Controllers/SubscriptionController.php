@@ -25,7 +25,14 @@ class SubscriptionController extends Controller
     public function index()
     {
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);
-        $subscriptions = Subscription::paginate(10);
+
+        $subscriptionsQuery = Subscription::query();
+
+        if (auth()->user()->hasRole('lawyer') || auth()->user()->hasRole('librarian')) {
+            $subscriptionsQuery->where('user_id', auth()->user()->id);
+        }
+
+        $subscriptions = $subscriptionsQuery->paginate(10);
 
         return view('subscriptions.index', compact('subscriptions', 'activeLawyers'));
     }

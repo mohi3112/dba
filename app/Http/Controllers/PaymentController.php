@@ -25,7 +25,14 @@ class PaymentController extends Controller
     public function index()
     {
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);
-        $payments = Payment::paginate(10);
+
+        $paymentsQuery = Payment::query();
+
+        if (auth()->user()->hasRole('lawyer') || auth()->user()->hasRole('librarian')) {
+            $paymentsQuery->where('user_id', auth()->user()->id);
+        }
+
+        $payments = $paymentsQuery->paginate(10);
 
         return view('payments.index', compact('payments', 'activeLawyers'));
     }
