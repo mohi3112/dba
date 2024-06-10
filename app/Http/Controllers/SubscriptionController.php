@@ -54,10 +54,8 @@ class SubscriptionController extends Controller
             'user_id' => 'required',
             'subscription_type' => 'required',
             'start_date' => 'required|date',
+            'end_date' => 'required|date',
         ]);
-        $startDate = Carbon::parse($request->start_date);
-
-        $request['end_date'] = $startDate->addMonths($request->subscription_duration);
 
         Subscription::create($request->all());
 
@@ -101,18 +99,15 @@ class SubscriptionController extends Controller
         $request->validate([
             'user_id' => 'required',
             'subscription_type' => 'required',
-            'start_date' => 'required|date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date'
         ]);
-
-        $startDate = Carbon::parse($request->start_date);
-        $end_date = $startDate->addMonths($request->subscription_duration);
 
         $subscription = Subscription::findOrFail($id);
         $subscription->user_id = $request->user_id;
         $subscription->subscription_type = $request->subscription_type;
-        $subscription->subscription_duration = $request->subscription_duration;
         $subscription->start_date = $request->start_date;
-        $subscription->end_date = $end_date;
+        $subscription->end_date = $request->end_date;
         $subscription->save();
 
         return redirect()->route('subscriptions')->with('success', 'Subscription updated successfully.');

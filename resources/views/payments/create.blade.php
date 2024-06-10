@@ -1,14 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Payments /</span> Add Payment</h4>
-@if ($errors->any())
-@foreach ($errors->all() as $error)
-<div class="alert alert-danger alert-dismissible" role="alert">
-    {{ $error }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endforeach
-@endif
+
 <form method="POST" action="{{ route('payment.store') }}" id="formPayment" enctype="multipart/form-data">
     @csrf
     <div class="row">
@@ -20,31 +13,47 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="lawyer" class="form-label">Lawyer <span class="text-danger">*</span></label>
-                            <select id="lawyer" name="user_id" class="select2 form-select">
+                            <select id="lawyer" name="user_id" class="select2 form-select @error('user_id') is-invalid @enderror">
                                 <option value="">Select Lawyer</option>
                                 @foreach($activeLawyers as $lawyerId => $lawyerName)
-                                <option value="{{$lawyerId}}">{{$lawyerName}}</option>
+                                <option value="{{$lawyerId}}" {{ old('user_id') == $lawyerId ? 'selected' : ''}}>{{$lawyerName}}</option>
                                 @endforeach
                             </select>
+                            @error('user_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="payment_amount" class="form-label">Amount</label>
-                            <div class="input-group input-group-merge">
-                                <span class="input-group-text">₹</span>
-                                <input type="number" class="form-control" name="payment_amount" placeholder="Payment Amount">
-                                <span class="input-group-text">.00</span>
-                            </div>
+                            <select id="paymentAmount" name="payment_amount" class="select2 form-select @error('payment_amount') is-invalid @enderror">
+                                <option value="">Select Payment Amount</option>
+                                @foreach(\App\Models\Payment::$subscriptionPayments as $payment => $paymentValue)
+                                <option value="{{$payment}}" {{ old('payment_amount') == $payment ? 'selected' : ''}}>{{$paymentValue}}</option>
+                                @endforeach
+                            </select>
+                            @error('payment_amount')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="payment_date">Payment Date <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input class="form-control" type="date" name="payment_date" value="" id="">
+                                <input class="form-control @error('payment_date') is-invalid @enderror" type="date" name="payment_date" value="{{ old('payment_date') }}" id="">
                             </div>
+                            @error('payment_date')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="image" class="form-label">Payment Proof</label>
                             <div class="input-group">
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                <input type="file" class="form-control" id="image" name="image" value="{{ old('image') }}" accept="image/*">
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,6 @@ class AddDeletedAtToSubscriptionsTable extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->integer('subscription_duration')->after('subscription_type');
             $table->softDeletes();
             $table->integer('deleted_by')->nullable()->after('deleted_at');
         });
@@ -28,7 +27,6 @@ class AddDeletedAtToSubscriptionsTable extends Migration
     public function down()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('subscription_duration');
             $table->dropColumn('deleted_at');
             $table->dropColumn('deleted_by');
         });

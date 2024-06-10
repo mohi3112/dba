@@ -88,14 +88,6 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <label for="nameWithTitle" class="form-label">Subscription Duration:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    {{ $subscription->subscription_duration }} Months
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
                                                     <label for="nameWithTitle" class="form-label">Start Date:</label>
                                                 </div>
                                                 <div class="col-md-8">
