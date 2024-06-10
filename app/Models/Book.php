@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Book extends Model
 {
@@ -21,6 +22,14 @@ class Book extends Model
         'publish_date',
         'price',
     ];
+
+    public function getUniqueCodeAttribute()
+    {
+        $formattedDate = \Carbon\Carbon::parse($this->publish_date)->format('dmy');
+        $slug = Str::slug($this->book_name);
+
+        return strtoupper($slug . '-' . $this->book_volume . '-' . $formattedDate);
+    }
 
     // Define relationship with BookIssue model
     public function issuedBooks()

@@ -24,6 +24,7 @@
                     <th>Category Name</th>
                     <th>Author Name</th>
                     <th>Licence</th>
+                    <th>Unique Code</th>
                     <th>Available</th>
                     <th>Published On</th>
                     <!-- <th>Issue Book</th> -->
@@ -48,6 +49,7 @@
                     <td> {{ $categories[$book->book_category_id] }} </td>
                     <td> {{ $book->book_author_name }} </td>
                     <td> {{ $book->book_licence }} </td>
+                    <td> {{ $book->unique_code }} </td>
                     <td> <span class='badge {{ $class }} me-1'>{{ $available }}</span> </td>
                     <td>
                         {{ \Carbon\Carbon::parse($book->publish_date)->format('d-M-Y') }}
