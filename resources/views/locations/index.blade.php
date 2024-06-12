@@ -30,6 +30,10 @@
             <tbody class="table-border-bottom-0">
                 @php($i = 1)
                 @foreach($locations as $location)
+                    @php($requestReviewProcessStarted = 0)
+                    @if($location->inProgressReviewRequests && $location->inProgressReviewRequests->count() > 0)
+                        @php($requestReviewProcessStarted = 1)
+                    @endif
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $location->shop_number }} </td>
@@ -39,7 +43,11 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('locations.edit', $location->id) }}"><i class="fas fa-edit"></i></a>
+                            @if(!$requestReviewProcessStarted)
+                                <a class="color-unset" href="{{ route('locations.edit', $location->id) }}"><i class="fas fa-edit"></i></a>
+                            @else
+                                <span>In Review</span>
+                            @endif
                             <!-- view -->
                             <!-- <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$location->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <div class="modal fade" id="modalCenter{{$location->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -84,10 +92,12 @@
                                 </div>
                             </div> -->
                             <!-- delete -->
+                            @if(!$requestReviewProcessStarted) 
                             <form action="{{ route('locations.destroy', $location->id) }}" method="POST">
                                 @csrf
                                 <a class="pl-3 delete-location color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

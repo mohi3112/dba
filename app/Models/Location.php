@@ -22,6 +22,11 @@ class Location extends Model
         return $this->belongsTo(Vendor::class);
     }
 
+    public function inProgressReviewRequests()
+    {
+        return $this->hasOne(ModificationRequest::class, 'record_id')->where('table_name', 'locations')->where('approved_by_secretary', true)->whereNull('approved_by_president');
+    }
+
     public function getFullLocationNameAttribute()
     {
         $complex = $this->complex ? ', ' . $this->complex : '';
