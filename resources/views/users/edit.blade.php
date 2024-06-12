@@ -1,12 +1,18 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Edit Lawyer</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Edit User</h4>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible" role="alert">
     {{ session('success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+@php
+$isVendor = FALSE;
+if ($user->designation == \App\Models\User::DESIGNATION_VENDOR) {
+$isVendor = 'disabled';
+}
+@endphp
 <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
     @method('PUT')
@@ -124,14 +130,39 @@
                             </select>
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 not-for-vendor @if($isVendor) d-none @endif">
                             <label for="degrees" class="form-label">Degrees</label>
-                            <input type="text" class="form-control" placeholder="Degrees" id="degrees" name="degrees" value="{{$user->degrees}}">
+                            <input type="text" class="form-control" placeholder="Degrees" @if($isVendor) {{$isVendor}} @endif id="degrees" name="degrees" value="{{@$user->degrees}}">
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 for-vendor @if(!$isVendor) d-none @endif">
+                            <label for="business_name" class="form-label">Business Name</label>
+                            <input type="text" class="form-control" placeholder="Business Name" id="business_name" name="business_name" value="{{@$user->vendorInfo->business_name}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor @if(!$isVendor) d-none @endif">
+                            <label for="employees" class="form-label">Employees</label>
+                            <input type="text" class="form-control" placeholder="Employees" id="employees" name="employees" value="{{@$user->vendorInfo->employees}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor @if(!$isVendor) d-none @endif">
+                            <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                            <select name="location_id" class="select2 form-select  @error('location_id') is-invalid @enderror">
+                                <option value="">Select Location (Shop number, Floor, Complex)</option>
+                                @foreach($activeLocations as $locationId => $location)
+                                <option value="{{$locationId}}" @if(@$user->vendorInfo->location_id == $locationId) selected @endif>{{$location}}</option>
+                                @endforeach
+                            </select>
+                            @error('location_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 col-md-6 not-for-vendor @if($isVendor) d-none @endif">
                             <label for="chamber_number" class="form-label">Chamber Number</label>
-                            <input type="text" class="form-control" placeholder="Chamber number" id="chamber_number" name="chamber_number" value="{{$user->chamber_number}}">
+                            <input type="text" class="form-control" placeholder="Chamber number" @if($isVendor) {{$isVendor}} @endif id="chamber_number" name="chamber_number" value="{{@$user->chamber_number}}">
                         </div>
 
                         <div class="mb-3 col-md-6">
@@ -143,15 +174,10 @@
                             <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details">{{$user->other_details}}</textarea>
                         </div>
 
-                        @if(auth()->user()->hasRole('superadmin'))
+                        @if(auth()->user()->hasRole('superadmin') || auth()->user()->hasRole('president'))
                         <div class="mb-3 col-md-6">
-                            <label for="user_role" class="form-label">User Role</label>
-                            <select id="user_role" name="user_role" class="select2 form-select">
-                                <option value="">Select Role</option>
-                                @foreach(\App\Models\User::$designationRoles as $key => $userRole)
-                                <option value="{{$key}}" {{ $user->roles->first()->pivot->role_id == $key ? 'selected' : '' }}>{{$userRole}}</option>
-                                @endforeach
-                            </select>
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" type="password" aria-describedby="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" class="form-control @error('password') is-invalid @enderror" name="password">
                         </div>
                         @endif
 
@@ -251,10 +277,10 @@
                             </div>
                             @endif
                         </div>
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 not-for-vendor @if($isVendor) d-none @endif">
                             <label for="degree_pictures" class="form-label">Upload Degrees (Images)</label>
                             <div class="input-group">
-                                <input type="file" class="form-control" id="degree_pictures" name="degree_pictures[]" multiple accept="image/*">
+                                <input type="file" class="form-control" id="degree_pictures" @if($isVendor) {{$isVendor}} @endif name="degree_pictures[]" multiple accept="image/*">
                             </div>
                             @if($user->degree_images->count() > 0)
                             <div class="d-flex justify-content-end pt-1">
@@ -339,6 +365,20 @@
                         $('[data-bs-target="' + modalButton + '"]').remove();
                     }
                 });
+            }
+        });
+
+        $('#designation').on('change', function() {
+            if ($(this).val() == '{{\App\Models\User::DESIGNATION_VENDOR}}') {
+                $('#degrees, #chamber_number, #degree_pictures').prop('disabled', true);
+                $('.not-for-vendor').hide();
+                $('.for-vendor').show();
+                $('.for-vendor').removeClass('d-none');
+            } else {
+                $('#degrees, #chamber_number, #degree_pictures').prop('disabled', false);
+                $('.not-for-vendor').show();
+                $('.for-vendor').hide();
+                $('.not-for-vendor').removeClass('d-none');
             }
         });
     });

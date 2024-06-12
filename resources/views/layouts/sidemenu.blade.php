@@ -114,16 +114,19 @@
                         <div data-i18n="locations">All Locations</div>
                     </a>
                 </li>
+                @if(!auth()->user()->hasRole('vendor'))
                 <li class="menu-item {{ request()->is('locations/add') ? 'active' : '' }}">
                     <a href="{{route('locations.add')}}" class="menu-link">
                         <div data-i18n="Add location">Add Location</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
         <!-- End locations -->
 
         <!-- Start Lawyers -->
+        @if(!auth()->user()->hasRole('vendor'))
         <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -159,6 +162,7 @@
                 @endif
             </ul>
         </li>
+        @endif
         <!-- End Lawyers -->
 
         <!-- Start vendors -->
@@ -173,16 +177,19 @@
                         <div data-i18n="vendors">All Vendors</div>
                     </a>
                 </li>
+                @if(!auth()->user()->hasRole('vendor'))
                 <li class="menu-item {{ request()->is('vendors/add') ? 'active' : '' }}">
                     <a href="{{route('vendors.add')}}" class="menu-link">
                         <div data-i18n="Add vendor">Add Vendor</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
         <!-- End vendors -->
 
         <!-- Start Books -->
+        @if(!auth()->user()->hasRole('vendor'))
         <li class="menu-item {{ request()->is('bookCategor*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -227,6 +234,7 @@
                 </li> -->
             </ul>
         </li>
+        @endif
         <!-- End Books -->
         <!-- Start Payments -->
         <li class="menu-item {{ request()->is('payment*') ? 'active open' : '' }}">
@@ -249,6 +257,7 @@
         </li>
         <!-- End Payments -->
         <!-- Start Subscriptions -->
+        @if(!auth()->user()->hasRole('vendor'))
         <li class="menu-item {{ request()->is('subscription*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -267,6 +276,7 @@
                 </li>
             </ul>
         </li>
+        @endif
         <!-- End Subscriptions -->
     </ul>
 </aside>

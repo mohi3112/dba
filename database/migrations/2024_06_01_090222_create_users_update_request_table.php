@@ -36,6 +36,9 @@ class CreateUsersUpdateRequestTable extends Migration
             $table->tinyInteger('is_physically_disabled')->nullable();
             $table->string('chamber_number')->nullable();
             $table->string('other_details')->nullable();
+            $table->string('business_name')->nullable();
+            $table->string('employees')->nullable();
+            $table->integer('location_id')->nullable();
             $table->integer('change_type')->nullable()->comment('Edited = 1, Deleted = 2');
             $table->bigInteger('changes_requested_by');
             $table->tinyInteger('approved_by_secretary')->nullable();

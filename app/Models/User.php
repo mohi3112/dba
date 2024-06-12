@@ -125,6 +125,12 @@ class User extends Authenticatable
         return Carbon::parse($this->attributes['dob'])->age;
     }
 
+    public function getFullFatherNameAttribute()
+    {
+        $father_last_name = $this->father_last_name ? ' ' . $this->father_last_name : '';
+        return "{$this->father_first_name}{$father_last_name}";
+    }
+
     /**
      * The roles that belong to the user.
      */
@@ -194,6 +200,11 @@ class User extends Authenticatable
     public function latestUpdateRequest()
     {
         return $this->hasOne(UserUpdateRequest::class)->latest();
+    }
+
+    public function vendorInfo()
+    {
+        return $this->hasOne(Vendor::class, 'user_id', 'id');
     }
 
     public static function getAgeOperator($key)

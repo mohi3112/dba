@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add Lawyer</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add User</h4>
 <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
     <div class="row">
@@ -73,7 +73,7 @@
                             <label for="gender" class="form-label">Gender</label>
                             <select id="gender" name="gender" class="select2 form-select">
                                 @foreach(\App\Models\User::$genders as $key => $gender)
-                                <option value="{{$key}}" {{ old('gender') == $key ? 'selected' : '' }} >{{$gender}}</option>
+                                <option value="{{$key}}" {{ old('gender') == $key ? 'selected' : '' }}>{{$gender}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -117,12 +117,37 @@
                             </select>
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 not-for-vendor">
                             <label for="degrees" class="form-label">Degrees</label>
                             <input type="text" class="form-control" placeholder="Degrees" value="{{ old('degrees') }}" id="degrees" name="degrees">
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 for-vendor d-none">
+                            <label for="business_name" class="form-label">Business Name</label>
+                            <input type="text" class="form-control" placeholder="Business Name" id="business_name" name="business_name" value="{{old('business_name')}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor d-none">
+                            <label for="employees" class="form-label">Employees</label>
+                            <input type="text" class="form-control" placeholder="Employees" id="employees" name="employees" value="{{old('employees')}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor d-none">
+                            <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                            <select name="location_id" class="select2 form-select  @error('location_id') is-invalid @enderror">
+                                <option value="">Select Location (Shop number, Floor, Complex)</option>
+                                @foreach($activeLocations as $locationId => $location)
+                                <option value="{{$locationId}}" @if(old('location_id')==$locationId) selected @endif>{{$location}}</option>
+                                @endforeach
+                            </select>
+                            @error('location_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 col-md-6 not-for-vendor">
                             <label for="chamber_number" class="form-label">Chamber Number</label>
                             <input type="text" class="form-control" placeholder="Chamber number" value="{{ old('chamber_number') }}" id="chamber_number" name="chamber_number">
                         </div>
@@ -137,15 +162,10 @@
                             <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details"> {{ old('other_details') }} </textarea>
                         </div>
 
-                        @if(auth()->user()->hasRole('superadmin'))
+                        @if(auth()->user()->hasRole('superadmin') || auth()->user()->hasRole('president'))
                         <div class="mb-3 col-md-6">
-                            <label for="user_role" class="form-label">User Role</label>
-                            <select id="user_role" name="user_role" class="select2 form-select">
-                                <option value="">Select Role</option>
-                                @foreach(\App\Models\User::$designationRoles as $key => $userRole)
-                                <option value="{{$key}}" {{ old('user_role') == $key ? 'selected' : '' }}>{{$userRole}}</option>
-                                @endforeach
-                            </select>
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" type="password" aria-describedby="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" class="form-control @error('password') is-invalid @enderror" name="password">
                         </div>
                         @endif
 
@@ -193,7 +213,7 @@
                                 <input type="file" class="form-control" id="address_proof" name="address_proofs[]" multiple accept="image/*">
                             </div>
                         </div>
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-6 not-for-vendor">
                             <label for="degree_pictures" class="form-label">Upload Degrees (Images)</label>
                             <div class="input-group">
                                 <input type="file" class="form-control" id="degree_pictures" name="degree_pictures[]" multiple accept="image/*">
@@ -225,6 +245,20 @@
 
             // Update input value
             $(this).val(numericValue);
+        });
+
+        $('#designation').on('change', function() {
+            if ($(this).val() == '{{\App\Models\User::DESIGNATION_VENDOR}}') {
+                $('#degrees, #chamber_number, #degree_pictures').prop('disabled', true);
+                $('.not-for-vendor').hide();
+                $('.for-vendor').show();
+                $('.for-vendor').removeClass('d-none');
+            } else {
+                $('#degrees, #chamber_number, #degree_pictures').prop('disabled', false);
+                $('.not-for-vendor').show();
+                $('.for-vendor').hide();
+                $('.not-for-vendor').removeClass('d-none');
+            }
         });
     });
 </script>

@@ -6,6 +6,10 @@ $disabled = "";
 if( isset($user['approved_by_secretary']) && isset($user['approved_by_president']) && $user['approved_by_secretary'] == 1 && $user['approved_by_president'] == 0) {
 $disabled = "disabled";
 }
+$vendor = False;
+if($user['designation'] == \App\Models\User::DESIGNATION_VENDOR) {
+$vendor = True;
+}
 @endphp
 <div class="row">
     <div class="col-md-12">
@@ -159,7 +163,7 @@ $disabled = "disabled";
                                 @endforeach
                             </select>
                         </div>
-
+                        @if(!$vendor)
                         <div class="mb-3 col-md-6">
                             <label for="degrees" class="form-label">Degrees</label>
                             <input type="text" class="form-control" placeholder="Degrees" id="degrees" {{$disabled}} name="degrees" value="{{$user['degrees']}}">
@@ -169,7 +173,32 @@ $disabled = "disabled";
                             <label for="chamber_number" class="form-label">Chamber Number</label>
                             <input type="text" class="form-control" placeholder="Chamber number" id="chamber_number" {{$disabled}} name="chamber_number" value="{{$user['chamber_number']}}">
                         </div>
+                        @else
+                        <div class="mb-3 col-md-6 for-vendor">
+                            <label for="business_name" class="form-label">Business Name</label>
+                            <input type="text" class="form-control" placeholder="Business Name" id="business_name" name="business_name" value="{{@$user['business_name']}}">
+                        </div>
 
+                        <div class="mb-3 col-md-6 for-vendor">
+                            <label for="employees" class="form-label">Employees</label>
+                            <input type="text" class="form-control" placeholder="Employees" id="employees" name="employees" value="{{@$user['employees']}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor">
+                            <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                            <select name="location_id" class="select2 form-select  @error('location_id') is-invalid @enderror">
+                                <option value="">Select Location (Shop number, Floor, Complex)</option>
+                                @foreach($activeLocations as $locationId => $location)
+                                <option value="{{$locationId}}" @if(@$user['location_id']==$locationId) selected @endif>{{$location}}</option>
+                                @endforeach
+                            </select>
+                            @error('location_id')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        @endif
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="address">Residence Address</label>
                             <textarea id="address" class="form-control" id="address" {{$disabled}} name="address" placeholder="Residence address">{{$user['address']}}</textarea>
@@ -259,6 +288,7 @@ $disabled = "disabled";
                             </div>
                             @endif
                         </div>
+                        @if(!$vendor)
                         <div class="mb-3 col-md-6">
                             <label for="degree_pictures" class="form-label">Upload Degrees (Images)</label>
                             <div class="input-group">
@@ -294,6 +324,7 @@ $disabled = "disabled";
                             </div>
                             @endif
                         </div>
+                        @endif
                     </div>
                     <div class="mt-2">
                         <button type="submit" {{$disabled}} class="btn btn-primary me-2">Save changes</button>

@@ -8,15 +8,21 @@ use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
 use App\Models\UserUpdateRequest;
+use App\Models\Vendor;
+use App\Services\LocationService;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     protected $validationMessages;
+    protected $locationService;
 
-    public function __construct()
+    public function __construct(LocationService $locationService)
     {
+        $this->locationService = $locationService;
+
         $this->validationMessages = [
             'first_name.required' => 'The first name field is required.',
             'email.required' => 'The email field is required.',
@@ -86,7 +92,8 @@ class UserController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        return view('users.create');
+        $activeLocations = $this->locationService->getActiveLocations();
+        return view('users.create', compact('activeLocations'));
     }
 
     // Store a newly created resource in storage.
@@ -127,13 +134,26 @@ class UserController extends Controller
             if (!$request->has('is_physically_disabled')) {
                 $request->merge(['is_physically_disabled' => false]);
             }
+
+            if ($request->has('password')) {
+                $request->merge(['password' => Hash::make($request->input('password'))]);
+            }
+
             // Handle user role
-            $userRole = $request->input('user_role') ?? User::DESIGNATION_LAWYER; //Assign default user/lawyer role (role_id 3)
+            $userRole = $request->input('designation') ?? User::DESIGNATION_LAWYER; //Assign default user/lawyer role (role_id 3)
 
             // Create the user
             $user = User::create($request->all());
 
-            // Assign default role (role_id 3)
+            if ($user->designation == User::DESIGNATION_VENDOR) {
+                $payload['user_id'] = $user->id;
+                $payload['business_name'] = $request->input('business_name');
+                $payload['employees'] = $request->input('employees');
+                $payload['location_id'] = $request->input('location_id');
+                Vendor::create($payload);
+            }
+
+            // Assign default role (role_id 8)
             $user->roles()->attach($userRole);
 
             // Handle address proofs
@@ -205,7 +225,12 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        return view('users.edit', compact('user'));
+        if ($user->designation == User::DESIGNATION_VENDOR) {
+            $user = User::with('vendorInfo')->find($id);
+        }
+        $activeLocations = $this->locationService->getActiveLocations();
+
+        return view('users.edit', compact('user', 'activeLocations'));
     }
 
     // Show the form for editing the specified resource.
@@ -220,12 +245,14 @@ class UserController extends Controller
                         ->whereIn('user_update_requests.approved_by_secretary', [NULL, TRUE])
                         ->whereNull('user_update_requests.deleted_at');
                 });
-        })
-            ->select('users.*', 'user_update_requests.approved_by_secretary', 'user_update_requests.approved_by_president')
+        })->leftJoin('vendors', 'users.id', '=', 'vendors.user_id')
+            ->select('users.*', 'vendors.business_name', 'vendors.employees', 'vendors.location_id', 'user_update_requests.approved_by_secretary', 'user_update_requests.approved_by_president')
             ->where('users.id', $userId)
             ->first();
 
-        return view('users.myAccount', compact('user'));
+        $activeLocations = $this->locationService->getActiveLocations();
+
+        return view('users.myAccount', compact('user', 'activeLocations'));
     }
 
     // Update the specified resource in storage.
@@ -297,13 +324,34 @@ class UserController extends Controller
                 $user->status = $request->input('status');
                 $user->is_deceased = $request->input('is_deceased');
                 $user->is_physically_disabled = $request->input('is_physically_disabled');
+
+                if ($request->input('password') && $request->input('password') != "") {
+                    $user->password = Hash::make($request->input('password'));
+                }
+
                 if ($request->hasFile('image') && $base64Picture) {
                     $user->picture = $request->input('picture');
                 }
+
                 $user->save();
 
-                if ($request->input('user_role')) {
-                    $user->roles()->sync($request->input('user_role'));
+                if ($user->designation == User::DESIGNATION_VENDOR) {
+                    $existingRecord = Vendor::where('user_id', $user->id)->first();
+
+                    $payload['business_name'] = $request->input('business_name');
+                    $payload['employees'] = $request->input('employees');
+                    $payload['location_id'] = $request->input('location_id');
+
+                    if ($existingRecord) {
+                        $existingRecord->update($payload);
+                    } else {
+                        $payload['user_id'] = $user->id;
+                        Vendor::create($payload);
+                    }
+                }
+
+                if ($request->input('designation')) {
+                    $user->roles()->sync($request->input('designation'));
                 }
             } else {
                 $user->account_modified = true;
