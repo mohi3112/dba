@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BooksCategoryController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
@@ -44,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
     Route::get('lawyers/voting-list', [UserController::class, 'votingList'])->name('users.voting-list');
 
-    Route::get('lawyers/update-requests', [UserController::class, 'allUpdateRequests'])->name('users.update-requests');
+    Route::get('users/update-requests', [UserController::class, 'allUpdateRequests'])->name('users.update-requests');
     Route::get('lawyer/view-update-request/{id}', [UserController::class, 'viewUpdateRequest'])->name('user.view-update-request');
     Route::put('lawyer/approve-request', [UserController::class, 'approveRequest'])->name('user.approveRequest');
     Route::post('lawyer/delete-update-request/{id}', [UserController::class, 'deleteUpdateRequest'])->name('user.delete-update-request');
@@ -123,6 +124,10 @@ Route::middleware('auth')->group(function () {
     Route::post('vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
 
     Route::get('account', [UserController::class, 'myAccount'])->name('account');
+
+    Route::get('requests/all-requests', [Controller::class, 'allRequests'])->name('requests.update-requests');
+    Route::get('requests/view-request/{id}', [Controller::class, 'viewRequest'])->name('request.view-update-request');
+    Route::put('requests/action-on-request', [Controller::class, 'actionOnRequest'])->name('request.approveRequest');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

@@ -23,6 +23,22 @@ class ModificationRequest extends Model
     const REQUEST_TYPE_UPDATE = 1;
     const REQUEST_TYPE_DELETE = 2;
 
+    const PENDING_REQUEST = "Pending";
+    const APPROVED_REQUEST = "Approved";
+    const REJECTED_REQUEST = "Rejected";
+
+    public static $tableNames = [
+        'locations' => 'Location',
+        'books' => 'Books',
+        'payments' => 'Payment',
+        'subscriptions' => 'Subscription',
+    ];
+
+    public static $reuqestType = [
+        self::REQUEST_TYPE_UPDATE => 'Update',
+        self::REQUEST_TYPE_DELETE => 'Delete'
+    ];
+
     protected $casts = [
         'changes' => 'array'
     ];
@@ -40,6 +56,6 @@ class ModificationRequest extends Model
     // Relationship to the Location model
     public function location()
     {
-        return $this->belongsTo(Location::class, 'record_id')->where('table_name', 'locations')->where('approved_by_secretary', true)->whereNull('approved_by_president');
+        return $this->belongsTo(Location::class, 'record_id');
     }
 }

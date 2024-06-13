@@ -77,7 +77,30 @@
                 </li> -->
             </ul>
         </li>
-        <!-- End locations -->
+        <!-- End requests -->
+        @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
+        <!-- Start requests -->
+        <li class="menu-item {{ request()->is('user*') || request()->is('request*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="account">Requests</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('users/update-requests') ? 'active' : '' }}">
+                    <a href="{{route('users.update-requests')}}" class="menu-link">
+                        <div data-i18n="update-requests">User Requests</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ request()->is('requests/all-requests') ? 'active' : '' }}">
+                    <a href="{{route('requests.update-requests')}}" class="menu-link">
+                        <div data-i18n="update-requests">Other Requests</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End requests -->
+        @endif
 
         <!-- Start roles -->
         @if(auth()->user()->hasRole('superadmin'))
@@ -153,13 +176,6 @@
                         <div data-i18n="voting-list">Voting List</div>
                     </a>
                 </li>
-                @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
-                <li class="menu-item {{ request()->is('lawyers/update-requests') ? 'active' : '' }}">
-                    <a href="{{route('users.update-requests')}}" class="menu-link">
-                        <div data-i18n="update-requests">Update Requests</div>
-                    </a>
-                </li>
-                @endif
             </ul>
         </li>
         @endif

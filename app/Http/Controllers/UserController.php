@@ -576,20 +576,6 @@ class UserController extends Controller
         return view('users.voting-list', compact('users'));
     }
 
-    public static function getApprovalValue($key)
-    {
-        switch ($key) {
-            case 'yes':
-                return true;
-            case 'no':
-                return false;
-            case 'pending':
-                return null;
-            default:
-                return;
-        }
-    }
-
     public function allUpdateRequests(Request $request)
     {
         $updateRequestsQuery = UserUpdateRequest::query();

@@ -68,10 +68,11 @@ class LocationController extends Controller
 
                 return redirect()->route('locations')->with('success', 'Location record updated successfully.');
             } else {
+                $changes = $request->except(['_token', '_method']);
                 $this->submitChangeRequest([
                     "table_name" => 'locations',
                     "record_id" => $location->id,
-                    "changes" => $request->all(),
+                    "changes" => $changes,
                     "action" => ModificationRequest::REQUEST_TYPE_UPDATE,
                     "requested_by" => Auth::id(),
                 ]);
