@@ -20,4 +20,9 @@ class BooksCategory extends Model
     {
         return $this->hasMany(Book::class, 'book_category_id', 'id');
     }
+
+    public function availableBooks()
+    {
+        return $this->hasMany(Book::class, 'book_category_id', 'id')->where('available', true);
+    }
 }

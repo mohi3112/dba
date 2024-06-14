@@ -16,7 +16,7 @@ class BooksCategoryController extends Controller
      */
     public function index()
     {
-        $booksCategories = BooksCategory::withCount('books')->orderBy('id', 'desc')->paginate(10);
+        $booksCategories = BooksCategory::withCount('availableBooks')->orderBy('id', 'desc')->paginate(10);
 
         return view('booksCategory.index', compact('booksCategories'));
     }

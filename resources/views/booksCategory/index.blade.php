@@ -36,7 +36,7 @@
                     <td> {{ $booksCategory->category_name }} </td>
                     <td> {{ $booksCategory->published_volumes }} </td>
                     <td> {{ $booksCategory->published_total_volumes }} </td>
-                    <td> {{ $booksCategory->books_count }} </td>
+                    <td> {{ $booksCategory->available_books_count }} </td>
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
