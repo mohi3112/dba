@@ -49,8 +49,8 @@
                             </div>
 
                             @if($payment->payment_proof)
-                            <div class="d-flex justify-content-end pt-1">
-                                <span type="button" class="text-danger" data-bs-toggle="modal" data-bs-target="#paymentProofModal">Check Uploaded Proof</span>
+                            <div class="demo-inline-spacing">
+                                <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#paymentProofModal">Uploaded Document</span>
                             </div>
                             <!-- Modal -->
                             <div class="modal fade" id="paymentProofModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
