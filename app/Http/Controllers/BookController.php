@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\BooksCategory;
 use App\Models\IssuedBook;
+use App\Models\ModificationRequest;
 use App\Services\LawyerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +28,7 @@ class BookController extends Controller
         // Fetch books with issued books
         $books = Book::with(['issuedBooks' => function ($query) {
             $query->orderBy('issue_date', 'desc');
-        }])->paginate(10);
+        }])->orderBy('id', 'desc')->paginate(10);
 
         // Add a flag to each book
         foreach ($books as $book) {
@@ -106,18 +106,35 @@ class BookController extends Controller
         ]);
 
         $book = Book::findOrFail($id);
-        $book->book_name = $request->book_name;
-        $book->book_author_name = $request->book_author_name;
-        $book->book_licence = $request->book_licence;
-        $book->book_licence_valid_upto = $request->book_licence_valid_upto;
-        $book->available = $request->available;
-        $book->book_category_id = $request->book_category_id;
-        $book->book_volume = $request->book_volume;
-        $book->publish_date = $request->publish_date;
-        $book->price = $request->price;
-        $book->save();
+        if ($book) {
+            if (auth()->user()->hasRole('president')) {
+                $book->book_name = $request->book_name;
+                $book->book_author_name = $request->book_author_name;
+                $book->book_licence = $request->book_licence;
+                $book->book_licence_valid_upto = $request->book_licence_valid_upto;
+                $book->available = $request->available;
+                $book->book_category_id = $request->book_category_id;
+                $book->book_volume = $request->book_volume;
+                $book->publish_date = $request->publish_date;
+                $book->price = $request->price;
+                $book->save();
 
-        return redirect()->route('books')->with('success', 'Book updated successfully.');
+                return redirect()->route('books')->with('success', 'Book updated successfully.');
+            } else {
+                $changes = $request->except(['_token', '_method']);
+                $this->submitChangeRequest([
+                    "table_name" => 'books',
+                    "record_id" => $book->id,
+                    "changes" => $changes,
+                    "action" => ModificationRequest::REQUEST_TYPE_UPDATE,
+                    "requested_by" => Auth::id(),
+                ]);
+
+                return redirect()->route('books')->with('success', 'Book updated request submitted successfully.');
+            }
+        }
+
+        return redirect()->route('books')->with('error', 'Something went wrong.');
     }
 
     public function destroy($id)
@@ -125,13 +142,26 @@ class BookController extends Controller
         // Find the user by ID
         $book = Book::findOrFail($id);
 
-        $book->deleted_by = Auth::id();
-        $book->save();
+        if ($book) {
+            if (auth()->user()->hasRole('president')) {
+                $book->deleted_by = Auth::id();
+                $book->save();
 
-        // Soft delete the book
-        $book->delete();
+                // Soft delete the book
+                $book->delete();
 
-        return redirect()->route('books')->with('success', 'Book deleted successfully!');
+                return redirect()->route('books')->with('success', 'Book deleted successfully!');
+            } else {
+                $this->submitChangeRequest([
+                    "table_name" => 'books',
+                    "record_id" => $book->id,
+                    "action" => ModificationRequest::REQUEST_TYPE_DELETE,
+                    "requested_by" => Auth::id(),
+                ]);
+                return redirect()->route('books')->with('success', 'Book delete request submitted successfully!');
+            }
+        }
+        return redirect()->route('books')->with('error', 'Something went wrong.');
     }
 
     public function issueBook(Request $request)
@@ -188,10 +218,5 @@ class BookController extends Controller
             // ->whereNull('return_date')
             ->orderBy('return_date', 'asc')->paginate(10);
         return view('books.issuedBooks', compact('issuedBooks'));
-    }
-
-    public function getCategoriesList()
-    {
-        return BooksCategory::pluck('category_name', 'id');
     }
 }

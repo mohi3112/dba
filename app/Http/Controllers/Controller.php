@@ -16,6 +16,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function getCategoriesList()
+    {
+        return BooksCategory::pluck('category_name', 'id');
+    }
+
     public function submitChangeRequest($payload = [])
     {
         if (empty($payload)) return;
@@ -77,8 +82,12 @@ class Controller extends BaseController
     public function viewRequest($id)
     {
         $request = ModificationRequest::findOrFail($id);
+        $categories = [];
+        if ($request->table_name == 'books') {
+            $categories = $this->getCategoriesList();
+        }
 
-        return view('requests.view-request', compact('request'));
+        return view('requests.view-request', compact('request', 'categories'));
     }
 
     public function actionOnRequest(Request $request)
@@ -132,6 +141,10 @@ class Controller extends BaseController
             $record = BooksCategory::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'books') {
+            $record = Book::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -147,6 +160,10 @@ class Controller extends BaseController
 
         if ($requestRecord->table_name == 'books_categories') {
             $record = BooksCategory::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'books') {
+            $record = Book::findOrFail($recordId);
         }
 
         if ($record) {

@@ -64,4 +64,9 @@ class ModificationRequest extends Model
     {
         return $this->belongsTo(BooksCategory::class, 'record_id');
     }
+    // Relationship to the Book model
+    public function book()
+    {
+        return $this->belongsTo(Book::class, 'record_id');
+    }
 }

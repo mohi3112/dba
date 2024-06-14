@@ -70,9 +70,74 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Category Name:</td>
+                        <td>Published Total Volumes:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ $request->bookCategory->published_total_volumes ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'books')
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $categories[$request->book->book_category_id] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->book_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Author Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->book_author_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Price:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->price ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Volume:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->book_volume ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Licence:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->book_licence ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Licence Valid Upto:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->book->book_licence_valid_upto) ? \Carbon\Carbon::parse($request->book->book_licence_valid_upto)->format('d-M-Y') :    '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Publish Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->book->publish_date ? \Carbon\Carbon::parse($request->book->publish_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <?php
+                    if ($request->book->available == 1) {
+                        $available = 'Yes';
+                        $class = 'bg-label-success';
+                    } else {
+                        $available = 'No';
+                        $class = 'bg-label-warning';
+                    }
+                    ?>
+                    <tr>
+                        <td>Available:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0"><span class='badge {{ $class }} me-1'>{{ $available }}</span></h5>
                         </td>
                     </tr>
                     @endif
@@ -134,9 +199,74 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Category Name:</td>
+                        <td>Published Total Volumes:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ $request->changes['published_total_volumes'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'books')
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $categories[$request->changes['book_category_id']] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['book_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Author Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['book_author_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Price:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['price'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Volume:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['book_volume'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Book Licence:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['book_licence'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Licence Valid Upto:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['book_licence_valid_upto']) ? \Carbon\Carbon::parse($request->changes['book_licence_valid_upto'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Publish Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['publish_date'] ? \Carbon\Carbon::parse($request->changes['publish_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Available:</td>
+                        <?php
+                        if ($request->changes['available'] == 1) {
+                            $available = 'Yes';
+                            $class = 'bg-label-success';
+                        } else {
+                            $available = 'No';
+                            $class = 'bg-label-warning';
+                        }
+                        ?>
+                        <td class="py-3">
+                            <h5 class="mb-0"><span class='badge {{ $class }} me-1'>{{ $available }}</span></h5>
                         </td>
                     </tr>
                     @endif
