@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
+use App\Models\BooksCategory;
 use App\Models\Location;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -126,6 +128,10 @@ class Controller extends BaseController
             $record = Location::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'books_categories') {
+            $record = BooksCategory::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -137,6 +143,10 @@ class Controller extends BaseController
     {
         if ($requestRecord->table_name == 'locations') {
             $record = Location::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'books_categories') {
+            $record = BooksCategory::findOrFail($recordId);
         }
 
         if ($record) {

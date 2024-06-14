@@ -21,8 +21,8 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Category Name</th>
-                    <th>Publised Volumns</th>
-                    <th>Publised Total Volumns</th>
+                    <th>Publised volumes</th>
+                    <th>Publised Total volumes</th>
                     <th>Available Books</th>
                     <th>Actions</th>
                 </tr>
@@ -34,8 +34,8 @@
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $booksCategory->category_name }} </td>
-                    <td> {{ $booksCategory->published_volumns }} </td>
-                    <td> {{ $booksCategory->published_total_volumns }} </td>
+                    <td> {{ $booksCategory->published_volumes }} </td>
+                    <td> {{ $booksCategory->published_total_volumes }} </td>
                     <td> {{ $booksCategory->books_count }} </td>
                     <td>
                         <div class="d-flex align-items-center">

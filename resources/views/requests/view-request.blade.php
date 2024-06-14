@@ -56,6 +56,26 @@
                         </td>
                     </tr>
                     @endif
+                    @if($request->table_name == 'books_categories')
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->bookCategory->category_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Published Volumes:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->bookCategory->published_volumes ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->bookCategory->published_total_volumes ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -97,6 +117,26 @@
                         <td> Rent:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ $request->changes['rent'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'books_categories')
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['category_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Published Volumes:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['published_volumes'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Category Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['published_total_volumes'] ?? '--' }}</h5>
                         </td>
                     </tr>
                     @endif

@@ -16,14 +16,13 @@ class CreateBooksCategoriesTable extends Migration
         Schema::create('books_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('category_name');
-            $table->string('published_volumns')->nullable();
-            $table->string('published_total_volumns')->nullable();
+            $table->string('published_volumes')->nullable();
+            $table->string('published_total_volumes')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
-
         });
-        
+
         Schema::table('books', function (Blueprint $table) {
             $table->unsignedBigInteger('book_category_id')->after('id');
             $table->string('book_volume')->nullable()->after('book_licence');

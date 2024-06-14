@@ -20,17 +20,17 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="published_total_volumns" class="form-label">Published Total Number Of Volumns <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('published_total_volumns') is-invalid @enderror" placeholder="Published Total Number Of Volumns" id="published_total_volumns" value="{{ old('published_total_volumns') }}" name="published_total_volumns">
-                            @error('published_total_volumns')
+                            <label for="published_total_volumes" class="form-label">Published Total Number Of volumes <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('published_total_volumes') is-invalid @enderror" placeholder="Published Total Number Of volumes" id="published_total_volumes" value="{{ old('published_total_volumes') }}" name="published_total_volumes">
+                            @error('published_total_volumes')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="published_volumns" class="form-label">Published Volumns</label>
-                            <input type="text" class="form-control" placeholder="Published Volumns. e.g. vol-1, vol-2" id="published_volumns" value="{{ old('published_volumns') }}" name="published_volumns">
+                            <label for="published_volumes" class="form-label">Published volumes</label>
+                            <input type="text" class="form-control" placeholder="Published volumes. e.g. vol-1, vol-2" id="published_volumes" value="{{ old('published_volumes') }}" name="published_volumes">
                         </div>
                     </div>
                     <div class="mt-2">

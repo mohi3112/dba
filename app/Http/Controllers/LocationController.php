@@ -103,9 +103,10 @@ class LocationController extends Controller
                     "action" => ModificationRequest::REQUEST_TYPE_DELETE,
                     "requested_by" => Auth::id(),
                 ]);
+                return redirect()->route('locations')->with('success', 'Location delete request submitted successfully!');
             }
         }
 
-        return redirect()->route('locations')->with('success', 'Location deleted request submitted successfully!');
+        return redirect()->route('locations')->with('error', 'Something went wrong.');
     }
 }

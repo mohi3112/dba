@@ -11,8 +11,8 @@ class BooksCategory extends Model
 
     protected $fillable = [
         'category_name',
-        'published_volumns',
-        'published_total_volumns',
+        'published_volumes',
+        'published_total_volumes',
         'deleted_by',
     ];
 

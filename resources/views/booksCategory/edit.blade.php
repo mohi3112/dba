@@ -21,22 +21,22 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="published_total_volumns" class="form-label">Published Total Volumns <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('published_total_volumns') is-invalid @enderror" placeholder="Book Author Name" id="published_total_volumns" value="{{ $booksCategory->published_total_volumns }}" name="published_total_volumns">
-                            @error('published_total_volumns')
+                            <label for="published_total_volumes" class="form-label">Published Total volumes <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control @error('published_total_volumes') is-invalid @enderror" placeholder="Book Author Name" id="published_total_volumes" value="{{ $booksCategory->published_total_volumes }}" name="published_total_volumes">
+                            @error('published_total_volumes')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="published_volumns" class="form-label">Published Volumns</label>
-                            <input type="text" class="form-control" placeholder="Published Volumns. e.g. vol-1, vol-2" id="published_volumns" value="{{ $booksCategory->published_volumns }}" name="published_volumns">
+                            <label for="published_volumes" class="form-label">Published volumes</label>
+                            <input type="text" class="form-control" placeholder="Published volumes. e.g. vol-1, vol-2" id="published_volumes" value="{{ $booksCategory->published_volumes }}" name="published_volumes">
                         </div>
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <a type="reset" href="{{route('books')}}" class="btn btn-outline-secondary">Cancel</a>
+                        <a type="reset" href="{{route('bookCategories')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                     <!-- </form> -->
                 </div>

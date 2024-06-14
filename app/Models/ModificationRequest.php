@@ -30,6 +30,7 @@ class ModificationRequest extends Model
     public static $tableNames = [
         'locations' => 'Location',
         'books' => 'Books',
+        'books_categories' => 'Books Category',
         'payments' => 'Payment',
         'subscriptions' => 'Subscription',
     ];
@@ -57,5 +58,10 @@ class ModificationRequest extends Model
     public function location()
     {
         return $this->belongsTo(Location::class, 'record_id');
+    }
+    // Relationship to the Book categories model
+    public function bookCategory()
+    {
+        return $this->belongsTo(BooksCategory::class, 'record_id');
     }
 }
