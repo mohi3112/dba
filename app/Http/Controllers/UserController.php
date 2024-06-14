@@ -84,7 +84,7 @@ class UserController extends Controller
             $usersQuery->where('is_physically_disabled', true);
         }
 
-        $users = $usersQuery->paginate(10);
+        $users = $usersQuery->orderBy('id', 'desc')->paginate(10);
 
         return view('users.index', compact('users'));
     }
@@ -142,10 +142,17 @@ class UserController extends Controller
             // Handle user role
             $userRole = $request->input('designation') ?? User::DESIGNATION_LAWYER; //Assign default user/lawyer role (role_id 3)
 
+            $accountApproved = false;
+            if (auth()->user()->hasRole('president')) {
+                $accountApproved = true;
+            }
+            $request->merge(['account_approved' => $accountApproved]);
+
             // Create the user
             $user = User::create($request->all());
 
             if ($user->designation == User::DESIGNATION_VENDOR) {
+                $payload = $request->all();
                 $payload['user_id'] = $user->id;
                 $payload['business_name'] = $request->input('business_name');
                 $payload['employees'] = $request->input('employees');
@@ -155,6 +162,18 @@ class UserController extends Controller
 
             // Assign default role (role_id 8)
             $user->roles()->attach($userRole);
+
+            // submit for approval
+            if (!$accountApproved) {
+                $payload = $request->all();
+                // user submitted for approval
+                $payload['user_id'] = $user->id;
+                $payload['changes_requested_by'] = Auth::id();
+                $payload['change_type'] = UserUpdateRequest::CHANGE_TYPE_EDIT;
+
+                // user submitted for approval
+                UserUpdateRequest::create($payload);
+            }
 
             // Handle address proofs
             if ($request->hasFile('address_proofs')) {
