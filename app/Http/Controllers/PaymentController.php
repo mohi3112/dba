@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ModificationRequest;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\LawyerService;
@@ -32,7 +33,7 @@ class PaymentController extends Controller
             $paymentsQuery->where('user_id', auth()->user()->id);
         }
 
-        $payments = $paymentsQuery->paginate(10);
+        $payments = $paymentsQuery->orderBy('created_at', 'desc')->paginate(10);
 
         return view('payments.index', compact('payments', 'activeLawyers'));
     }
@@ -116,19 +117,36 @@ class PaymentController extends Controller
 
         $payment = Payment::findOrFail($id);
 
-        // Handle the profile image
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $base64Picture = base64_encode(file_get_contents($file->getPathname()));
-            $payment->payment_proof = $base64Picture;
+        if ($payment) {
+            if (auth()->user()->hasRole('president')) {
+                // Handle the profile image
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $base64Picture = base64_encode(file_get_contents($file->getPathname()));
+                    $payment->payment_proof = $base64Picture;
+                }
+
+                $payment->user_id = $request->user_id;
+                $payment->payment_amount = $request->payment_amount;
+                $payment->payment_date = $request->payment_date;
+                $payment->save();
+
+                return redirect()->route('payments')->with('success', 'Payment updated successfully.');
+            } else {
+                $changes = $request->except(['_token', '_method']);
+                $this->submitChangeRequest([
+                    "table_name" => 'payments',
+                    "record_id" => $payment->id,
+                    "changes" => $changes,
+                    "action" => ModificationRequest::REQUEST_TYPE_UPDATE,
+                    "requested_by" => Auth::id(),
+                ]);
+
+                return redirect()->route('payments')->with('success', 'Payment updated request submitted successfully.');
+            }
         }
 
-        $payment->user_id = $request->user_id;
-        $payment->payment_amount = $request->payment_amount;
-        $payment->payment_date = $request->payment_date;
-        $payment->save();
-
-        return redirect()->route('payments')->with('success', 'Payment record updated successfully.');
+        return redirect()->route('payments')->with('error', 'Something went wrong.');
     }
 
     public function destroy($id)
@@ -136,13 +154,27 @@ class PaymentController extends Controller
         // Find the payment by ID
         $payment = Payment::findOrFail($id);
 
-        $payment->deleted_by = Auth::id();
-        $payment->save();
+        if ($payment) {
+            if (auth()->user()->hasRole('president')) {
+                $payment->deleted_by = Auth::id();
+                $payment->save();
 
-        // Soft delete the payment
-        $payment->delete();
+                // Soft delete the payment
+                $payment->delete();
 
-        return redirect()->route('payments')->with('success', 'Payment record deleted successfully!');
+                return redirect()->route('payments')->with('success', 'Payment record deleted successfully!');
+            } else {
+                $this->submitChangeRequest([
+                    "table_name" => 'payments',
+                    "record_id" => $payment->id,
+                    "action" => ModificationRequest::REQUEST_TYPE_DELETE,
+                    "requested_by" => Auth::id(),
+                ]);
+                return redirect()->route('payments')->with('success', 'Payment record delete request submitted successfully!');
+            }
+        }
+
+        return redirect()->route('payments')->with('error', 'Something went wrong.');
     }
 
     public function deleteImage($id)

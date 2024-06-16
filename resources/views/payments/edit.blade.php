@@ -30,11 +30,17 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="payment_amount" class="form-label">Amount</label>
-                            <div class="input-group input-group-merge">
-                                <span class="input-group-text">₹</span>
-                                <input type="number" class="form-control" value="{{$payment->payment_amount}}" name="payment_amount" placeholder="Payment Amount">
-                                <span class="input-group-text">.00</span>
-                            </div>
+                            <select id="paymentAmount" name="payment_amount" class="select2 form-select @error('payment_amount') is-invalid @enderror">
+                                <option value="">Select Payment Amount</option>
+                                @foreach(\App\Models\Payment::$subscriptionPayments as $paymentKey => $paymentValue)
+                                <option value="{{$paymentKey}}" {{ $payment->payment_amount == $paymentKey ? 'selected' : ''}}>{{$paymentValue}}</option>
+                                @endforeach
+                            </select>
+                            @error('payment_amount')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="payment_date">Payment Date <span class="text-danger">*</span></label>

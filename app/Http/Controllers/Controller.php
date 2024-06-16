@@ -10,11 +10,21 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\ModificationRequest;
+use App\Models\Payment;
+use App\Models\Subscription;
+use App\Services\LawyerService;
 use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected $lawyerService;
+
+    public function __construct(LawyerService $lawyerService)
+    {
+        $this->lawyerService = $lawyerService;
+    }
 
     public function getCategoriesList()
     {
@@ -82,12 +92,18 @@ class Controller extends BaseController
     public function viewRequest($id)
     {
         $request = ModificationRequest::findOrFail($id);
+
         $categories = [];
         if ($request->table_name == 'books') {
             $categories = $this->getCategoriesList();
         }
 
-        return view('requests.view-request', compact('request', 'categories'));
+        $activeLawyers = [];
+        if ($request->table_name == 'payments' || $request->table_name == 'subscriptions') {
+            $activeLawyers = $this->lawyerService->getActiveLawyers();
+        }
+
+        return view('requests.view-request', compact('request', 'categories', 'activeLawyers'));
     }
 
     public function actionOnRequest(Request $request)
@@ -145,6 +161,14 @@ class Controller extends BaseController
             $record = Book::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'payments') {
+            $record = Payment::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'subscriptions') {
+            $record = Subscription::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -164,6 +188,14 @@ class Controller extends BaseController
 
         if ($requestRecord->table_name == 'books') {
             $record = Book::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'payments') {
+            $record = Payment::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'subscriptions') {
+            $record = Subscription::findOrFail($recordId);
         }
 
         if ($record) {

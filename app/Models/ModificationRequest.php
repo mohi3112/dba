@@ -69,4 +69,14 @@ class ModificationRequest extends Model
     {
         return $this->belongsTo(Book::class, 'record_id');
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'record_id');
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class, 'record_id');
+    }
 }

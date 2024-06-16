@@ -141,6 +141,77 @@
                         </td>
                     </tr>
                     @endif
+                    @if($request->table_name == 'payments')
+                    <tr>
+                        <td>Lawyer:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->payment->user_id) ? $activeLawyers[$request->payment->user_id] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->payment->payment_amount ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Payment Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->payment->payment_date) ? \Carbon\Carbon::parse($request->payment->payment_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @if($request->payment->payment_proof)
+                    <tr>
+                        <td>Payment Proof:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">
+                                <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#paymentProofModal">Uploaded Document</span>
+                            </h5>
+                        </td>
+                    </tr>
+                    <!-- Modal -->
+                    <div class="modal fade" id="paymentProofModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="data:image/jpeg;base64,{{ $request->payment->payment_proof }}" alt="Description of Image" style="max-width: 750px;">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @endif
+                    @if($request->table_name == 'subscriptions')
+                    <tr>
+                        <td>Lawyer:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->subscription->user_id ? $activeLawyers[$request->subscription->user_id] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Subscription Type:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->subscription->subscription_type) ? \App\Models\Subscription::$subscriptionTypes[$request->subscription->subscription_type] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->subscription->start_date) ? \Carbon\Carbon::parse($request->subscription->start_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->subscription->end_date) ? \Carbon\Carbon::parse($request->subscription->end_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -267,6 +338,77 @@
                         ?>
                         <td class="py-3">
                             <h5 class="mb-0"><span class='badge {{ $class }} me-1'>{{ $available }}</span></h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'payments')
+                    <tr>
+                        <td>Lawyer:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['user_id'] ? $activeLawyers[$request->changes['user_id']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['payment_amount'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Payment Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['payment_date']) ? \Carbon\Carbon::parse($request->changes['payment_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @if(isset($request->changes['payment_proof']))
+                    <tr>
+                        <td>Payment Proof:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">
+                                <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#paymentProofModal">Uploaded Document</span>
+                            </h5>
+                        </td>
+                    </tr>
+                    <!-- Modal -->
+                    <div class="modal fade" id="paymentProofModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="data:image/jpeg;base64,{{ $request->changes['payment_proof'] }}" alt="Description of Image" style="max-width: 750px;">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @endif
+                    @if($request->table_name == 'subscriptions')
+                    <tr>
+                        <td>Lawyer:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['user_id'] ? $activeLawyers[$request->changes['user_id']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Subscription Type:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['subscription_type']) ? \App\Models\Subscription::$subscriptionTypes[$request->changes['subscription_type']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['start_date']) ? \Carbon\Carbon::parse($request->changes['start_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['end_date']) ? \Carbon\Carbon::parse($request->changes['end_date'])->format('d-M-Y') : '--' }}</h5>
                         </td>
                     </tr>
                     @endif
