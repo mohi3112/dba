@@ -12,6 +12,7 @@ use Illuminate\Routing\Controller as BaseController;
 use App\Models\ModificationRequest;
 use App\Models\Payment;
 use App\Models\Subscription;
+use App\Models\Voucher;
 use App\Services\LawyerService;
 use Illuminate\Http\Request;
 
@@ -169,6 +170,10 @@ class Controller extends BaseController
             $record = Subscription::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'vouchers') {
+            $record = Voucher::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -196,6 +201,10 @@ class Controller extends BaseController
 
         if ($requestRecord->table_name == 'subscriptions') {
             $record = Subscription::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'vouchers') {
+            $record = Voucher::findOrFail($recordId);
         }
 
         if ($record) {

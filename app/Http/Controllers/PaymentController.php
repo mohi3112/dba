@@ -91,14 +91,6 @@ class PaymentController extends Controller
         return view('payments.edit', compact('payment', 'activeLawyers'));
     }
 
-    // Display the specified resource.
-    public function show($id)
-    {
-        $book = Payment::findOrFail($id);
-
-        return view('payments.show', compact('payment'));
-    }
-
     /**
      * Update the specified resource in storage.
      *

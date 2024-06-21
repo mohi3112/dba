@@ -12,6 +12,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VoucherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +129,14 @@ Route::middleware('auth')->group(function () {
     Route::get('requests/all-requests', [Controller::class, 'allRequests'])->name('requests.update-requests');
     Route::get('requests/view-request/{id}', [Controller::class, 'viewRequest'])->name('request.view-update-request');
     Route::put('requests/action-on-request', [Controller::class, 'actionOnRequest'])->name('request.approveRequest');
+
+    // Routes for voucher
+    Route::get('vouchers', [VoucherController::class, 'index'])->name('vouchers');
+    Route::get('vouchers/add', [VoucherController::class, 'create'])->name('vouchers.add');
+    Route::post('voucher/store',  [VoucherController::class, 'store'])->name('voucher.store');
+    Route::get('voucher/edit/{id}', [VoucherController::class, 'edit'])->name('vouchers.edit');
+    Route::put('vouchers/update/{id}', [VoucherController::class, 'update'])->name('vouchers.update');
+    Route::post('voucher/{id}', [VoucherController::class, 'destroy'])->name('vouchers.destroy');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

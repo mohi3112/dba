@@ -33,6 +33,7 @@ class ModificationRequest extends Model
         'books_categories' => 'Books Category',
         'payments' => 'Payment',
         'subscriptions' => 'Subscription',
+        'vouchers' => 'Voucher',
     ];
 
     public static $reuqestType = [
@@ -57,26 +58,31 @@ class ModificationRequest extends Model
     // Relationship to the Location model
     public function location()
     {
-        return $this->belongsTo(Location::class, 'record_id');
+        return $this->belongsTo(Location::class, 'record_id')->withTrashed();
     }
     // Relationship to the Book categories model
     public function bookCategory()
     {
-        return $this->belongsTo(BooksCategory::class, 'record_id');
+        return $this->belongsTo(BooksCategory::class, 'record_id')->withTrashed();
     }
     // Relationship to the Book model
     public function book()
     {
-        return $this->belongsTo(Book::class, 'record_id');
+        return $this->belongsTo(Book::class, 'record_id')->withTrashed();
     }
 
     public function payment()
     {
-        return $this->belongsTo(Payment::class, 'record_id');
+        return $this->belongsTo(Payment::class, 'record_id')->withTrashed();
     }
 
     public function subscription()
     {
-        return $this->belongsTo(Subscription::class, 'record_id');
+        return $this->belongsTo(Subscription::class, 'record_id')->withTrashed();
+    }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class, 'record_id')->withTrashed();
     }
 }

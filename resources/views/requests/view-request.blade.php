@@ -212,6 +212,27 @@
                         </td>
                     </tr>
                     @endif
+
+                    @if($request->table_name == 'vouchers')
+                    <tr>
+                        <td>Title:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->voucher->title ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Price:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->voucher->price ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->voucher->date) ? \Carbon\Carbon::parse($request->voucher->date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -409,6 +430,26 @@
                         <td>End Date:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ ($request->changes['end_date']) ? \Carbon\Carbon::parse($request->changes['end_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'vouchers')
+                    <tr>
+                        <td>Title:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['title'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Price:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['price'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['date']) ? \Carbon\Carbon::parse($request->changes['date'])->format('d-M-Y') : '--' }}</h5>
                         </td>
                     </tr>
                     @endif

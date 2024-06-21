@@ -294,6 +294,26 @@
         </li>
         @endif
         <!-- End Subscriptions -->
+        <!-- Start Voucher -->
+        <li class="menu-item {{ request()->is('voucher*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="vouchers">Voucher</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('vouchers') ? 'active' : '' }}">
+                    <a href="{{route('vouchers')}}" class="menu-link">
+                        <div data-i18n="vouchers">All Voucher</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('vouchers/add') ? 'active' : '' }}">
+                    <a href="{{route('vouchers.add')}}" class="menu-link">
+                        <div data-i18n="Add vouchers">Add Voucher</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Voucher -->
     </ul>
 </aside>
 <!-- / Menu -->
