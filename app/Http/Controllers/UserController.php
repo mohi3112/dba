@@ -640,7 +640,12 @@ class UserController extends Controller
             $query->withTrashed();
         }])->findOrFail($id);
 
-        return view('users.view-update-request', compact('updateRequest'));
+        $activeLocations = [];
+        if ($updateRequest->designation == User::DESIGNATION_VENDOR) {
+            $activeLocations = $this->locationService->getActiveLocations();
+        }
+
+        return view('users.view-update-request', compact('updateRequest', 'activeLocations'));
     }
 
     public function approveRequest(Request $request)
@@ -744,6 +749,22 @@ class UserController extends Controller
 
         if ($userUpdateRequest->designation) {
             $user->roles()->sync($userUpdateRequest->designation);
+        }
+
+        if ($userUpdateRequest->designation == User::DESIGNATION_VENDOR) {
+            $existingRecord = Vendor::where('user_id', $user->id)->first();
+
+            $payload = [];
+            $payload['business_name'] = $userUpdateRequest->business_name;
+            $payload['employees'] = $userUpdateRequest->employees;
+            $payload['location_id'] = $userUpdateRequest->location_id;
+
+            if ($existingRecord) {
+                $existingRecord->update($payload);
+            } else {
+                $payload['user_id'] = $user->id;
+                Vendor::create($payload);
+            }
         }
     }
 

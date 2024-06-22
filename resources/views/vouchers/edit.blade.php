@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Voucherss /</span> Edit Vouchers</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Vouchers /</span> Edit Vouchers</h4>
 @if ($errors->any())
 @foreach ($errors->all() as $error)
 <div class="alert alert-danger alert-dismissible" role="alert">

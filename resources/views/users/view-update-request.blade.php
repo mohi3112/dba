@@ -123,6 +123,27 @@
                                 <h5 class="mb-0">{{ ($updateRequest->user->designation) ? \App\Models\User::$designationRoles[$updateRequest->user->designation] : '' }}</h5>
                             </td>
                         </tr>
+
+                        @if($updateRequest->user->designation == \App\Models\User::DESIGNATION_VENDOR)
+                        <tr>
+                            <td> Business Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->vendorInfo->business_name ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Employees:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->vendorInfo->employees ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Location:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->vendorInfo) ? $activeLocations[$updateRequest->user->vendorInfo->location_id] : '' }}</h5>
+                            </td>
+                        </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -236,6 +257,27 @@
                                 <h5 class="mb-0">{{ ($updateRequest->designation) ? \App\Models\User::$designationRoles[$updateRequest->designation] : '' }}</h5>
                             </td>
                         </tr>
+                        
+                        @if($updateRequest->designation == \App\Models\User::DESIGNATION_VENDOR)
+                        <tr>
+                            <td> Business Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->business_name ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Employees:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->employees ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Location:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->location_id) ? $activeLocations[$updateRequest->location_id] : '' }}</h5>
+                            </td>
+                        </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

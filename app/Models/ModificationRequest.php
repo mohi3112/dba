@@ -34,6 +34,7 @@ class ModificationRequest extends Model
         'payments' => 'Payment',
         'subscriptions' => 'Subscription',
         'vouchers' => 'Voucher',
+        'rents' => 'Rent',
     ];
 
     public static $reuqestType = [
@@ -84,5 +85,10 @@ class ModificationRequest extends Model
     public function voucher()
     {
         return $this->belongsTo(Voucher::class, 'record_id')->withTrashed();
+    }
+
+    public function rent()
+    {
+        return $this->belongsTo(Rent::class, 'record_id')->withTrashed();
     }
 }

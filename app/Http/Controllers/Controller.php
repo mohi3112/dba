@@ -11,7 +11,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\ModificationRequest;
 use App\Models\Payment;
+use App\Models\Rent;
 use App\Models\Subscription;
+use App\Models\User;
 use App\Models\Voucher;
 use App\Services\LawyerService;
 use Illuminate\Http\Request;
@@ -25,6 +27,27 @@ class Controller extends BaseController
     public function __construct(LawyerService $lawyerService)
     {
         $this->lawyerService = $lawyerService;
+    }
+
+    public function getActiveVendorsList($onlyActive = true)
+    {
+        $roles = [User::DESIGNATION_VENDOR];
+        $vendors = User::whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn(
+                'id',
+                $roles
+            );
+        })->with('vendorInfo');
+
+        if ($onlyActive) {
+            $all_vendors = $vendors->get();
+        } else {
+            $all_vendors = $vendors->withTrashed()->get();
+        }
+
+        return $all_vendors->mapWithKeys(function ($user) {
+            return [$user->id => ['full_name' => $user->full_name, 'location_id' => $user->vendorInfo->location_id ?? NULL]];
+        })->toArray();
     }
 
     public function getCategoriesList()
@@ -104,7 +127,12 @@ class Controller extends BaseController
             $activeLawyers = $this->lawyerService->getActiveLawyers();
         }
 
-        return view('requests.view-request', compact('request', 'categories', 'activeLawyers'));
+        $activeVendors = [];
+        if ($request->table_name == 'rents') {
+            $activeVendors = $this->getActiveVendorsList();
+        }
+
+        return view('requests.view-request', compact('request', 'categories', 'activeLawyers', 'activeVendors'));
     }
 
     public function actionOnRequest(Request $request)
@@ -174,6 +202,10 @@ class Controller extends BaseController
             $record = Voucher::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'rents') {
+            $record = Rent::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -205,6 +237,10 @@ class Controller extends BaseController
 
         if ($requestRecord->table_name == 'vouchers') {
             $record = Voucher::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'rents') {
+            $record = Rent::findOrFail($recordId);
         }
 
         if ($record) {

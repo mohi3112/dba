@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RentController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VoucherController;
@@ -137,6 +138,16 @@ Route::middleware('auth')->group(function () {
     Route::get('voucher/edit/{id}', [VoucherController::class, 'edit'])->name('vouchers.edit');
     Route::put('vouchers/update/{id}', [VoucherController::class, 'update'])->name('vouchers.update');
     Route::post('voucher/{id}', [VoucherController::class, 'destroy'])->name('vouchers.destroy');
+
+    // Routes for voucher
+    Route::get('rents', [RentController::class, 'index'])->name('rents');
+    Route::get('rent/add', [RentController::class, 'create'])->name('rents.add');
+    Route::post('rent/store',  [RentController::class, 'store'])->name('rent.store');
+    Route::get('rent/edit/{id}', [RentController::class, 'edit'])->name('rents.edit');
+    Route::put('rent/update/{id}', [RentController::class, 'update'])->name('rents.update');
+    Route::post('rent/{id}', [RentController::class, 'destroy'])->name('rents.destroy');
+    Route::get('get-rent/{locationId}', [RentController::class, 'getRent'])->name('get-rent');
+
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

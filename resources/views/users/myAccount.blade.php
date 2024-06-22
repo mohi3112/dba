@@ -163,6 +163,7 @@ $vendor = True;
                                 @endforeach
                             </select>
                         </div>
+                        <input type="hidden" name="designation" value="{{$user['designation']}}">
                         @if(!$vendor)
                         <div class="mb-3 col-md-6">
                             <label for="degrees" class="form-label">Degrees</label>

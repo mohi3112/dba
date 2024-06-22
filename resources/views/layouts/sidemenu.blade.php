@@ -292,7 +292,7 @@
                 </li>
             </ul>
         </li>
-        @endif
+        
         <!-- End Subscriptions -->
         <!-- Start Voucher -->
         <li class="menu-item {{ request()->is('voucher*') ? 'active open' : '' }}">
@@ -314,6 +314,27 @@
             </ul>
         </li>
         <!-- End Voucher -->
+        @endif
+        <!-- Start Rent -->
+        <li class="menu-item {{ request()->is('rent*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="rents">Rent</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('rents') ? 'active' : '' }}">
+                    <a href="{{route('rents')}}" class="menu-link">
+                        <div data-i18n="rents">All Rent</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('rents/add') ? 'active' : '' }}">
+                    <a href="{{route('rents.add')}}" class="menu-link">
+                        <div data-i18n="Add rents">Add Rent</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Rent -->
     </ul>
 </aside>
 <!-- / Menu -->

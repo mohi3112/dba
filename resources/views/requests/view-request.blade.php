@@ -233,6 +233,33 @@
                         </td>
                     </tr>
                     @endif
+                    @if($request->table_name == 'rents')
+                    <tr>
+                        <td>Vendor:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $activeVendors[$request->rent->user_id]['full_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->rent->rent_amount ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Renewal Date:</td>
+                        <td class="py-3">
+
+                            <h5 class="mb-0">{{ ($request->rent->renewal_date) ? \Carbon\Carbon::parse($request->rent->renewal_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->rent->end_date) ? \Carbon\Carbon::parse($request->rent->end_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -450,6 +477,32 @@
                         <td>Date:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ ($request->changes['date']) ? \Carbon\Carbon::parse($request->changes['date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'rents')
+                    <tr>
+                        <td>Vendor:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $activeVendors[$request->changes['user_id']]['full_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['rent_amount'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Renewal Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['renewal_date']) ? \Carbon\Carbon::parse($request->changes['renewal_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['renewal_date']) ? \Carbon\Carbon::parse($request->changes['renewal_date'])->format('d-M-Y') : '--' }}</h5>
                         </td>
                     </tr>
                     @endif
