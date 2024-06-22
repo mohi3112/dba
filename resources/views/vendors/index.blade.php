@@ -14,6 +14,73 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('vendors') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-3">
+                    <label for="name" class="form-label">First Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="name" value="{{@$_GET['name']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="l_name" class="form-label">Last Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="l_name" value="{{@$_GET['l_name']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select id="gender" name="gender" class="select2 form-select">
+                        <option value="">Select Gender</option>
+                        @foreach(\App\Models\User::$genders as $ky => $gender)
+                        <option value="{{$ky}}" @if(@$_GET['gender']==$ky) selected @endif>{{$gender}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_active" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_active'])) ? '' : 'checked' }}>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_deceased" type="checkbox" id="flexSwitchCheckDeceased" {{ (count($_GET) > 0 && isset($_GET['is_deceased'])) ? "checked" : "" }}>
+                        <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_physically_disabled" type="checkbox" id="flexSwitchCheckPhysicallyDisabled" {{ (count($_GET) > 0 && isset($_GET['is_physically_disabled'])) ? "checked" : "" }}>
+                        <label class="form-check-label" for="flexSwitchCheckPhysicallyDisabled">Physically Disabled</label>
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('vendors') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">
