@@ -12,6 +12,72 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('books') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select id="category" name="bookCategoryId" class="select2 form-select">
+                        <option value="">Select Category</option>
+                        @foreach($categories as $ky => $category)
+                        <option value="{{$ky}}" @if(@$_GET['bookCategoryId']==$ky) selected @endif>{{$category}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="bookName" class="form-label">Book Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="bookName" value="{{@$_GET['bookName']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="bookAuthorName" class="form-label">Author Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="bookAuthorName" value="{{@$_GET['bookAuthorName']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="bookLicence" class="form-label">Book Licence</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="bookLicence" value="{{@$_GET['bookLicence']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="bookVolume" class="form-label">Book Volume</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="bookVolume" value="{{@$_GET['bookVolume']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-check form-switch" style="margin-top: 25%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="is_available" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_available'])) ? '' : 'checked' }}>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Available</label>
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('books') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">

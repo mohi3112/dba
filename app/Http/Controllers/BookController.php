@@ -23,18 +23,46 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // Fetch books with issued books
-        $books = Book::with(['issuedBooks' => function ($query) {
+        $booksQuery = Book::with(['issuedBooks' => function ($query) {
             $query->orderBy('issue_date', 'desc');
-        }])->orderBy('id', 'desc')->paginate(10);
+        }]);
 
         // Add a flag to each book
-        foreach ($books as $book) {
-            $lastIssuedBook = $book->issuedBooks->first();
-            $book->isLastIssuedBookReturned = $lastIssuedBook ? $lastIssuedBook->return_date !== null : true;
+        // foreach ($books as $book) {
+        //     $lastIssuedBook = $book->issuedBooks->first();
+        //     $book->isLastIssuedBookReturned = $lastIssuedBook ? $lastIssuedBook->return_date !== null : true;
+        // }
+
+        if ($request->filled('bookCategoryId')) {
+            $booksQuery->where('book_category_id', $request->bookCategoryId);
         }
+
+        if ($request->filled('bookName')) {
+            $booksQuery->where('book_name', 'like', '%' . $request->bookName . '%');
+        }
+
+        if ($request->filled('bookAuthorName')) {
+            $booksQuery->where('book_author_name', 'like', '%' . $request->bookAuthorName . '%');
+        }
+
+        if ($request->filled('bookLicence')) {
+            $booksQuery->where('book_licence', 'like', '%' . $request->bookLicence . '%');
+        }
+
+        if ($request->filled('bookVolume')) {
+            $booksQuery->where('book_volume', 'like', '%' . $request->bookVolume . '%');
+        }
+
+        if (count($_GET) > 0 && !$request->filled('is_available')) {
+            $booksQuery->where('available', false);
+        } else {
+            $booksQuery->available();
+        }
+
+        $books = $booksQuery->orderBy('id', 'desc')->paginate(10);
 
         $activeLawyers = $this->lawyerService->getActiveLawyers();
 

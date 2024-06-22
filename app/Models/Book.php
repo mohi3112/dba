@@ -31,6 +31,11 @@ class Book extends Model
         return strtoupper($slug . '-' . $this->book_volume . '-' . $formattedDate);
     }
 
+    public function scopeAvailable($query)
+    {
+        return $query->where('available', true);
+    }
+
     // Define relationship with BookIssue model
     public function issuedBooks()
     {
