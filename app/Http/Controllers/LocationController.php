@@ -9,9 +9,27 @@ use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $locations = Location::with('inProgressReviewRequests')->paginate(10);
+        $locationsQuery = Location::with('inProgressReviewRequests');
+
+        if ($request->filled('shopNumber')) {
+            $locationsQuery->where('shop_number', $request->shopNumber);
+        }
+
+        if ($request->filled('floorNumber')) {
+            $locationsQuery->where('floor_number', $request->floorNumber);
+        }
+
+        if ($request->filled('complex')) {
+            $locationsQuery->where('complex', 'like', '%' . $request->complex . '%');
+        }
+
+        if ($request->filled('rent')) {
+            $locationsQuery->where('rent', $request->rent);
+        }
+
+        $locations = $locationsQuery->orderBy('id', 'desc')->paginate(10);
 
         return view('locations.index', compact('locations'));
     }
