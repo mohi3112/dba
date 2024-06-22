@@ -19,28 +19,28 @@
         <form method="GET" action="{{ route('locations') }}">
             <div class="row gx-3 gy-2 align-items-center">
                 <div class="col-md-3">
-                    <label for="shopNumber" class="form-label">shop_number</label>
+                    <label for="shopNumber" class="form-label">Shop Number</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="shopNumber" value="{{@$_GET['shopNumber']}}">
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="floorNumber" class="form-label">floor_number</label>
+                    <label for="floorNumber" class="form-label">Floor Number</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="floorNumber" value="{{@$_GET['floorNumber']}}">
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="complex" class="form-label">complex</label>
+                    <label for="complex" class="form-label">Complex</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="complex" value="{{@$_GET['complex']}}">
                     </div>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="rent" class="form-label">rent</label>
+                    <label for="rent" class="form-label">Rent</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="rent" value="{{@$_GET['rent']}}">
                     </div>

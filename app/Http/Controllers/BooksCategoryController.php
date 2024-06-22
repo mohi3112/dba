@@ -14,9 +14,23 @@ class BooksCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $booksCategories = BooksCategory::withCount('availableBooks')->orderBy('id', 'desc')->paginate(10);
+        $booksCategoriesQuery = BooksCategory::withCount('availableBooks');
+
+        if ($request->filled('categoryName')) {
+            $booksCategoriesQuery->where('category_name', 'like', '%' . $request->categoryName . '%');
+        }
+
+        if ($request->filled('publishedVolumes')) {
+            $booksCategoriesQuery->where('published_volumes', 'like', '%' . $request->publishedVolumes . '%');
+        }
+
+        if ($request->filled('publishedTotalVolumes')) {
+            $booksCategoriesQuery->where('published_total_volumes', $request->publishedTotalVolumes);
+        }
+
+        $booksCategories = $booksCategoriesQuery->orderBy('id', 'desc')->paginate(10);
 
         return view('booksCategory.index', compact('booksCategories'));
     }

@@ -12,6 +12,46 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('bookCategories') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-3">
+                    <label for="categoryName" class="form-label">Category Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="categoryName" value="{{@$_GET['categoryName']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="publishedVolumes" class="form-label">Published Volumes</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="publishedVolumes" value="{{@$_GET['publishedVolumes']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="publishedTotalVolumes" class="form-label">Published Total Volumes</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="publishedTotalVolumes" value="{{@$_GET['publishedTotalVolumes']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('bookCategories') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">
