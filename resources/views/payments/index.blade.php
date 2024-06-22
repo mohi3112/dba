@@ -12,6 +12,49 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('payments') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-3">
+                    <label for="lawyer" class="form-label">User</label>
+                    <select id="lawyer" name="userId" class="select2 form-select">
+                        <option value="">Select User</option>
+                        @foreach($activeLawyers as $ky => $lawyer)
+                        <option value="{{$ky}}" @if(@$_GET['userId ']==$ky) selected @endif>{{$lawyer}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="paymentAmount" class="form-label">Amount</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="paymentAmount" value="{{@$_GET['paymentAmount']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="paymentDate" class="form-label">Payment Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="paymentDate" value="{{@$_GET['paymentDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('payments') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">
@@ -127,7 +170,6 @@
 </div>
 <!--/ Striped Rows -->
 
-<!-- </div> -->
 @endsection
 @section('scripts')
 <script>

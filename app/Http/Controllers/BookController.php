@@ -56,6 +56,10 @@ class BookController extends Controller
             $booksQuery->where('book_volume', 'like', '%' . $request->bookVolume . '%');
         }
 
+        if ($request->filled('publishDate')) {
+            $booksQuery->where('publish_date', $request->publishDate);
+        }
+
         if (count($_GET) > 0 && !$request->filled('is_available')) {
             $booksQuery->where('available', false);
         } else {

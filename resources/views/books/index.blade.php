@@ -57,6 +57,13 @@
                     </div>
                 </div>
 
+                <div class="col-md-3">
+                    <label for="publishDate" class="form-label">Book Publish Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="publishDate" value="{{@$_GET['publishDate']}}">
+                    </div>
+                </div>
+
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>

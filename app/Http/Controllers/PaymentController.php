@@ -23,7 +23,7 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);
 
@@ -31,6 +31,18 @@ class PaymentController extends Controller
 
         if (auth()->user()->hasRole('lawyer') || auth()->user()->hasRole('librarian')) {
             $paymentsQuery->where('user_id', auth()->user()->id);
+        }
+
+        if ($request->filled('userId')) {
+            $paymentsQuery->where('user_id', $request->userId);
+        }
+
+        if ($request->filled('paymentAmount')) {
+            $paymentsQuery->where('payment_amount', $request->paymentAmount);
+        }
+
+        if ($request->filled('paymentDate')) {
+            $paymentsQuery->where('payment_date', $request->paymentDate);
         }
 
         $payments = $paymentsQuery->orderBy('created_at', 'desc')->paginate(10);
