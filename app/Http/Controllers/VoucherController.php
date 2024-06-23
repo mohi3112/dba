@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class VoucherController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $vouchersQuery = Voucher::query();
+
+        if ($request->filled('title')) {
+            $vouchersQuery->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($request->filled('price')) {
+            $vouchersQuery->where('price', $request->price);
+        }
+
+        if ($request->filled('date')) {
+            $vouchersQuery->where('date', $request->date);
+        }
 
         $vouchers = $vouchersQuery->orderBy('created_at', 'desc')->paginate(10);
 

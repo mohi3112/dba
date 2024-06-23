@@ -12,6 +12,47 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('vouchers') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+
+                <div class="col-md-3">
+                    <label for="title" class="form-label">Title</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="title" value="{{@$_GET['title']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="price" class="form-label">Price</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" name="price" value="{{@$_GET['price']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="date" class="form-label">Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="date" value="{{@$_GET['date']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('vouchers') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">
