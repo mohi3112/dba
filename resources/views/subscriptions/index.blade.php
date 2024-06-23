@@ -12,6 +12,60 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('subscriptions') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-3">
+                    <label for="lawyer" class="form-label">Lawyer</label>
+                    <select id="lawyer" name="userId" class="select2 form-select">
+                        <option value="">Select User</option>
+                        @foreach($activeLawyers as $ky => $lawyer)
+                        <option value="{{$ky}}" @if(@$_GET['userId']==$ky) selected @endif>{{$lawyer}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="lawyer" class="form-label">Subscription Type</label>
+                    <select id="lawyer" name="subscriptionType" class="select2 form-select">
+                        <option value="">Select Subscription</option>
+                        @foreach(\App\Models\Subscription::$subscriptionTypes as $k => $subscription)
+                        <option value="{{$k}}" @if(@$_GET['subscriptionType']==$k) selected @endif>{{$subscription}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="startDate" value="{{@$_GET['startDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="endDate" value="{{@$_GET['endDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('subscriptions') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Striped Rows -->
 
 <div class="card">

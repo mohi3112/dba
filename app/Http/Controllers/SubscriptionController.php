@@ -23,7 +23,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);
 
@@ -31,6 +31,22 @@ class SubscriptionController extends Controller
 
         if (auth()->user()->hasRole('lawyer') || auth()->user()->hasRole('librarian')) {
             $subscriptionsQuery->where('user_id', auth()->user()->id);
+        }
+
+        if ($request->filled('userId')) {
+            $subscriptionsQuery->where('user_id', $request->userId);
+        }
+
+        if ($request->filled('subscriptionType')) {
+            $subscriptionsQuery->where('subscription_type', $request->subscriptionType);
+        }
+
+        if ($request->filled('startDate')) {
+            $subscriptionsQuery->where('start_date', $request->startDate);
+        }
+
+        if ($request->filled('endDate')) {
+            $subscriptionsQuery->where('end_date', $request->endDate);
         }
 
         $subscriptions = $subscriptionsQuery->orderBy('created_at', 'desc')->paginate(10);
