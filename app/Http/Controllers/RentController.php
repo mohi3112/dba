@@ -10,9 +10,25 @@ use Illuminate\Support\Facades\Auth;
 
 class RentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $rentsQuery = Rent::query();
+
+        if ($request->filled('userId')) {
+            $rentsQuery->where('user_id', $request->userId);
+        }
+
+        if ($request->filled('rentAmount')) {
+            $rentsQuery->where('rent_amount', $request->rentAmount);
+        }
+
+        if ($request->filled('renewalDate')) {
+            $rentsQuery->where('renewal_date', $request->renewalDate);
+        }
+
+        if ($request->filled('endDate')) {
+            $rentsQuery->where('end_date', $request->endDate);
+        }
 
         $rents = $rentsQuery->orderBy('created_at', 'desc')->paginate(10);
 

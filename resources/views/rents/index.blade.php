@@ -12,6 +12,54 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
+<div class="card mb-4">
+    <h5 class="card-header">Filters</h5>
+    <div class="card-body">
+        <form method="GET" action="{{ route('rents') }}">
+            <div class="row gx-3 gy-2 align-items-center">
+
+                <div class="col-md-3">
+                    <label for="userId" class="form-label">Vendor Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="userId" value="{{@$_GET['userId']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="rentAmount" class="form-label">Amount</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" name="rentAmount" value="{{@$_GET['rentAmount']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="renewalDate" class="form-label">Renewal Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="renewalDate" value="{{@$_GET['renewalDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="endDate" value="{{@$_GET['endDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <button class="btn btn-primary">Filter</button>
+                </div>
+
+                <div class="col-md-1 ml-1">
+                    <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                    <a href="{{ route('rents') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Striped Rows -->
 
 <div class="card">
@@ -20,7 +68,7 @@
             <thead>
                 <tr>
                     <th>Sr. No.</th>
-                    <th>Vendor</th>
+                    <th>Vendor Name</th>
                     <th>Amount</th>
                     <th>Renewal Date</th>
                     <th>End Date</th>
@@ -52,7 +100,7 @@
                                         <div class="modal-body">
                                             <div class="row">
                                                 <div class="col-md-5">
-                                                    <label for="lawyerName" class="form-label">Vendor:</label>
+                                                    <label for="lawyerName" class="form-label">Vendor Name:</label>
                                                 </div>
                                                 <div class="col-md-7">
                                                     {{ $activeVendors[$rent->user_id]['full_name'] }}
