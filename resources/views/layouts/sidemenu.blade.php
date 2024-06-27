@@ -285,6 +285,11 @@
                         <div data-i18n="subscriptions">All Subscriptions</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('subscriptions/upcoming-subscription') ? 'active' : '' }}">
+                    <a href="{{route('subscriptions.getUpcomingSubscriptions')}}" class="menu-link">
+                        <div data-i18n="upcoming subscriptions">Upcoming Subscriptions</div>
+                    </a>
+                </li>
                 <li class="menu-item {{ request()->is('subscriptions/add') ? 'active' : '' }}">
                     <a href="{{route('subscriptions.add')}}" class="menu-link">
                         <div data-i18n="Add subscriptions">Add Subscriptions</div>

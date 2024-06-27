@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::get('subscription/edit/{id}', [SubscriptionController::class, 'edit'])->name('subscriptions.edit');
     Route::put('subscriptions/update/{id}', [SubscriptionController::class, 'update'])->name('subscriptions.update');
     Route::post('subscription/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+    Route::get('subscriptions/upcoming-subscription', [SubscriptionController::class, 'getUpcomingSubscriptions'])->name('subscriptions.getUpcomingSubscriptions');
 
     // Routes for Roles
     Route::get('roles', [UserRoleController::class, 'index'])->name('roles');

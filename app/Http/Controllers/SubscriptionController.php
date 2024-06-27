@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Subscription;
 use App\Services\LawyerService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionController extends Controller
 {
@@ -185,5 +186,39 @@ class SubscriptionController extends Controller
         }
 
         return redirect()->route('subscriptions')->with('error', 'Something went wrong.');
+    }
+
+    public function getUpcomingSubscriptions(Request $request)
+    {
+        $latestSubscriptions = Subscription::select('user_id', DB::raw('MAX(end_date) as latest_end_date'))
+            ->groupBy('user_id');
+
+        $subscriptionsQuery = Subscription::joinSub($latestSubscriptions, 'latest', function ($join) {
+            $join->on('subscriptions.user_id', '=', 'latest.user_id')
+                ->on('subscriptions.end_date', '=', 'latest.latest_end_date');
+        });
+
+        if ($request->filled('userId')) {
+            $subscriptionsQuery->where('subscriptions.user_id', $request->userId);
+        }
+
+        if ($request->filled('subscriptionType')) {
+            $subscriptionsQuery->where('subscriptions.subscription_type', $request->subscriptionType);
+        }
+
+        if ($request->filled('startDate')) {
+            $subscriptionsQuery->where('subscriptions.start_date', $request->startDate);
+        }
+
+        if ($request->filled('endDate')) {
+            $subscriptionsQuery->where('subscriptions.end_date', $request->endDate);
+        }
+
+        $subscriptions = $subscriptionsQuery->orderBy('subscriptions.end_date', 'asc')
+            ->select('subscriptions.*')->paginate(10);
+
+        $activeLawyers = $this->lawyerService->getActiveLawyers(false);
+
+        return view('subscriptions.upcoming-subscriptions', compact('subscriptions', 'activeLawyers'));
     }
 }
