@@ -195,7 +195,7 @@
                 </li>
                 @if(!auth()->user()->hasRole('vendor'))
                 <li class="menu-item {{ request()->is('vendors/add') ? 'active' : '' }}">
-                    <a href="{{route('vendors.add')}}" class="menu-link">
+                    <a href="{{route('users.add')}}" class="menu-link">
                         <div data-i18n="Add vendor">Add Vendor</div>
                     </a>
                 </li>
