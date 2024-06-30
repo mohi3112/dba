@@ -214,7 +214,7 @@ class SubscriptionController extends Controller
             $subscriptionsQuery->where('subscriptions.end_date', $request->endDate);
         }
 
-        $subscriptions = $subscriptionsQuery->orderBy('subscriptions.end_date', 'asc')
+        $subscriptions = $subscriptionsQuery->orderBy('subscriptions.end_date')
             ->select('subscriptions.*')->paginate(10);
 
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);

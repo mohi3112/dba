@@ -337,6 +337,11 @@
                         <div data-i18n="Add rents">Add Rent</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('rent/pending-rents') ? 'active' : '' }}">
+                    <a href="{{route('rents.pending-rents')}}" class="menu-link">
+                        <div data-i18n="Pending rents">Pending Rents</div>
+                    </a>
+                </li>
             </ul>
         </li>
         <!-- End Rent -->

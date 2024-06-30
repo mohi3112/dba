@@ -50,6 +50,8 @@ class UserController extends Controller
             $query->whereIn('name', $roles);
         });
 
+        $usersQuery->where('designation', '<>', User::DESIGNATION_VENDOR);
+
         if ($request->filled('name')) {
             $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
         }

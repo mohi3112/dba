@@ -148,6 +148,7 @@ Route::middleware('auth')->group(function () {
     Route::put('rent/update/{id}', [RentController::class, 'update'])->name('rents.update');
     Route::post('rent/{id}', [RentController::class, 'destroy'])->name('rents.destroy');
     Route::get('get-rent/{locationId}', [RentController::class, 'getRent'])->name('get-rent');
+    Route::get('rent/pending-rents', [RentController::class, 'pendingRents'])->name('rents.pending-rents');
 
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');

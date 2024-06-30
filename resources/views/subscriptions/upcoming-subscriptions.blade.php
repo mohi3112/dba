@@ -110,7 +110,6 @@ $currentDate = \Carbon\Carbon::now();
                     <td>
                         <?php
                         $endDate = \Carbon\Carbon::parse($subscription->end_date);
-                        $endDate = \Carbon\Carbon::parse($subscription->end_date);
                         $diffInMonths = $currentDate->diffInMonths($endDate, false);
                         $remainingDays = $currentDate->copy()->addMonths($diffInMonths)->diffInDays($endDate, false);
 

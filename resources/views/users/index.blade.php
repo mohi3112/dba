@@ -37,6 +37,7 @@
                     <select id="designation" name="designation" class="select2 form-select">
                         <option value="">Select Designation</option>
                         @foreach(\App\Models\User::$designationRoles as $key => $designation)
+                        <?php if ($key == \App\Models\User::DESIGNATION_VENDOR) continue; ?>
                         <option value="{{$key}}" @if(@$_GET['designation']==$key) selected @endif>{{$designation}}</option>
                         @endforeach
                     </select>

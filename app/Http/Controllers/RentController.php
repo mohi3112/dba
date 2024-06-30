@@ -143,4 +143,13 @@ class RentController extends Controller
 
         return response()->json(['rent' => $rent]);
     }
+
+    public function pendingRents(Request $request)
+    {
+        $expiredRents = Rent::getLatestExpiredRentsForAllUsers($request);
+
+        $activeVendors = $this->getActiveVendorsList();
+
+        return view('rents.pending-rents', compact('expiredRents', 'activeVendors'));
+    }
 }
