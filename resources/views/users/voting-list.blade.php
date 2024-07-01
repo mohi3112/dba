@@ -29,6 +29,13 @@
                 </div>
 
                 <div class="col-md-3">
+                    <label for="licenceNo" class="form-label">Licence No</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="licenceNo" value="{{@$_GET['licenceNo']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
                     <label for="aadhaarNo" class="form-label">Aadhaar No</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="aadhaarNo" value="{{@$_GET['aadhaarNo']}}">
@@ -42,7 +49,7 @@
                         <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
                     </div>
                 </div>
-
+                @if (auth()->user()->hasRole('president'))
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
@@ -50,7 +57,7 @@
                         <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
                     </div>
                 </div>
-
+                @endif
                 <div class="col-md-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
                     <button class="btn btn-primary">Filter</button>
@@ -73,9 +80,14 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Name</th>
+                    <th>Licence No</th>
                     <th>Aadhaar No</th>
+                    <th>Mobile No</th>
                     <th>Status</th>
+                    @if (auth()->user()->hasRole('president'))
                     <th>Deceased</th>
+                    @endif
+                    <th>Address</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -91,7 +103,13 @@
                             </a>
                         </td>
                         <td>
+                            {{ $user->licence_no ?? NULL }}
+                        </td>
+                        <td>
                             {{ $user->aadhaar_no ?? NULL }}
+                        </td>
+                        <td>
+                            {{ $user->mobile1 }} {{ ($user->mobile2) ? ' ( ' . $user->mobile2 . ' )' : '' }}
                         </td>
                         <td>
                             @if($user->status == 1)
@@ -100,7 +118,10 @@
                             <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                             @endif
                         </td>
+                        @if (auth()->user()->hasRole('president'))
                         <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
+                        @endif
+                        <td> {{ $user->address ?? NULL }} </td>
                     </tr>
                 <?php
                     $i++;

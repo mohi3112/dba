@@ -60,6 +60,10 @@ class UserController extends Controller
             $usersQuery->where('last_name', 'like', '%' . $request->l_name . '%');
         }
 
+        if ($request->filled('licenceNo')) {
+            $usersQuery->where('licence_no', 'like', '%' . $request->licenceNo . '%');
+        }
+
         if ($request->filled('designation')) {
             $usersQuery->where('designation', $request->designation);
         }
@@ -336,6 +340,7 @@ class UserController extends Controller
                 $user->mobile1 = $request->input('mobile1');
                 $user->mobile2 = $request->input('mobile2');
                 $user->aadhaar_no = $request->input('aadhaar_no');
+                $user->licence_no = $request->input('licence_no');
                 $user->designation = $request->input('designation');
                 $user->degrees = $request->input('degrees');
                 $user->address = $request->input('address');
@@ -568,7 +573,7 @@ class UserController extends Controller
         $usersQuery = User::whereHas('subscriptions', function ($query) use ($today) {
             $query->whereNotNull('end_date')
                 ->where('end_date', '>', $today);
-        })->select('id', 'first_name', 'middle_name', 'last_name', 'aadhaar_no', 'status', 'is_deceased');
+        })->select('id', 'first_name', 'middle_name', 'last_name', 'aadhaar_no', 'licence_no', 'mobile1', 'mobile2', 'address', 'status', 'is_deceased');
 
         if ($request->filled('name')) {
             $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
@@ -580,6 +585,10 @@ class UserController extends Controller
 
         if ($request->filled('aadhaarNo')) {
             $usersQuery->where('aadhaar_no', 'like', '%' . $request->aadhaarNo . '%');
+        }
+
+        if ($request->filled('licenceNo')) {
+            $usersQuery->where('licence_no', 'like', '%' . $request->licenceNo . '%');
         }
 
         if (count($_GET) > 0 && !$request->filled('is_active')) {
@@ -735,6 +744,7 @@ class UserController extends Controller
         $user->mobile1 = $userUpdateRequest->mobile1;
         $user->mobile2 = $userUpdateRequest->mobile2;
         $user->aadhaar_no = $userUpdateRequest->aadhaar_no;
+        $user->licence_no = $userUpdateRequest->licence_no;
         $user->designation = $userUpdateRequest->designation;
         $user->degrees = $userUpdateRequest->degrees;
         $user->address = $userUpdateRequest->address;

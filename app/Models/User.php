@@ -80,6 +80,7 @@ class User extends Authenticatable
         "mobile1",
         "mobile2",
         "aadhaar_no",
+        "licence_no",
         "picture",
         "designation",
         "degrees",

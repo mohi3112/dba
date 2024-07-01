@@ -61,6 +61,12 @@
                             </td>
                         </tr>
                         <tr>
+                            <td> Licence number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->user->licence_no }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
                             <td> Aadhaar number:</td>
                             <td class="py-3">
                                 <h5 class="mb-0">{{ $updateRequest->user->aadhaar_no }}</h5>
@@ -192,6 +198,12 @@
                             <td> DOB (Age):</td>
                             <td class="py-3">
                                 <h5 class="mb-0">{{ ($updateRequest->dob) ? \Carbon\Carbon::parse($updateRequest->dob)->format('d-M-Y') . ' (' . $updateRequest->age . ')' : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Licence number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ $updateRequest->licence_no }}</h5>
                             </td>
                         </tr>
                         <tr>

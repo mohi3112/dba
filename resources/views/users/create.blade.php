@@ -77,10 +77,21 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3 col-md-6 not-for-vendor">
+                            <label class="form-label" for="licence_no">Licence number <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" id="licence_no" name="licence_no" maxlength="12" value="{{ old('licence_no') }}" class="form-control numeric-input @error('licence_no') is-invalid @enderror" placeholder="Licence number">
+                                @error('licence_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
-                                <input type="text" id="aadhaar_no" name="aadhaar_no" maxlength="12" value="{{ old('aadhaar_no') }}" class="form-control numeric-input @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
+                                <input type="text" id="aadhaar_no" name="aadhaar_no" maxlength="12" value="{{ old('aadhaar_no') }}" class="form-control @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
                                 @error('aadhaar_no')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

@@ -35,6 +35,7 @@
                     </div>
                 </div>
 
+                @if (auth()->user()->hasRole('president'))
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
@@ -42,6 +43,7 @@
                         <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
                     </div>
                 </div>
+                @endif
 
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
@@ -75,7 +77,9 @@
                     <th>Name</th>
                     <th>Mobile (Alternate Number)</th>
                     <th>Status</th>
+                    @if (auth()->user()->hasRole('president'))
                     <th>Deceased</th>
+                    @endif
                     <th>Handicaped</th>
                 </tr>
             </thead>
@@ -104,7 +108,9 @@
                             <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                             @endif
                         </td>
+                        @if (auth()->user()->hasRole('president'))
                         <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
+                        @endif
                         <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
                     </tr>
                 <?php

@@ -31,6 +31,12 @@
                         <input type="text" class="form-control" name="l_name" value="{{@$_GET['l_name']}}">
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <label for="licenceNo" class="form-label">Licence No</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="licenceNo" value="{{@$_GET['licenceNo']}}">
+                    </div>
+                </div>
 
                 <div class="col-md-3">
                     <label for="designation" class="form-label">Designation</label>
@@ -79,6 +85,7 @@
                     </div>
                 </div>
 
+                @if (auth()->user()->hasRole('president'))
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
@@ -86,6 +93,7 @@
                         <label class="form-check-label" for="flexSwitchCheckDeceased">Deceased</label>
                     </div>
                 </div>
+                @endif
 
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
@@ -120,9 +128,12 @@
                     <th>Father'S Name</th>
                     <th>DOB (Age)</th>
                     <th>Gender</th>
+                    <th>Licence No</th>
                     <th>DESIGNATION</th>
                     <th>Status</th>
+                    @if (auth()->user()->hasRole('president'))
                     <th>Deceased</th>
+                    @endif
                     <th>Handicaped</th>
                     <th>Is Approved</th>
                     <th>Actions</th>
@@ -140,6 +151,9 @@
                         <td> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }}</td>
                         <td> {{ ($user->gender) ? \App\Models\User::$genders[$user->gender] : '--' }} </td>
                         <td>
+                            {{ $user->licence_no ?? '--' }}
+                        </td>
+                        <td>
                             {{ \App\Models\User::$designationRoles[$user->designation] ?? '--' }}
                         </td>
                         <td>
@@ -149,7 +163,9 @@
                             <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                             @endif
                         </td>
+                        @if (auth()->user()->hasRole('president'))
                         <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
+                        @endif
                         <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
                         <td>
                             @if($user->account_approved)

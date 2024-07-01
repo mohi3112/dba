@@ -53,6 +53,9 @@
                                                             <label for=""> DOB (Age): </label> <span> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }} </span>
                                                         </li>
                                                         <li class="list-group-item">
+                                                            <label for=""> Licence number: </label> <span> {{ $user->licence_no ?? '' }} </span>
+                                                        </li>
+                                                        <li class="list-group-item">
                                                             <label for=""> Aadhaar number: </label> <span> {{ $user->aadhaar_no }} </span>
                                                         </li>
                                                         <li class="list-group-item">

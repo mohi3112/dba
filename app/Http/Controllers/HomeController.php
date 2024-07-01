@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Rent;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -108,6 +110,46 @@ class HomeController extends Controller
             $totalVoucherAmount = $voucherQuery->sum('price');
 
             $dashboardData['total_voucher_spent'] = $totalVoucherAmount;
+
+            // pending rent
+            $next1Day = Carbon::now()->addDays(1);
+
+            $subQuery = Rent::select('user_id', DB::raw('MAX(end_date) as latest_end_date'))
+                ->groupBy('user_id');
+
+            $rentsQuery = Rent::joinSub($subQuery, 'latest_rents', function ($join) use ($next1Day) {
+                $join->on('rents.user_id', '=', 'latest_rents.user_id')
+                    ->on('rents.end_date', '=', 'latest_rents.latest_end_date')
+                    ->where('latest_rents.latest_end_date', '<', $next1Day);
+            });
+
+            if ($startDate) {
+                $rentsQuery->where('rents.end_date', '>=', Carbon::parse($startDate)->startOfDay());
+            }
+            if ($endDate) {
+                $rentsQuery->where('rents.end_date', '<=', Carbon::parse($endDate)->endOfDay());
+            }
+
+            $dashboardData['pending_rent'] = $rentsQuery->count();
+
+            // pending subscription
+            $latestSubscriptions = Subscription::select('user_id', DB::raw('MAX(end_date) as latest_end_date'))
+                ->groupBy('user_id');
+
+            $subscriptionsQuery = Subscription::joinSub($latestSubscriptions, 'latest', function ($join) use ($next1Day) {
+                $join->on('subscriptions.user_id', '=', 'latest.user_id')
+                    ->on('subscriptions.end_date', '=', 'latest.latest_end_date')
+                    ->where('latest.latest_end_date', '<', $next1Day);
+            });
+
+            if ($startDate) {
+                $subscriptionsQuery->where('subscriptions.end_date', '>=', Carbon::parse($startDate)->startOfDay());
+            }
+            if ($endDate) {
+                $subscriptionsQuery->where('subscriptions.end_date', '<=', Carbon::parse($endDate)->endOfDay());
+            }
+
+            $dashboardData['pending_subscription'] = $subscriptionsQuery->count();
         }
 
         return view('home', compact('user', 'dashboardData'));

@@ -90,6 +90,17 @@ $isVendor = 'disabled';
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3 col-md-6 not-for-vendor @if($isVendor) d-none @endif">
+                            <label class="form-label" for="licence_no">Licence number <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" id="licence_no" name="licence_no" value="{{$user->licence_no}}" maxlength="12" class="form-control @error('licence_no') is-invalid @enderror" placeholder="Licence number">
+                                @error('licence_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">

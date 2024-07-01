@@ -125,6 +125,17 @@ $vendor = True;
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label class="form-label" for="licence_no">Licence number <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input type="text" id="licence_no" {{$disabled}} name="licence_no" value="{{$user['licence_no']}}" maxlength="12" class="form-control numeric-input  @error('licence_no') is-invalid @enderror" placeholder="Aadhaar number">
+                                @error('licence_no')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
                                 <input type="text" id="aadhaar_no" {{$disabled}} name="aadhaar_no" value="{{$user['aadhaar_no']}}" maxlength="12" class="form-control numeric-input  @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
