@@ -191,7 +191,7 @@ $currentDate = \Carbon\Carbon::now();
                 @endforeach
             </tbody>
         </table>
-        <div class="d-flex justify-content-end pt-3">
+        <div class="d-flex justify-content-end pt-3 mr-3">
             {{ $subscriptions->links() }}
         </div>
     </div>
