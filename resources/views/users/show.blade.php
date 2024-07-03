@@ -13,6 +13,19 @@
                 </a>
             </div>
         </div>
+        @if($user->picture)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="data:image/jpeg;base64,{{ $user->picture }}" img-src="data:image/jpeg;base64,{{ $user->picture }}" alt="user-avatar" class="d-block rounded show-image" height="120" id="uploadedAvatar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-12 mb-4 mb-xl-0">
@@ -22,8 +35,8 @@
                                 <div class="list-group">
                                     <a class="list-group-item list-group-item-action active" id="list-basic" data-bs-toggle="list" href="#basic-details">Personal Information</a>
                                     <a class="list-group-item list-group-item-action" id="list-uploaded-document" data-bs-toggle="list" href="#uploaded-document">Uploaded Documents</a>
-                                    <!-- <a class="list-group-item list-group-item-action" id="list-subscriptions" data-bs-toggle="list" href="#all-subscriptions">All subscriptions</a> -->
-                                    <!-- <a class="list-group-item list-group-item-action" id="list-payments" data-bs-toggle="list" href="#all-payments">All Payments</a> -->
+                                    <a class="list-group-item list-group-item-action" id="list-subscriptions" data-bs-toggle="list" href="#all-subscriptions">All subscriptions</a>
+                                    <a class="list-group-item list-group-item-action" id="list-payments" data-bs-toggle="list" href="#all-payments">All Payments</a>
                                     <a class="list-group-item list-group-item-action" id="list-books" data-bs-toggle="list" href="#all-get-books">All Books</a>
                                     <!-- <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings">Settings</a> -->
                                 </div>
@@ -113,7 +126,7 @@
                                             <div class="col-md">
                                                 <div class="card mb-3">
                                                     @php($dataFound = false)
-                                                    @if($user->picture)
+                                                    {{-- @if($user->picture)
                                                     <div class="pl-3 mt-2 row g-0">
                                                         <h6 class="mb-2 text-muted">Lawyer Image</h6>
                                                         <div class="col-md-4 mb-3">
@@ -121,13 +134,13 @@
                                                         </div>
                                                     </div>
                                                     @php($dataFound = true)
-                                                    @endif
+                                                    @endif --}}
                                                     @if($user->address_proof->count() > 0)
                                                     <div class="pl-3 row g-0">
                                                         <h6 class="mb-2 text-muted">Address Proof(s)</h6>
                                                         @foreach($user->address_proof as $proof)
-                                                        <div class="col-md-4">
-                                                            <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
+                                                        <div class="col-md-4 mb-3">
+                                                            <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                         </div>
                                                         @endforeach
                                                     </div>
@@ -137,8 +150,8 @@
                                                     <div class="pl-3 mt-2 row g-0">
                                                         <h6 class="mb-2 text-muted">Uploaded Degree(s)</h6>
                                                         @foreach($user->degree_images as $proof)
-                                                        <div class="col-md-4">
-                                                            <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
+                                                        <div class="col-md-4 mb-3">
+                                                            <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}"  alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                         </div>
                                                         @endforeach
                                                     </div>

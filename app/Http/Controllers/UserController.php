@@ -232,11 +232,11 @@ class UserController extends Controller
     {
         $user = User::with([
             'roles',
-            // 'subscriptions' => function ($query) {
-            //     $query->orderBy('created_at', 'desc');
-            // }, 'payments' => function ($q) {
-            //     $q->orderBy('created_at', 'desc');
-            // },
+            'subscriptions' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }, 'payments' => function ($q) {
+                $q->orderBy('created_at', 'desc');
+            },
             'issuedBooks' => function ($qry) {
                 $qry->with('book');
                 $qry->orderBy('created_at', 'desc');
