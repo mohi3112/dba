@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
+use App\Models\Family;
 use App\Models\UserUpdateRequest;
 use App\Models\Vendor;
 use App\Services\LocationService;
@@ -793,5 +794,43 @@ class UserController extends Controller
         $userUpdateRequest->delete();
 
         return redirect()->route('users.update-requests')->with('success', 'Request deleted successfully!');
+    }
+
+    public function storeFamily(Request $request)
+    {
+        $request->validate([
+            'type.*' => 'required|string',
+            'name.*' => 'required|string',
+            'date.*' => 'date',
+        ]);
+
+        $user = Auth::user();
+
+        // Delete old family members
+        $user->families()->delete();
+
+        $families = [];
+        foreach ($request->type as $index => $type) {
+            $families[] = [
+                'user_id' => $user->id,
+                'type' => $type,
+                'name' => $request->name[$index],
+                'date' => $request->date[$index],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        Family::insert($families);
+
+        return redirect()->back()->with('success', 'Family members updated successfully.');
+    }
+
+    public function destroyFamilyRecord($id)
+    {
+        $family = Family::findOrFail($id);
+        $family->delete();
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
     }
 }

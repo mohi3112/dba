@@ -47,6 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('delete-lawyer-image/{id}', [UserController::class, 'deleteImage'])->name('delete-image');
     Route::get('lawyers/voting-list', [UserController::class, 'votingList'])->name('users.voting-list');
 
+    // save family information
+    Route::post('lawyers/families', [UserController::class, 'storeFamily'])->name('users.storeFamily');
+    Route::post('familyRecord/{id}', [UserController::class, 'destroyFamilyRecord'])->name('familyRecord.destroy');
+
     Route::get('users/update-requests', [UserController::class, 'allUpdateRequests'])->name('users.update-requests');
     Route::get('users/view-update-request/{id}', [UserController::class, 'viewUpdateRequest'])->name('user.view-update-request');
     Route::put('lawyer/approve-request', [UserController::class, 'approveRequest'])->name('user.approveRequest');

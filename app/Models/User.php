@@ -227,4 +227,9 @@ class User extends Authenticatable
         $operator = User::getAgeOperator($operatorKey);
         return $query->whereRaw("TIMESTAMPDIFF(YEAR, dob, CURDATE()) $operator ?", [$age]);
     }
+
+    public function families()
+    {
+        return $this->hasMany(Family::class);
+    }
 }

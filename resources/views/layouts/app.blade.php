@@ -30,6 +30,7 @@
     <link href="{{ asset('css/demo.css') }}" rel="stylesheet">
     <link href="{{ asset('css/perfect-scrollbar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
