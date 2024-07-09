@@ -14,6 +14,8 @@ use App\Http\Controllers\RentController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
