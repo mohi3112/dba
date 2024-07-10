@@ -175,7 +175,7 @@
                                                     <label for="nameWithTitle" class="form-label">Price:</label>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    {{ $book->price }}
+                                                ₹{{ $book->price }}
                                                 </div>
                                             </div>
                                             <div class="row">

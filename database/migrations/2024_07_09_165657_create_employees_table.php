@@ -16,11 +16,12 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('gender')->nullable();
+            $table->date('dob')->nullable();
+            $table->integer('gender')->comment('Male = 1, Female = 2, Other = 3')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
             $table->string('position')->nullable();
-            $table->string('salary')->nullable();
+            $table->float('salary')->nullable();
             $table->string('deleted_by')->nullable();
             $table->softDeletes();
             $table->timestamps();

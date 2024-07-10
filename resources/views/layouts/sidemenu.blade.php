@@ -58,7 +58,7 @@
 
         <!-- Layouts -->
 
-        <!-- Start locations -->
+        <!-- Start account settings -->
         <li class="menu-item {{ request()->is('account*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -77,7 +77,42 @@
                 </li> -->
             </ul>
         </li>
-        <!-- End requests -->
+        <!-- End account settings -->
+        @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
+        <!-- Start employee -->
+        <li class="menu-item {{ request()->is('employee*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="account">Employees</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
+                    <a href="{{route('employees')}}" class="menu-link">
+                        <div data-i18n="update-requests">All Employees</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ request()->is('employee/add') ? 'active' : '' }}">
+                    <a href="{{route('employee.add')}}" class="menu-link">
+                        <div data-i18n="Add role">Add Employee</div>
+                    </a>
+                </li>
+
+                <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
+                    <a href="{{route('employees')}}" class="menu-link">
+                        <div data-i18n="Add role">Mark Attendance</div>
+                    </a>
+                </li> -->
+                <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
+                    <a href="{{route('employees')}}" class="menu-link">
+                        <div data-i18n="Add role">Attendance Report</div>
+                    </a>
+                </li> -->
+            </ul>
+        </li>
+        <!-- End employee -->
+        @endif
+
         @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
         <!-- Start requests -->
         <li class="menu-item {{ request()->is('user*') || request()->is('request*') ? 'active open' : '' }}">
@@ -297,7 +332,7 @@
                 </li>
             </ul>
         </li>
-        
+
         <!-- End Subscriptions -->
         <!-- Start Voucher -->
         <li class="menu-item {{ request()->is('voucher*') ? 'active open' : '' }}">

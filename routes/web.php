@@ -156,6 +156,14 @@ Route::middleware('auth')->group(function () {
     Route::get('get-rent/{locationId}', [RentController::class, 'getRent'])->name('get-rent');
     Route::get('rent/pending-rents', [RentController::class, 'pendingRents'])->name('rents.pending-rents');
 
+    // employee routes
+    Route::get('employees', [EmployeeController::class, 'index'])->name('employees');
+    Route::get('employee/add', [EmployeeController::class, 'create'])->name('employee.add');
+    Route::post('employee/store',  [EmployeeController::class, 'store'])->name('employee.store');
+    Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
+    Route::put('employee/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
+    Route::post('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');
