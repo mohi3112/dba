@@ -164,6 +164,9 @@ Route::middleware('auth')->group(function () {
     Route::put('employee/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
     Route::post('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
 
+    Route::get('employee/daily-attendance', [EmployeeController::class, 'dailyAttendance'])->name('employees.daily-attendance');
+    Route::put('employee/mark-attendance', [EmployeeController::class, 'markAttendance'])->name('employees.mark-attendance');
+
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

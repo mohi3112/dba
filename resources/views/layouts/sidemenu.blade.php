@@ -70,11 +70,6 @@
                         <div data-i18n="account">Account</div>
                     </a>
                 </li>
-                <!-- <li class="menu-item {{ request()->is('locations/add') ? 'active' : '' }}">
-                    <a href="{{route('locations.add')}}" class="menu-link">
-                        <div data-i18n="Add location">Add Location</div>
-                    </a>
-                </li> -->
             </ul>
         </li>
         <!-- End account settings -->
@@ -98,11 +93,11 @@
                     </a>
                 </li>
 
-                <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
-                    <a href="{{route('employees')}}" class="menu-link">
-                        <div data-i18n="Add role">Mark Attendance</div>
+                <li class="menu-item {{ request()->is('employee/daily-attendance') ? 'active' : '' }}">
+                    <a href="{{route('employees.daily-attendance')}}" class="menu-link">
+                        <div data-i18n="Add role">Daily Attendance</div>
                     </a>
-                </li> -->
+                </li>
                 <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
                     <a href="{{route('employees')}}" class="menu-link">
                         <div data-i18n="Add role">Attendance Report</div>
