@@ -98,6 +98,11 @@
                         <div data-i18n="Add role">Daily Attendance</div>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->is('employee/attendance-report') ? 'active' : '' }}">
+                    <a href="{{route('employees.attendance-report')}}" class="menu-link">
+                        <div data-i18n="Add role">Attendance Report</div>
+                    </a>
+                </li>
                 <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
                     <a href="{{route('employees')}}" class="menu-link">
                         <div data-i18n="Add role">Attendance Report</div>

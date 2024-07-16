@@ -166,7 +166,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('employee/daily-attendance', [EmployeeController::class, 'dailyAttendance'])->name('employees.daily-attendance');
     Route::put('employee/mark-attendance', [EmployeeController::class, 'markAttendance'])->name('employees.mark-attendance');
-
+    Route::get('employee/attendance-report', [EmployeeController::class, 'attendanceReport'])->name('employees.attendance-report');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

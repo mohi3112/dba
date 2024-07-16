@@ -7,6 +7,7 @@ use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -209,5 +210,35 @@ class EmployeeController extends Controller
             // Log any exceptions for further investigation
             return response()->json(['message' => 'Error processing request.'], 500);
         }
+    }
+
+    public function attendanceReport(Request $request)
+    {
+        $startOfMonth = $request->query('startOfMonth');
+        $endOfMonth = $request->query('endOfMonth');
+        $name = $request->query('employeeName');
+
+        if ($startOfMonth && $endOfMonth) {
+            $startDate = Carbon::parse($startOfMonth)->toDateString();
+            $endDate = Carbon::parse($endOfMonth)->toDateString();
+        } else {
+            $endDate = Carbon::now()->toDateString();
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+        }
+
+        $query = Attendance::with('employee')->select('employee_id', DB::raw('COUNT(*) as total_attendance'))
+            ->whereBetween('date', [$startDate, $endDate])
+            ->whereNotIn(DB::raw('DAYOFWEEK(date)'), [1, 7]) // Exclude Sundays (1) and Saturdays (7)
+            ->groupBy('employee_id');
+
+        if ($name) {
+            $query->whereHas('employee', function ($q) use ($name) {
+                $q->where('name', 'like', '%' . $name . '%');
+            });
+        }
+
+        $attendances = $query->paginate(20);
+
+        return view('employees.attendance-report', compact('attendances'));
     }
 }
