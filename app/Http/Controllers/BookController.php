@@ -251,4 +251,21 @@ class BookController extends Controller
             ->orderBy('return_date', 'asc')->paginate(10);
         return view('books.issuedBooks', compact('issuedBooks'));
     }
+
+    public function getUniqueCodes(Request $request)
+    {
+        $selectedBookIds = $request->input('selected_books');
+
+        if (empty($selectedBookIds)) {
+            return response()->json(['success' => false, 'message' => 'No books selected.']);
+        }
+
+        $books = Book::whereIn('id', $selectedBookIds)->get();
+
+        $codes = $books->map(function ($book) {
+            return $book->getUniqueCodeAttribute();
+        });
+
+        return response()->json(['success' => true, 'codes' => $codes]);
+    }
 }

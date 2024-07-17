@@ -98,6 +98,8 @@ Route::middleware('auth')->group(function () {
     Route::get('book/edit/{id}', [BookController::class, 'edit'])->name('books.edit');
     Route::put('books/update/{id}', [BookController::class, 'update'])->name('books.update');
     Route::post('book/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+    Route::post('books/get-unique-codes', [BookController::class, 'getUniqueCodes'])->name('books.getUniqueCodes');
+
     // issue a book
     Route::post('issue-book', [BookController::class, 'issueBook'])->name('book.issue');
     Route::get('books/issued-books', [BookController::class, 'getAllIssuedBooks'])->name('books.issued-books');
