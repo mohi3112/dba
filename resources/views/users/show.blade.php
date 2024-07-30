@@ -131,190 +131,202 @@
                                                         <h6 class="mb-2 text-muted">Lawyer Image</h6>
                                                         <div class="col-md-4 mb-3">
                                                             <img class="card-img card-img-left" src="data:image/jpeg;base64,{{ $user->picture }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
-                                                        </div>
-                                                    </div>
-                                                    @php($dataFound = true)
-                                                    @endif --}}
-                                                    @if($user->address_proof->count() > 0)
-                                                    <div class="pl-3 row g-0">
-                                                        <h6 class="mb-2 text-muted">Address Proof(s)</h6>
-                                                        @foreach($user->address_proof as $proof)
-                                                        <div class="col-md-4 mb-3">
-                                                            <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
-                                                        </div>
-                                                        @endforeach
-                                                    </div>
-                                                    @php($dataFound = true)
-                                                    @endif
-                                                    @if($user->degree_images->count() > 0)
-                                                    <div class="pl-3 mt-2 row g-0">
-                                                        <h6 class="mb-2 text-muted">Uploaded Degree(s)</h6>
-                                                        @foreach($user->degree_images as $proof)
-                                                        <div class="col-md-4 mb-3">
-                                                            <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}"  alt="Description of Image" style="max-width: 250px; max-height: 250px;">
-                                                        </div>
-                                                        @endforeach
-                                                    </div>
-                                                    @php($dataFound = true)
-                                                    @endif
-                                                    @if(!$dataFound)
-                                                    <div class="pl-3 mb-2 row g-0">
-                                                        <h6 class="mb-2 text-muted">No Data Found</h6>
-                                                    </div>
-                                                    @endif
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- subscriptions -->
-                                    <div class="tab-pane fade" id="all-subscriptions">
-                                        <div class="col-12">
-                                            <div class="card col-12">
-                                                <div class="table-responsive text-nowrap">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sr. No.</th>
-                                                                <th>Subscription Type</th>
-                                                                <th>Start Date</th>
-                                                                <th>End Date</th>
-                                                                <th>Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="table-border-bottom-0">
-                                                            @if($user->subscriptions->count() > 0)
-                                                            @php($i = 1)
-                                                            @foreach($user->subscriptions as $subscription)
-                                                            <?php
-                                                            // Parse dates as Carbon instances
-                                                            $startDate = \Carbon\Carbon::parse($subscription->start_date);
-                                                            $endDate = \Carbon\Carbon::parse($subscription->end_date);
-                                                            $today = \Carbon\Carbon::today();
-
-                                                            $status = $class = "";
-                                                            if ($startDate <= $today && $endDate > $today) {
-                                                                $status = 'Active';
-                                                                $class = 'bg-label-success';
-                                                            } elseif ($endDate < $today) {
-                                                                $status = 'Expired';
-                                                                $class = 'bg-label-warning';
-                                                            } else {
-                                                                $status = 'Scheduled';
-                                                                $class = 'bg-label-info';
-                                                            }
-                                                            ?>
-                                                            <tr>
-                                                                <td> {{ $i }} </td>
-                                                                <td> {{ \App\Models\Subscription::$subscriptionTypes[$subscription->subscription_type] }} </td>
-                                                                <td> {{ \Carbon\Carbon::parse($subscription->start_date)->format('d-M-Y') }} </td>
-                                                                <td> {{ \Carbon\Carbon::parse($subscription->end_date)->format('d-M-Y') }} </td>
-                                                                <td> <span class='badge {{ $class }} me-1'>{{ $status }}</span> </td>
-
-                                                            </tr>
-                                                            @php($i++)
-                                                            @endforeach
-                                                            @else
-                                                            <tr>
-                                                                <td colspan="5">No Data Found</td>
-                                                            </tr>
-                                                            @endif
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="d-flex justify-content-end pt-3"></div>
+                                            @php($dataFound = true)
+                                            @endif --}}
+                                            @if($user->address_proof->count() > 0)
+                                            <div class="pl-3 row g-0">
+                                                <h6 class="mb-2 text-muted">Address Proof(s)</h6>
+                                                @foreach($user->address_proof as $proof)
+                                                <div class="col-md-4 mb-3">
+                                                    <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                 </div>
+                                                @endforeach
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- Payments -->
-
-                                    <div class="tab-pane fade" id="all-payments">
-                                        <div class="col-12">
-                                            <div class="card col-12">
-                                                <div class="table-responsive text-nowrap">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sr. No.</th>
-                                                                <th>Payment Date</th>
-                                                                <th>Amount</th>
-                                                                <th>View Uploaded Proof</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="table-border-bottom-0">
-                                                            @if($user->payments->count() > 0)
-                                                            @php($i = 1)
-                                                            @foreach($user->payments as $payment)
-                                                            <tr>
-                                                                <td> {{ $i }} </td>
-                                                                <td> {{ \Carbon\Carbon::parse($payment->payment_date)->format('d-M-Y') }} </td>
-                                                                <td> {{ $payment->payment_amount }} </td>
-                                                                <td>
-                                                                    <a class="pl-3 color-unset" href="#"><i class="fa fa-eye show-image" img-src="data:image/jpeg;base64,{{ $payment->payment_proof }}" aria-hidden="true"></i></a>
-                                                                </td>
-                                                            </tr>
-                                                            @php($i++)
-                                                            @endforeach
-                                                            @else
-                                                            <tr>
-                                                                <td colspan="5">No Data Found</td>
-                                                            </tr>
-                                                            @endif
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="d-flex justify-content-end pt-3"></div>
+                                            @php($dataFound = true)
+                                            @endif
+                                            @if($user->degree_images->count() > 0)
+                                            <div class="pl-3 mt-2 row g-0">
+                                                <h6 class="mb-2 text-muted">Uploaded Degree(s)</h6>
+                                                @foreach($user->degree_images as $proof)
+                                                <div class="col-md-4 mb-3">
+                                                    <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $proof->image }}" img-src="data:image/jpeg;base64,{{ $proof->image }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
                                                 </div>
+                                                @endforeach
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Books -->
-
-                                    <div class="tab-pane fade" id="all-get-books">
-                                        <div class="col-12">
-                                            <div class="card col-12">
-                                                <div class="table-responsive text-nowrap">
-                                                    <table class="table table-striped">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sr. No.</th>
-                                                                <th>Book - Author Name</th>
-                                                                <th>Issue Date</th>
-                                                                <th>Return Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="table-border-bottom-0">
-                                                            @if($user->issuedBooks->count() > 0)
-                                                            @php($i = 1)
-                                                            @foreach($user->issuedBooks as $issuedBook)
-                                                            <tr>
-                                                                <td> {{ $i }} </td>
-                                                                <td> {{ $issuedBook->book->book_name }} - {{ $issuedBook->book->book_author_name }} </td>
-                                                                <td> {{ \Carbon\Carbon::parse($issuedBook->issue_date)->format('d-M-Y') }} </td>
-                                                                <td> {{ ($issuedBook->return_date) ? \Carbon\Carbon::parse($issuedBook->return_date)->format('d-M-Y') : '--' }} </td>
-                                                            </tr>
-                                                            @php($i++)
-                                                            @endforeach
-                                                            @else
-                                                            <tr>
-                                                                <td colspan="5">No Data Found</td>
-                                                            </tr>
-                                                            @endif
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="d-flex justify-content-end pt-3"></div>
+                                            @php($dataFound = true)
+                                            @endif
+                                            @if($user->other_documents->count() > 0)
+                                            <div class="pl-3 mt-2 row g-0">
+                                                <h6 class="mb-2 text-muted">Uploaded Other Document(s)</h6>
+                                                @foreach($user->other_documents as $otherDocuments)
+                                                <div class="col-md-4 mb-3">
+                                                    <img class="card-img card-img-left show-image" src="data:image/jpeg;base64,{{ $otherDocuments->document }}" img-src="data:image/jpeg;base64,{{ $otherDocuments->document }}" alt="Description of Image" style="max-width: 250px; max-height: 250px;">
+                                                    <p>{{ $otherDocuments->doc_type ?? ""}}</p>
                                                 </div>
+                                                @endforeach
                                             </div>
+                                            @php($dataFound = true)
+                                            @endif
+                                            @if(!$dataFound)
+                                            <div class="pl-3 mb-2 row g-0">
+                                                <h6 class="mb-2 text-muted">No Data Found</h6>
+                                            </div>
+                                            @endif
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
+                            <!-- subscriptions -->
+                            <div class="tab-pane fade" id="all-subscriptions">
+                                <div class="col-12">
+                                    <div class="card col-12">
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sr. No.</th>
+                                                        <th>Subscription Type</th>
+                                                        <th>Start Date</th>
+                                                        <th>End Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0">
+                                                    @if($user->subscriptions->count() > 0)
+                                                    @php($i = 1)
+                                                    @foreach($user->subscriptions as $subscription)
+                                                    <?php
+                                                    // Parse dates as Carbon instances
+                                                    $startDate = \Carbon\Carbon::parse($subscription->start_date);
+                                                    $endDate = \Carbon\Carbon::parse($subscription->end_date);
+                                                    $today = \Carbon\Carbon::today();
+
+                                                    $status = $class = "";
+                                                    if ($startDate <= $today && $endDate > $today) {
+                                                        $status = 'Active';
+                                                        $class = 'bg-label-success';
+                                                    } elseif ($endDate < $today) {
+                                                        $status = 'Expired';
+                                                        $class = 'bg-label-warning';
+                                                    } else {
+                                                        $status = 'Scheduled';
+                                                        $class = 'bg-label-info';
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <td> {{ $i }} </td>
+                                                        <td> {{ \App\Models\Subscription::$subscriptionTypes[$subscription->subscription_type] }} </td>
+                                                        <td> {{ \Carbon\Carbon::parse($subscription->start_date)->format('d-M-Y') }} </td>
+                                                        <td> {{ \Carbon\Carbon::parse($subscription->end_date)->format('d-M-Y') }} </td>
+                                                        <td> <span class='badge {{ $class }} me-1'>{{ $status }}</span> </td>
+
+                                                    </tr>
+                                                    @php($i++)
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan="5">No Data Found</td>
+                                                    </tr>
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-end pt-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Payments -->
+
+                            <div class="tab-pane fade" id="all-payments">
+                                <div class="col-12">
+                                    <div class="card col-12">
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sr. No.</th>
+                                                        <th>Payment Date</th>
+                                                        <th>Amount</th>
+                                                        <th>View Uploaded Proof</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0">
+                                                    @if($user->payments->count() > 0)
+                                                    @php($i = 1)
+                                                    @foreach($user->payments as $payment)
+                                                    <tr>
+                                                        <td> {{ $i }} </td>
+                                                        <td> {{ \Carbon\Carbon::parse($payment->payment_date)->format('d-M-Y') }} </td>
+                                                        <td> {{ $payment->payment_amount }} </td>
+                                                        <td>
+                                                            <a class="pl-3 color-unset" href="#"><i class="fa fa-eye show-image" img-src="data:image/jpeg;base64,{{ $payment->payment_proof }}" aria-hidden="true"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    @php($i++)
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan="5">No Data Found</td>
+                                                    </tr>
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-end pt-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Books -->
+
+                            <div class="tab-pane fade" id="all-get-books">
+                                <div class="col-12">
+                                    <div class="card col-12">
+                                        <div class="table-responsive text-nowrap">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Sr. No.</th>
+                                                        <th>Book - Author Name</th>
+                                                        <th>Issue Date</th>
+                                                        <th>Return Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0">
+                                                    @if($user->issuedBooks->count() > 0)
+                                                    @php($i = 1)
+                                                    @foreach($user->issuedBooks as $issuedBook)
+                                                    <tr>
+                                                        <td> {{ $i }} </td>
+                                                        <td> {{ $issuedBook->book->book_name }} - {{ $issuedBook->book->book_author_name }} </td>
+                                                        <td> {{ \Carbon\Carbon::parse($issuedBook->issue_date)->format('d-M-Y') }} </td>
+                                                        <td> {{ ($issuedBook->return_date) ? \Carbon\Carbon::parse($issuedBook->return_date)->format('d-M-Y') : '--' }} </td>
+                                                    </tr>
+                                                    @php($i++)
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan="5">No Data Found</td>
+                                                    </tr>
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                            <div class="d-flex justify-content-end pt-3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 <!-- show image modal -->

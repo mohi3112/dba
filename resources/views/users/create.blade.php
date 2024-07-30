@@ -231,6 +231,37 @@
                             </div>
                         </div>
                     </div>
+                    <div class="divider divider-primary">
+                        <div class="divider-text">Other Documents</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-primary" id="add-row">Add Row</button>
+                        </div>
+                    </div>
+                    <span id="other-document-section">
+                        <div class="row other-document-row">
+                            <div class="mb-3 col-md-6">
+                                <label for="doc_type" class="form-label">Document Type</label>
+                                <input class="form-control" type="text" id="doc_type" placeholder="Document Type" name="doc_type[]">
+                            </div>
+                            <div class="mb-3 col-md-4">
+                                <label for="document" class="form-label">Upload Document</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="document" name="document[]" multiple accept="image/*">
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-2 text-end">
+                                <label for="showToastPlacement" class="form-label">&nbsp;</label>
+                                <div class="text-end">
+                                    <button class="btn btn-danger ml-2 delete-row">Delete Row</button>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
                         <a type="reset" href="{{route('users')}}" class="btn btn-outline-secondary">Cancel</a>
@@ -269,6 +300,28 @@
                 $('.not-for-vendor').show();
                 $('.for-vendor').hide();
                 $('.not-for-vendor').removeClass('d-none');
+            }
+        });
+
+        // add row other document on clicking the button
+        document.getElementById('add-row').addEventListener('click', function() {
+            let newRow = document.querySelector('.other-document-row').cloneNode(true);
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+            document.getElementById('other-document-section').appendChild(newRow);
+        });
+
+        // delete row
+        document.getElementById('other-document-section').addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-row')) {
+                let familyRows = document.querySelectorAll('.other-document-row');
+                if (familyRows.length > 1) {
+                    var confirmationForDelete = confirm('Are you sure you want to delete this row?');
+                    if (confirmationForDelete) {
+                        event.target.closest('.other-document-row').remove();
+                    }
+                } else {
+                    alert("You can't delete this row. Please leave it blank if not required.");
+                }
             }
         });
     });

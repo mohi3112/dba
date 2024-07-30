@@ -298,10 +298,10 @@ $isVendor = 'disabled';
                                 @php($j=1)
                                 <div class="demo-inline-spacing">
                                     @foreach($user->degree_images as $proof)
-                                    <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Uploaded Document - {{ $j }}</span>
+                                    <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#lawyerOtherDocuments{{ $proof->id }}">Uploaded Document - {{ $j }}</span>
 
                                     <!-- Modal -->
-                                    <div class="modal fade" id="lawyerDegreeProof{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                    <div class="modal fade" id="lawyerOtherDocuments{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
@@ -311,7 +311,7 @@ $isVendor = 'disabled';
                                                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                                         Close
                                                     </button>
-                                                    <button type="button" parent-btn="#lawyerDegreeProof{{ $proof->id }}" data-url="delete-degree-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                                    <button type="button" parent-btn="#lawyerOtherDocuments{{ $proof->id }}" data-url="delete-degree-image" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -322,6 +322,70 @@ $isVendor = 'disabled';
                                 </div>
                             </div>
                             @endif
+                        </div>
+                        <div class="divider divider-primary">
+                            <div class="divider-text">Other Documents</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4 text-end">
+                                <button type="button" class="btn btn-primary" id="add-row">Add Row</button>
+                            </div>
+                        </div>
+                        <span id="other-document-section">
+                            <div class="row other-document-row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="doc_type" class="form-label">Document Type</label>
+                                    <input class="form-control" type="text" id="doc_type" placeholder="Document Type" name="doc_type[]">
+                                </div>
+                                <div class="mb-3 col-md-4">
+                                    <label for="document" class="form-label">Upload Document</label>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control" id="document" name="document[]" multiple accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-2 text-end">
+                                    <label for="showToastPlacement" class="form-label">&nbsp;</label>
+                                    <div class="text-end">
+                                        <button class="btn btn-danger ml-2 delete-row">Delete Row</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
+                        <div class="row">
+                            <div class="col-md-8">
+                                @if($user->other_documents->count() > 0)
+                                <div class="d-flex pt-1 pb-3">
+                                    @php($od=1)
+                                    <div class="demo-inline-spacing">
+                                        @foreach($user->other_documents as $proof)
+                                        <span type="button" class="pl-2 badge bg-label-dark" data-bs-toggle="modal" data-bs-target="#lawyerDegreeProof{{ $proof->id }}">Uploaded Document - {{ $od }}</span>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="lawyerDegreeProof{{ $proof->id }}" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <img src="data:image/jpeg;base64,{{ $proof->document }}" alt="Description of Image" style="max-width: 750px;">
+                                                        <p>{{ $proof->doc_type }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button type="button" parent-btn="#lawyerDegreeProof{{ $proof->id }}" data-url="delete-other-document" data-image-id="{{ $proof->id }}" class="btn btn-danger delete-image">Delete Image</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Modal -->
+                                        @php($od++)
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="mt-2">
@@ -390,6 +454,31 @@ $isVendor = 'disabled';
                 $('.not-for-vendor').show();
                 $('.for-vendor').hide();
                 $('.not-for-vendor').removeClass('d-none');
+            }
+        });
+
+
+        // add row other document on clicking the button
+        document.getElementById('add-row').addEventListener('click', function() {
+            let newRow = document.querySelector('.other-document-row').cloneNode(true);
+
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+
+            document.getElementById('other-document-section').appendChild(newRow);
+        });
+
+        // delete row
+        document.getElementById('other-document-section').addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-row')) {
+                let familyRows = document.querySelectorAll('.other-document-row');
+                if (familyRows.length > 1) {
+                    var confirmationForDelete = confirm('Are you sure you want to delete this row?');
+                    if (confirmationForDelete) {
+                        event.target.closest('.other-document-row').remove();
+                    }
+                } else {
+                    alert("You can't delete this row. Please leave it blank if not required.");
+                }
             }
         });
     });

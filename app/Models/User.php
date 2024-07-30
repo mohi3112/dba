@@ -173,6 +173,11 @@ class User extends Authenticatable
         return $this->hasMany(AddressProof::class, 'user_id', 'id');
     }
 
+    public function other_documents()
+    {
+        return $this->hasMany(OtherDocument::class, 'user_id', 'id');
+    }
+
     public function degree_images()
     {
         return $this->hasMany(DegreeImage::class, 'user_id', 'id');

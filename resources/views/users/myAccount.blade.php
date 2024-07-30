@@ -514,7 +514,10 @@ $vendor = True;
             if (event.target.classList.contains('delete-row')) {
                 let familyRows = document.querySelectorAll('.family-row');
                 if (familyRows.length > 1) {
-                    event.target.closest('.family-row').remove();
+                    var confirmationForDelete = confirm('Are you sure you want to delete this row?');
+                    if (confirmationForDelete) {
+                        event.target.closest('.family-row').remove();
+                    }
                 } else {
                     alert('You must have at least one family member record.');
                 }

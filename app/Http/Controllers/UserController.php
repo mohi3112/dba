@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\AddressProof;
 use App\Models\DegreeImage;
 use App\Models\Family;
+use App\Models\OtherDocument;
 use App\Models\UserUpdateRequest;
 use App\Models\Vendor;
 use App\Services\LocationService;
@@ -216,6 +217,23 @@ class UserController extends Controller
                 DegreeImage::insert($degreeImagesData);
             }
 
+            // handle other docuements
+            if ($request->hasFile('document')) {
+                $otherDocuments = [];
+                foreach ($request->file('document') as $otherDoc_key => $otherDocumentFile) {
+                    $file = base64_encode(file_get_contents($otherDocumentFile->getPathname()));
+                    $otherDocuments[] = [
+                        'doc_type' => !empty($request->doc_type) ? $request->doc_type[$otherDoc_key] : null,
+                        'document' => $file,
+                        'user_id' => $user->id,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+
+                OtherDocument::insert($otherDocuments);
+            }
+
             // Commit the transaction
             DB::commit();
 
@@ -232,6 +250,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::with([
+            'other_documents',
             'roles',
             'subscriptions' => function ($query) {
                 $query->orderBy('created_at', 'desc');
@@ -528,6 +547,20 @@ class UserController extends Controller
             $addressProofRecord->delete();
 
             $message = 'Image deleted successfully.';
+        } catch (\Exception $e) {
+            $message = 'Something went wrong. Please try again.';
+        }
+
+        return response()->json(['message' => $message]);
+    }
+
+    public function deleteOtherDocument($id)
+    {
+        try {
+            $addressProofRecord = OtherDocument::findOrFail($id);
+            $addressProofRecord->delete();
+
+            $message = 'Record deleted successfully.';
         } catch (\Exception $e) {
             $message = 'Something went wrong. Please try again.';
         }
