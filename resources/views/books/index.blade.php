@@ -95,14 +95,14 @@
 
 <form id="printForm" class="nonPrintArea">
     @csrf
-    <button type="button" onclick="printSelectedBooks()">Print Selected Codes</button>
+    <button type="button" class="btn btn-primary mb-2" onclick="printSelectedBooks()">Print Selected Codes</button>
     <div class="card">
         <div class="table-responsive text-nowrap">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Sr. No.</th>
+                        <!-- <th>Sr. No.</th> -->
                         <th>Book Name</th>
                         <th>Category Name</th>
                         <th>Author Name</th>
@@ -338,7 +338,7 @@
             .map(checkbox => checkbox.value);
 
         if (selectedBooks.length === 0) {
-            alert('No books selected.');
+            alert('No book(s) are selected.');
             return;
         }
 
