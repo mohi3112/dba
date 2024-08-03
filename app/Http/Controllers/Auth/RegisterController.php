@@ -74,7 +74,8 @@ class RegisterController extends Controller
             'gender' => $data['gender'],
             'email' => $data['email'],
             'account_approved' => 0,
-            'designation' => $data['designation'],
+            'designation' => User::DESIGNATION_LAWYER,
+            // 'designation' => $data['designation'],
             'status' => User::STATUS_ACTIVE,
             'password' => Hash::make($data['password']),
         ];
