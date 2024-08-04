@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\Rent;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Models\Vakalatnama;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -150,6 +151,18 @@ class HomeController extends Controller
             }
 
             $dashboardData['pending_subscription'] = $subscriptionsQuery->count();
+
+            // vakalatnama
+            $vakalatnamaQuery = Vakalatnama::query();
+            // Apply date filters to vakalatnama query if provided
+            if ($startDate) {
+                $vakalatnamaQuery->where('created_at', '>=', Carbon::parse($startDate)->startOfDay());
+            }
+            if ($endDate) {
+                $vakalatnamaQuery->where('created_at', '<=', Carbon::parse($endDate)->endOfDay());
+            }
+            // Get the count of vendor users
+            $dashboardData['vakalatnamas_count'] = $vakalatnamaQuery->count();
         }
 
         return view('home', compact('user', 'dashboardData'));

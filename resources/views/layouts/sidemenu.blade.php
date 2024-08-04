@@ -353,6 +353,26 @@
                 </li>
             </ul>
         </li>
+        <!-- End Vakalatnama -->
+        <!-- Start Vakalatnama -->
+        <li class="menu-item {{ request()->is('vakalatnama*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="vakalatnamas">Vakalatnama</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('vakalatnamas') ? 'active' : '' }}">
+                    <a href="{{route('vakalatnamas')}}" class="menu-link">
+                        <div data-i18n="vakalatnamas">All Vakalatnama</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('vakalatnama/vakalatnama-form') ? 'active' : '' }}">
+                    <a href="{{route('vakalatnama.form')}}" class="menu-link">
+                        <div data-i18n="Add vakalatnamas">Add Vakalatnama</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <!-- End Voucher -->
         @endif
         <!-- Start Rent -->

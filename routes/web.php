@@ -15,7 +15,7 @@ use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\VakalatnamaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -171,6 +171,12 @@ Route::middleware('auth')->group(function () {
     Route::get('employee/daily-attendance', [EmployeeController::class, 'dailyAttendance'])->name('employees.daily-attendance');
     Route::put('employee/mark-attendance', [EmployeeController::class, 'markAttendance'])->name('employees.mark-attendance');
     Route::get('employee/attendance-report', [EmployeeController::class, 'attendanceReport'])->name('employees.attendance-report');
+
+    // vakalatnama routes
+    Route::get('vakalatnama/summary', [VakalatnamaController::class, 'index'])->name('vakalatnamas');
+    Route::get('vakalatnama/vakalatnama-form', [VakalatnamaController::class, 'vakalatnamaForm'])->name('vakalatnama.form');
+    Route::post('vakalatnama/generate-vakalatnama', [VakalatnamaController::class, 'issueVakalatnama'])->name('vakalatnama.generate-vakalatnama');
+    Route::get('vakalatnama/view-vakalatnama/{uniqueId}', [VakalatnamaController::class, 'printVakalatnama'])->name('vakalatnama.view-vakalatnama');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');
