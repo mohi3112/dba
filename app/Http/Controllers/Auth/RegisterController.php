@@ -55,7 +55,7 @@ class RegisterController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'gender' => ['required'],
-            'designation' => ['required'],
+            // 'designation' => ['required'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
@@ -84,7 +84,7 @@ class RegisterController extends Controller
         $user = User::create($payload);
 
         // attach role
-        $user->roles()->attach($data['designation']);
+        $user->roles()->attach($payload['designation']);
 
         // user submitted for approval
         $payload['user_id'] = $user->id;

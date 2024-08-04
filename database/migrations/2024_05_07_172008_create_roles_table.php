@@ -27,6 +27,8 @@ class CreateRolesTable extends Migration
             ['name' => 'vice_president', 'description' => 'Vice President Role'],
             ['name' => 'finance_secretary', 'description' => 'Finance Secretary Role'],
             ['name' => 'secretary', 'description' => 'Secretary Role'],
+            ['name' => 'joint_secretary', 'description' => 'Joint Secretary Role'],
+            ['name' => 'executive_member', 'description' => 'Executive Member Role'],
             ['name' => 'manager', 'description' => 'Manager Role'],
             ['name' => 'librarian', 'description' => 'Librarian Role'],
             ['name' => 'lawyer', 'description' => 'Lawyer Role'],

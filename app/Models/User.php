@@ -41,10 +41,12 @@ class User extends Authenticatable
     const DESIGNATION_VICE_PRESIDENT = 3;
     const DESIGNATION_FINANCE_SECRETARY = 4;
     const DESIGNATION_SECRETARY = 5;
-    const DESIGNATION_MANAGER = 6;
-    const DESIGNATION_LIBRARIAN = 7;
-    const DESIGNATION_LAWYER = 8;
-    const DESIGNATION_VENDOR = 9;
+    const DESIGNATION_JOINT_SECRETARY = 6;
+    const DESIGNATION_EXECUTIVE_MEMBER = 7;
+    const DESIGNATION_MANAGER = 8;
+    const DESIGNATION_LIBRARIAN = 9;
+    const DESIGNATION_LAWYER = 10;
+    const DESIGNATION_VENDOR = 11;
 
     // Define static array for designation
     // Note: the keys are exists same in DB
@@ -53,6 +55,8 @@ class User extends Authenticatable
         self::DESIGNATION_VICE_PRESIDENT => 'Vice President',
         self::DESIGNATION_FINANCE_SECRETARY => 'Finance Secretary',
         self::DESIGNATION_SECRETARY => 'Secretary',
+        self::DESIGNATION_JOINT_SECRETARY => 'Joint Secretary',
+        self::DESIGNATION_EXECUTIVE_MEMBER => 'Executive Member',
         self::DESIGNATION_MANAGER => 'Manager',
         self::DESIGNATION_LIBRARIAN => 'Librarian',
         self::DESIGNATION_LAWYER => 'Lawyer',
