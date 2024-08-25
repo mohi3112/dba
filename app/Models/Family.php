@@ -11,11 +11,12 @@ class Family extends Model
     protected $fillable = ['user_id', 'type', 'name', 'date'];
 
     public static $familyRelations = [
-        // 'father' => 'Father',
-        // 'mother' => 'Mother',
+        'father' => 'Father',
+        'mother' => 'Mother',
         'spouse' => 'Spouse',
         'son' => 'Son',
         'daughter' => 'Daughter',
+        'other' => 'Other',
     ];
 
     public function user()

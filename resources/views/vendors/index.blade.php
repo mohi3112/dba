@@ -4,7 +4,7 @@
 @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
 <ul class="nav nav-pills flex-column flex-md-row mb-3">
     <li class="nav-item">
-        <a class="nav-link active" href="{{route('users.add')}}"><i class="bx bx-user me-1"></i> Add Vendor</a>
+        <a class="nav-link active" href="{{route('users.add')}}?type=vendor"><i class="bx bx-user me-1"></i> Add Vendor</a>
     </li>
 </ul>
 @endif
@@ -118,7 +118,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('users.edit', $vendor->id) }}"><i class="fas fa-edit"></i></a>
+                            <a class="color-unset" href="{{ route('users.edit', $vendor->id) }}?type=vendor"><i class="fas fa-edit"></i></a>
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$vendor->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <div class="modal fade" id="modalCenter{{$vendor->id}}" tabindex="-1" style="display: none;" aria-hidden="true">

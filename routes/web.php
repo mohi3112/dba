@@ -167,6 +167,7 @@ Route::middleware('auth')->group(function () {
     Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
     Route::put('employee/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
     Route::post('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+    Route::post('employee-policy/{id}', [EmployeeController::class, 'destroyPolicyRecord'])->name('policyRecord.destroy');
 
     Route::get('employee/daily-attendance', [EmployeeController::class, 'dailyAttendance'])->name('employees.daily-attendance');
     Route::put('employee/mark-attendance', [EmployeeController::class, 'markAttendance'])->name('employees.mark-attendance');

@@ -65,7 +65,7 @@ class VakalatnamaController extends Controller
 
     public function printVakalatnama($uniqueId)
     {
-        $vakalatnamaQuery = Vakalatnama::where('unique_id', $uniqueId)->first();
+        $vakalatnamaQuery = Vakalatnama::where('unique_id', $uniqueId);
 
         if (!auth()->user()->hasRole('president')) {
             $vakalatnamaQuery->where('user_id', auth()->user()->id);
@@ -83,6 +83,14 @@ class VakalatnamaController extends Controller
         $payload = [];
         $payload['uniqueId'] = $vakalatnama->unique_id;
         $payload['date'] = $vakalatnama->created_at;
+
+        $uniqueString = '';
+        if (auth()->user()->hasRole('president')) {
+            $uniqueString = 'Precured by president';
+        } elseif (auth()->user()->hasRole('finance_secretary')) {
+            $uniqueString = 'Digitaly signed by finance secretary';
+        }
+        $payload['uniqueString'] = $uniqueString;
 
         // add the print date and unique ID
         $this->pdfService->addPrintDateAndUniqueId($filePath, $outputPath, $payload);

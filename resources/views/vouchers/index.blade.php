@@ -113,6 +113,34 @@
                                                     {{ \Carbon\Carbon::parse($voucher->date)->format('d-M-Y') }}
                                                 </div>
                                             </div>
+
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="issued_to" class="form-label">Issued To:</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    {{ ($voucher->issued_to) ? $activeLawyers[$voucher->issued_to] : '--' }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="issued_by" class="form-label">Issued By:</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    {{ ($voucher->issued_by) ? $activeLawyers[$voucher->issued_by] : '--' }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="description" class="form-label">Description:</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    {{ $voucher->description ?? '--' }}
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">

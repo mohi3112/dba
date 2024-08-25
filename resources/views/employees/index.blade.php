@@ -102,7 +102,7 @@
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$employee->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <div class="modal fade" id="modalCenter{{$employee->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="modalCenterTitle">Employee details</h5>
@@ -110,62 +110,152 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="name" class="form-label">Name:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ $employee->name }}
-
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">Date of Birth:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ ($employee->dob) ? \Carbon\Carbon::parse($employee->dob)->format('d-M-Y') : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="gender" class="form-label">Gender:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }}
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="email" class="form-label">Email:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ $employee->email ?? '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="phone" class="form-label">Phone:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ $employee->phone ?? '--' }}
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">Position:</label>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-3">
                                                     {{ $employee->position ?? '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">salary:</label>
                                                 </div>
-                                                <div class="col-md-8">
-                                                ₹{{ $employee->salary }}
+                                                <div class="col-md-3">
+                                                    ₹{{ $employee->salary ?? '--' }}
                                                 </div>
                                             </div>
+                                            <div class="divider divider-primary">
+                                                <div class="divider-text">Bank Details</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">Bank Account Number:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->bank_account_number ?? '--' }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">IFSC Code:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->bank_ifsc_code ?? '--' }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">Account Holder Name:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->account_holder_name ?? '--' }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">Branch Name:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->branch_name ?? '--' }}
+                                                </div>
+                                            </div>
+                                            <div class="divider divider-primary">
+                                                <div class="divider-text">Other Details</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">ESI Number:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->esi_number ?? '--' }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">ESI Contribution:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->esi_contribution ?? '--' }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">ESI Start Date:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ ($employee->esi_start_date) ? \Carbon\Carbon::parse($employee->esi_start_date)->format('d-M-Y') : '--' }}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="nameWithTitle" class="form-label">ESI End Date:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ ($employee->esi_end_date) ? \Carbon\Carbon::parse($employee->esi_end_date)->format('d-M-Y') : '--' }}
+                                                </div>
+                                            </div>
+
+                                            @if($employee->policies && $employee->policies != '')
+                                            <div class="divider divider-primary">
+                                                <div class="divider-text">Policy Details</div>
+                                            </div>
+                                            <div class="card-body pt-0 pl-0 pr-0">
+                                                <div class="table-responsive text-nowrap">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No.</th>
+                                                                <th>Policy Name</th>
+                                                                <th>Policy Number</th>
+                                                                <th>Issue Date</th>
+                                                                <th>Expiry Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table-border-bottom-0">
+                                                            @php($i = 1)
+                                                            @php($policies = json_decode($employee->policies, true))
+                                                            @foreach($policies as $policy)
+                                                            <tr>
+                                                                <td> {{ $i }} </td>
+                                                                <td> {{ $policy['policy_name'] }} </td>
+                                                                <td> {{ $policy['policy_number'] }} </td>
+                                                                <td>{{ ($policy['policy_issue_date']) ? \Carbon\Carbon::parse($policy['policy_issue_date'])->format('d-M-Y') : '--' }} </td>
+                                                                <td>{{ ($policy['policy_expiry_date']) ? \Carbon\Carbon::parse($policy['policy_expiry_date'])->format('d-M-Y') : '--' }} </td>
+                                                            </tr>
+                                                            @php($i++)
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            @endif
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">

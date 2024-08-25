@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Add User</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">@if($_GET && $_GET['type'] == 'vendor') Vendors @else Lawyers @endif /</span> Add User</h4>
 <form method="POST" action="{{ route('user.store') }}" enctype="multipart/form-data" id="formUserAccount">
     @csrf
     <div class="row">
@@ -77,6 +77,15 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="designation" class="form-label">Designation</label>
+                            <select id="designation" name="designation" class="select2 form-select">
+                                <option value="">Select Designation</option>
+                                @foreach(\App\Models\User::$designationRoles as $key => $designation)
+                                <option value="{{$key}}" {{ old('designation') == $key ? 'selected' : '' }}>{{$designation}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="mb-3 col-md-6 not-for-vendor">
                             <label class="form-label" for="licence_no">Licence number <span class="text-danger">*</span></label>
                             <div class="input-group input-group-merge">
@@ -118,15 +127,6 @@
                                 <input type="text" id="mobile2" name="mobile2" maxlength="10" value="{{ old('mobile2') }}" class="form-control numeric-input" placeholder="Alternate mobile number">
                             </div>
                         </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="designation" class="form-label">Designation</label>
-                            <select id="designation" name="designation" class="select2 form-select">
-                                <option value="">Select Designation</option>
-                                @foreach(\App\Models\User::$designationRoles as $key => $designation)
-                                <option value="{{$key}}" {{ old('designation') == $key ? 'selected' : '' }}>{{$designation}}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
                         <div class="mb-3 col-md-6 not-for-vendor">
                             <label for="degrees" class="form-label">Degrees</label>
@@ -141,6 +141,11 @@
                         <div class="mb-3 col-md-6 for-vendor d-none">
                             <label for="employees" class="form-label">Employees</label>
                             <input type="text" class="form-control" placeholder="Employees" id="employees" name="employees" value="{{old('employees')}}">
+                        </div>
+
+                        <div class="mb-3 col-md-6 for-vendor d-none">
+                            <label for="security_deposit" class="form-label">Security Deposit</label>
+                            <input type="text" class="form-control" placeholder="Security Deposit" id="security_deposit" name="security_deposit" value="{{old('security_deposit')}}">
                         </div>
 
                         <div class="mb-3 col-md-6 for-vendor d-none">

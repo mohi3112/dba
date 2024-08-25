@@ -13,6 +13,9 @@ class Voucher extends Model
         "title",
         "price",
         "date",
+        "issued_by",
+        "issued_to",
+        "description",
         "deleted_by"
     ];
 }

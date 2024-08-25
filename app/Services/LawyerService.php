@@ -18,6 +18,8 @@ class LawyerService
                 User::DESIGNATION_VICE_PRESIDENT,
                 User::DESIGNATION_FINANCE_SECRETARY,
                 User::DESIGNATION_SECRETARY,
+                User::DESIGNATION_JOINT_SECRETARY,
+                User::DESIGNATION_EXECUTIVE_MEMBER,
                 User::DESIGNATION_MANAGER,
                 User::DESIGNATION_LIBRARIAN,
                 User::DESIGNATION_LAWYER

@@ -85,7 +85,7 @@
                 @foreach($rents as $rent)
                 <tr>
                     <td> {{ $i }} </td>
-                    <td> {{ $activeVendors[$rent->user_id]['full_name'] }} </td>
+                    <td> {{ (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--' }} </td>
                     <td>₹{{ $rent->rent_amount }} </td>
                     <td>{{ \Carbon\Carbon::parse($rent->renewal_date)->format('d-M-Y') }} </td>
                     <td>{{ \Carbon\Carbon::parse($rent->end_date)->format('d-M-Y') }} </td>
@@ -108,7 +108,7 @@
                                                     <label for="lawyerName" class="form-label">Vendor Name:</label>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    {{ $activeVendors[$rent->user_id]['full_name'] }}
+                                                    {{ (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">

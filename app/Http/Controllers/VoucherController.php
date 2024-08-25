@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\ModificationRequest;
 use App\Models\Voucher;
+use App\Services\LawyerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VoucherController extends Controller
 {
+    protected $lawyerService;
+
+    public function __construct(LawyerService $lawyerService)
+    {
+        $this->lawyerService = $lawyerService;
+    }
+
     public function index(Request $request)
     {
         $vouchersQuery = Voucher::query();
@@ -27,12 +35,16 @@ class VoucherController extends Controller
 
         $vouchers = $vouchersQuery->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('vouchers.index', compact('vouchers'));
+        $activeLawyers = $this->lawyerService->getActiveLawyers(false);
+
+        return view('vouchers.index', compact('vouchers', 'activeLawyers'));
     }
 
     public function create()
     {
-        return view('vouchers.create');
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
+
+        return view('vouchers.create', compact('activeLawyers'));
     }
 
     public function store(Request $request)
@@ -51,7 +63,9 @@ class VoucherController extends Controller
     {
         $voucher = Voucher::findOrFail($id);
 
-        return view('vouchers.edit', compact('voucher'));
+        $activeLawyers = $this->lawyerService->getActiveLawyers();
+
+        return view('vouchers.edit', compact('voucher', 'activeLawyers'));
     }
 
     public function update(Request $request, $id)
@@ -68,6 +82,9 @@ class VoucherController extends Controller
 
                 $voucher->title = $request->title;
                 $voucher->price = $request->price;
+                $voucher->issued_by = $request->issued_by;
+                $voucher->issued_to = $request->issued_to;
+                $voucher->description = $request->description;
                 $voucher->save();
 
                 return redirect()->route('vouchers')->with('success', 'Voucher updated successfully.');

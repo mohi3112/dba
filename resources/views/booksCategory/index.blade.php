@@ -61,6 +61,7 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Category Name</th>
+                    <th>Publication Year</th>
                     <th>Publised volumes</th>
                     <th>Publised Total volumes</th>
                     <th>Available Books</th>
@@ -74,6 +75,7 @@
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $booksCategory->category_name }} </td>
+                    <td> {{ $booksCategory->year_of_publishing }} </td>
                     <td> {{ $booksCategory->published_volumes }} </td>
                     <td> {{ $booksCategory->published_total_volumes }} </td>
                     <td> {{ $booksCategory->available_books_count }} </td>

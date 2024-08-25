@@ -11,6 +11,7 @@ class Vendor extends Model
         "business_name",
         "employees",
         "location_id",
+        "security_deposit"
     ];
 
     public function location()

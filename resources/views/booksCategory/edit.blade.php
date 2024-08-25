@@ -21,7 +21,16 @@
                             @enderror
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="published_total_volumes" class="form-label">Published Total volumes <span class="text-danger">*</span></label>
+                            <label for="year_of_publishing" class="form-label">Publication Year</label>
+                            <input type="text" class="form-control @error('year_of_publishing') is-invalid @enderror" value="{{ $booksCategory->year_of_publishing }}" id="year_of_publishing" name="year_of_publishing" maxlength="4" placeholder="YYYY">
+                            @error('year_of_publishing')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="published_total_volumes" class="form-label">Published Total Number Of volumes <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('published_total_volumes') is-invalid @enderror" placeholder="Book Author Name" id="published_total_volumes" value="{{ $booksCategory->published_total_volumes }}" name="published_total_volumes">
                             @error('published_total_volumes')
                             <span class="invalid-feedback" role="alert">

@@ -165,6 +165,7 @@ class UserController extends Controller
                 $payload['business_name'] = $request->input('business_name');
                 $payload['employees'] = $request->input('employees');
                 $payload['location_id'] = $request->input('location_id');
+                $payload['security_deposit'] = $request->input('security_deposit');
                 Vendor::create($payload);
             }
 
@@ -254,7 +255,8 @@ class UserController extends Controller
             'roles',
             'subscriptions' => function ($query) {
                 $query->orderBy('created_at', 'desc');
-            }, 'payments' => function ($q) {
+            },
+            'payments' => function ($q) {
                 $q->orderBy('created_at', 'desc');
             },
             'issuedBooks' => function ($qry) {
@@ -387,6 +389,7 @@ class UserController extends Controller
                     $payload['business_name'] = $request->input('business_name');
                     $payload['employees'] = $request->input('employees');
                     $payload['location_id'] = $request->input('location_id');
+                    $payload['security_deposit'] = $request->input('security_deposit');
 
                     if ($existingRecord) {
                         $existingRecord->update($payload);

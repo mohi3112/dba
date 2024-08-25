@@ -44,12 +44,36 @@ class EmployeeController extends Controller
         return view('employees.create');
     }
 
+    private function createPoliciesPayload($request)
+    {
+        $policies = [];
+        $payload = $request->all();
+
+        $policyArray = ($payload['policy_name']) ? $payload['policy_name'] : $payload['policy_number'];
+
+        $count = count($policyArray);
+        for ($i = 0; $i < $count; $i++) {
+            $policies[] = [
+                'policy_name' => $payload['policy_name'][$i] ?? null,
+                'policy_number' => $payload['policy_number'][$i] ?? null,
+                'policy_issue_date' => $payload['policy_issue_date'][$i] ?? null,
+                'policy_expiry_date' => $payload['policy_expiry_date'][$i] ?? null,
+            ];
+        }
+        return $policies;
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
             'gender' => 'required',
         ]);
+
+        if ($request->has('policy_name') || $request->has('policy_number')) {
+            $policiesArray = $this->createPoliciesPayload($request);
+            $request->merge(['policies' => json_encode($policiesArray)]);
+        }
 
         Employee::create($request->all());
 
@@ -72,13 +96,31 @@ class EmployeeController extends Controller
         $employee = Employee::findOrFail($id);
 
         if ($employee) {
-            $employee->name = $request->name;
-            $employee->gender = $request->gender;
-            $employee->email = $request->email;
-            $employee->dob = $request->dob;
-            $employee->phone = $request->phone;
-            $employee->position = $request->position;
-            $employee->salary = $request->salary;
+            $existingPoliciesData = ($employee->policies) ? json_decode($employee->policies, true) : [];
+
+            if ($request->has('policy_name') || $request->has('policy_number')) {
+                $policiesArray = $this->createPoliciesPayload($request);
+                $existingPoliciesData = array_merge($existingPoliciesData, $policiesArray);
+            }
+
+            $request->merge(['policies' => !(empty($existingPoliciesData)) ? json_encode($existingPoliciesData) : null]);
+
+            $employee->name = $request->input('name');
+            $employee->gender = $request->input('gender');
+            $employee->email = $request->input('email');
+            $employee->dob = $request->input('dob');
+            $employee->phone = $request->input('phone');
+            $employee->position = $request->input('position');
+            $employee->salary = $request->input('salary');
+            $employee->esi_number = $request->input('esi_number');
+            $employee->esi_start_date = $request->input('esi_start_date');
+            $employee->esi_end_date = $request->input('esi_end_date');
+            $employee->esi_contribution = $request->input('esi_contribution');
+            $employee->bank_account_number = $request->input('bank_account_number');
+            $employee->bank_ifsc_code = $request->input('bank_ifsc_code');
+            $employee->account_holder_name = $request->input('account_holder_name');
+            $employee->branch_name = $request->input('branch_name');
+            $employee->policies = $request->input('policies');
             $employee->save();
 
             return redirect()->route('employees')->with('success', 'Employee record updated successfully.');
@@ -103,6 +145,36 @@ class EmployeeController extends Controller
         }
 
         return redirect()->route('employees')->with('error', 'Something went wrong.');
+    }
+
+    public function destroyPolicyRecord(Request $request, $id)
+    {
+        try {
+            // Get the employee record from the database
+            $employeeRecord = Employee::findOrFail($id);
+
+            // Get the policies data from the database
+            $policiesData = json_decode($employeeRecord->policies, true);
+
+            // Get the index to delete from the request
+            $indexToDelete = $request->input('policyRecordIndex') - 1;
+
+            // If the index exists, delete the record
+            if (isset($policiesData[$indexToDelete])) {
+                unset($policiesData[$indexToDelete]);
+                // Reindex the array if necessary
+                $policiesData = array_values($policiesData);
+            }
+
+            // Encode the data back to JSON and save
+            $employeeRecord->policies = !empty($policiesData) ? json_encode($policiesData) : null;
+            $employeeRecord->save();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            // Return an error response
+            return response()->json(['error' => false]);
+        }
     }
 
     public function dailyAttendance(Request $request)

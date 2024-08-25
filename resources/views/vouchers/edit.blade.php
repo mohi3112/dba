@@ -11,6 +11,7 @@
 @endif
 <form method="POST" action="{{ route('vouchers.update', $voucher->id) }}" id="formVoucher" enctype="multipart/form-data">
     @csrf
+    <input type="hidden" name="issued_by" value="{{ Auth::user()->id }}">
     @method('PUT')
     <div class="row">
         <div class="col-md-12">
@@ -52,6 +53,18 @@
                             </span>
                             @enderror
                         </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="issued_to" class="form-label">issued to</label>
+                            <select id="userDropdown" name="issued_to" class="form-control form-select user-select">
+                                @foreach($activeLawyers as $ky => $lawyer)
+                                <option value="{{$ky}}" @if($voucher->issued_to==$ky) selected @endif>{{$lawyer}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Description"> {{ $voucher->description }} </textarea>
+                        </div>
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
@@ -64,3 +77,13 @@
     </div>
 </form>
 @endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.user-select').select2({
+            placeholder: 'Select user',
+            allowClear: true
+        });
+    });
+</script>
+@endSection

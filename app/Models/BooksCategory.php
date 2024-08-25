@@ -13,6 +13,7 @@ class BooksCategory extends Model
         'category_name',
         'published_volumes',
         'published_total_volumes',
+        'year_of_publishing',
         'deleted_by',
     ];
 
