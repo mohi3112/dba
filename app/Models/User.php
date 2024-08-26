@@ -63,6 +63,18 @@ class User extends Authenticatable
         self::DESIGNATION_VENDOR => 'Vendor',
     ];
 
+    public static $lawyersDesignations = [
+        self::DESIGNATION_PRESIDENT,
+        self::DESIGNATION_VICE_PRESIDENT,
+        self::DESIGNATION_FINANCE_SECRETARY,
+        self::DESIGNATION_SECRETARY,
+        self::DESIGNATION_JOINT_SECRETARY,
+        self::DESIGNATION_EXECUTIVE_MEMBER,
+        self::DESIGNATION_MANAGER,
+        self::DESIGNATION_LIBRARIAN,
+        self::DESIGNATION_LAWYER
+    ];
+
     const PENDING_REQUEST = "Pending";
     const APPROVED_REQUEST = "Approved";
     const REJECTED_REQUEST = "Rejected";

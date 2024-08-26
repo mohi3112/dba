@@ -76,6 +76,77 @@
                                     </li>
                                     @endif
                                     @else
+                                    @php($eventAvailable = false)
+                                    @if($events->count() > 0)
+                                    @php($eventAvailable = true)
+                                    @endif
+                                    <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
+                                        <a class="nav-link dropdown-toggle notification-bell hide-arrow show" href="javascript:void(0);">
+                                            <span class="position-relative">
+                                                @if($eventAvailable)
+                                                <i class='bx bxs-bell-ring bx-sm'></i>
+                                                @else
+                                                <i class="bx bx-bell bx-sm"></i>
+                                                @endif
+                                            </span>
+                                        </a>
+                                        @if($eventAvailable)
+                                        <ul class="dropdown-menu dropdown-menu-end p-0 notifications-menu" style="min-width: 22rem;right: 0;left: auto;">
+                                            <li class="dropdown-notifications-list scrollable-container ps ps--active-y">
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach($events as $event)
+                                                    <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                                        <div class="d-flex">
+                                                            <div class="flex-shrink-0 me-3 mt-1">
+                                                                <div class="avatar">
+                                                                    <i class='bx bxs-cake bx-sm rounded-circle'></i>
+                                                                    <!-- <span class="avatar-initial rounded-circle bg-label-danger">CF</span> -->
+                                                                </div>
+                                                            </div>
+                                                            <?php
+                                                                $isSameDay = false;
+                                                                if($event->dob) {
+                                                                    $givenDate = \Carbon\Carbon::parse($event->dob);
+                                                                    $today = \Carbon\Carbon::now();
+                                                                    $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
+                                                                }
+                                                            ?>
+                                                            <div class="flex-grow-1">
+                                                                @if($isSameDay)
+                                                                <h6 class="mb-0">Happy birthday <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
+                                                                @else
+                                                                <h6 class="mb-0">Congratulations <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
+                                                                    @if($event->families)
+                                                                        @foreach($event->families as $family)
+                                                                            @if($family->type == \App\Models\Family::SPOUSE)
+                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
+                                                                            @else
+                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @endif
+                                                                @endif
+                                                                <!-- <small class="text-muted">Today</small> -->
+                                                            </div>
+                                                            <!-- <div class="flex-shrink-0 dropdown-notifications-actions">
+                                                                <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                                                                <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                                                            </div> -->
+                                                        </div>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                                <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                                                    <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                                                </div>
+                                                <div class="ps__rail-y" style="top: 0px; right: 0px; height: 480px;">
+                                                    <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 254px;"></div>
+                                                </div>
+                                            </li>
+
+                                        </ul>
+                                        @endif
+                                    </li>
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }} <span class="caret"></span>
@@ -119,6 +190,14 @@
     <script src="{{ asset('js/main.js') }}" defer></script>
     <script src="{{ asset('js/bootstrap.js') }}" defer></script>
     @yield('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.notification-bell').on('click', function() {
+                $('.bs-toast').toast('show');
+                $('.notifications-menu').toggleClass('show');
+            });
+        });
+    </script>
 </body>
 
 </html>

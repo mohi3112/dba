@@ -10,13 +10,20 @@ class Family extends Model
 
     protected $fillable = ['user_id', 'type', 'name', 'date'];
 
+    const FATHER = 'father';
+    const MOTHER = 'mother';
+    const SPOUSE = 'spouse';
+    const SON = 'son';
+    const DAUGHTER = 'daughter';
+    const OTHER = 'other';
+
     public static $familyRelations = [
-        'father' => 'Father',
-        'mother' => 'Mother',
-        'spouse' => 'Spouse',
-        'son' => 'Son',
-        'daughter' => 'Daughter',
-        'other' => 'Other',
+        self::FATHER => 'Father',
+        self::MOTHER => 'Mother',
+        self::SPOUSE => 'Spouse',
+        self::SON => 'Son',
+        self::DAUGHTER => 'Daughter',
+        self::OTHER => 'Other',
     ];
 
     public function user()
