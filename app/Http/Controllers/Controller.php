@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\BooksCategory;
+use App\Models\Employee;
 use App\Models\Location;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -48,6 +49,17 @@ class Controller extends BaseController
         return $all_vendors->mapWithKeys(function ($user) {
             return [$user->id => ['full_name' => $user->full_name, 'location_id' => $user->vendorInfo->location_id ?? NULL]];
         })->toArray();
+    }
+
+    public function getActiveEmployeesList($onlyActive = true)
+    {
+        $employeesQuery = Employee::query();
+
+        if (!$onlyActive) {
+            $employeesQuery->withTrashed();
+        }
+
+        return $employeesQuery->pluck('name', 'id');
     }
 
     public function getCategoriesList()

@@ -111,6 +111,26 @@
             </ul>
         </li>
         <!-- End employee -->
+        <!-- Start Loan -->
+        <li class="menu-item {{ request()->is('loan*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="loans">Loan</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->is('loans') ? 'active' : '' }}">
+                    <a href="{{route('loans')}}" class="menu-link">
+                        <div data-i18n="loans">All Loan</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->is('loans/add') ? 'active' : '' }}">
+                    <a href="{{route('loans.add')}}" class="menu-link">
+                        <div data-i18n="Add loans">Add Loan</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Loan -->
         @endif
 
         @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
@@ -353,7 +373,7 @@
                 </li>
             </ul>
         </li>
-        <!-- End Vakalatnama -->
+        <!-- End Voucher -->
         <!-- Start Vakalatnama -->
         <li class="menu-item {{ request()->is('vakalatnama*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

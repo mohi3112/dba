@@ -16,6 +16,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\VakalatnamaController;
+use App\Http\Controllers\LoanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,7 +151,15 @@ Route::middleware('auth')->group(function () {
     Route::put('vouchers/update/{id}', [VoucherController::class, 'update'])->name('vouchers.update');
     Route::post('voucher/{id}', [VoucherController::class, 'destroy'])->name('vouchers.destroy');
 
-    // Routes for voucher
+    // Routes for loan
+    Route::get('loans', [LoanController::class, 'index'])->name('loans');
+    Route::get('loans/add', [LoanController::class, 'create'])->name('loans.add');
+    Route::post('loan/store',  [LoanController::class, 'store'])->name('loan.store');
+    Route::get('loan/edit/{id}', [LoanController::class, 'edit'])->name('loans.edit');
+    Route::put('loans/update/{id}', [LoanController::class, 'update'])->name('loans.update');
+    Route::post('loan/{id}', [LoanController::class, 'destroy'])->name('loans.destroy');
+
+    // Routes for rent
     Route::get('rents', [RentController::class, 'index'])->name('rents');
     Route::get('rent/add', [RentController::class, 'create'])->name('rents.add');
     Route::post('rent/store',  [RentController::class, 'store'])->name('rent.store');

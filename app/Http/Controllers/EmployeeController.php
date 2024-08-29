@@ -49,6 +49,12 @@ class EmployeeController extends Controller
         $policies = [];
         $payload = $request->all();
 
+        $policyName = $payload['policy_name'][0] ?? null;
+        $policyNumber = $payload['policy_number'][0] ?? null;
+        if ($policyName == null && $policyNumber == null) {
+            return $policies;
+        }
+
         $policyArray = ($payload['policy_name']) ? $payload['policy_name'] : $payload['policy_number'];
 
         $count = count($policyArray);

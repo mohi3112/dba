@@ -13,9 +13,7 @@ class LawyerService
         } elseif (auth()->user()->hasRole('librarian')) {
             $roles = [User::DESIGNATION_LIBRARIAN];
         } else {
-            $roles = [
-                User::$lawyersDesignations
-            ];
+            $roles = User::$lawyersDesignations;
         }
         $lawyers = User::whereHas('roles', function ($query) use ($roles) {
             $query->whereIn(
