@@ -19,11 +19,21 @@
         <form method="GET" action="{{ route('loans') }}">
             <div class="row gx-3 gy-2 align-items-center">
                 <div class="col-md-3">
-                    <label for="employee_id" class="form-label">Employee</label>
+                    <label for="employeeId" class="form-label">Employee</label>
                     <select id="userDropdown" name="employeeId" class="form-control form-select user-select">
                         <option></option>
                         @foreach($allEmployees as $ky => $employee)
                         <option value="{{$ky}}" @if(@$_GET['employeeId']==$ky) selected @endif>{{$employee}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="loanStatus" class="form-label">Status</label>
+                    <select id="loanStatusDropdown" name="loanStatus" class="form-control form-select">
+                        <option></option>
+                        @foreach(\App\Models\Loan::$loanStatuses as $k => $status)
+                        <option value="{{$k}}" @if(@$_GET['loanStatus']==$k) selected @endif>{{$status}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -67,6 +77,7 @@
                     <th>Loan Amount</th>
                     <th>Start Date <br> End Date</th>
                     <th>Status</th>
+                    <th>Pay EMI</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -80,11 +91,47 @@
                     <td>{{ ($loan->start_date) ? \Carbon\Carbon::parse($loan->start_date)->format('d-M-Y') : NULL }} <br> {{ ($loan->end_date) ? \Carbon\Carbon::parse($loan->end_date)->format('d-M-Y') : NULL }} </td>
                     <td> {{ ucfirst($loan->status) }} </td>
                     <td>
+                        @if(in_array($loan->status, [\App\Models\Loan::APPROVED_LOAN, \App\Models\Loan::ACTIVE_LOAN]))
+                        <button type="button" class="btn rounded-pill btn-outline-primary" data-bs-toggle="modal" data-bs-target="#emiModal{{$loan->id}}">Pay Now</button>
+
+                        <div class="modal fade" id="emiModal{{$loan->id}}" tabindex="-1" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog" role="document">
+                                <form method="POST" action="{{ route('loans.payEmi', $loan->id) }}">
+                                    @csrf
+                                    <input type="hidden" name="loan_id" value="{{$loan->id}}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel1">Pay EMI</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row g-6">
+                                                <div class="col mb-0">
+                                                    <label for="payment_date" class="form-label">Emi Date <span class="text-danger">*</span></label>
+                                                    <input type="date" id="payment_date" class="form-control" name="payment_date" value="{{date('Y-m-d')}}" required>
+                                                </div>
+                                                <div class="col mb-0">
+                                                    <label for="amount_paid" class="form-label">Amount <span class="text-danger">*</span></label>
+                                                    <input type="number" min="0" id="amount_paid" class="form-control" name="amount_paid" value="{{$loan->emi_amount}}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary submit-emi">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        @endif
+                    </td>
+                    <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
                             <a class="color-unset" href="{{ route('loans.edit', $loan->id) }}"><i class="fas fa-edit"></i></a>
                             <!-- view -->
-                            <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$loan->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                            <a class="pl-3 color-unset" href="{{ route('loan.loanDetails', $loan->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <!-- delete -->
                             <form action="{{ route('loans.destroy', $loan->id) }}" method="POST">
                                 @csrf
@@ -118,6 +165,26 @@
                     // If the user confirms, submit the nearest form
                     this.closest('form').submit();
                 }
+            });
+        });
+
+        document.querySelectorAll('.submit-emi').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                // Get the form fields
+                const form = this.closest('form');
+                const paymentDate = form.querySelector('#payment_date');
+                const amountPaid = form.querySelector('#amount_paid');
+
+                // Check if both fields have values
+                if (!paymentDate.value || !amountPaid.value) {
+                    alert('Please fill all the details.');
+                    return; // Stop the form submission
+                }
+
+                form.submit();
+
             });
         });
     });

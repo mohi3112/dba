@@ -46,7 +46,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3 col-md-6">
+                        <!-- <div class="mb-3 col-md-6">
                             <label for="interest_rate" class="form-label">interest rate</label>
                             <div class="input-group input-group-merge">
                                 <input class="form-control @error('interest_rate') is-invalid @enderror" type="text" name="interest_rate" value="{{ old('interest_rate') }}">
@@ -56,7 +56,7 @@
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
-                        </div>
+                        </div> -->
 
                         <div class="mb-3 col-md-6">
                             <label for="emi_amount" class="form-label">emi amount</label>

@@ -158,6 +158,10 @@ Route::middleware('auth')->group(function () {
     Route::get('loan/edit/{id}', [LoanController::class, 'edit'])->name('loans.edit');
     Route::put('loans/update/{id}', [LoanController::class, 'update'])->name('loans.update');
     Route::post('loan/{id}', [LoanController::class, 'destroy'])->name('loans.destroy');
+    Route::post('pay-emi/{id}', [LoanController::class, 'payEmi'])->name('loans.payEmi');
+    Route::get('loan-details/{id}', [LoanController::class, 'loanDetails'])->name('loan.loanDetails');
+    Route::put('loan-emi/update/{id}', [LoanController::class, 'updateEmi'])->name('loan.updateEmi');
+    Route::post('loan-emi/{id}', [LoanController::class, 'destroyEmi'])->name('loan.destroyEmi');
 
     // Routes for rent
     Route::get('rents', [RentController::class, 'index'])->name('rents');

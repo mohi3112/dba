@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
+use App\Models\LoanRepayment;
 use App\Models\ModificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,10 @@ class LoanController extends Controller
             $loanQuery->where('employee_id', $request->employeeId);
         }
 
+        if ($request->filled('loanStatus')) {
+            $loanQuery->where('status', $request->loanStatus);
+        }
+
         if ($request->filled('startDate')) {
             $loanQuery->where('start_date', $request->startDate);
         }
@@ -29,7 +34,7 @@ class LoanController extends Controller
             $loanQuery->where('end_date', $request->endDate);
         }
 
-        $loans = $loanQuery->orderBy('id', 'desc')->paginate(10);
+        $loans = $loanQuery->orderBy('id', 'desc')->paginate(20);
 
         $allEmployees = $this->getActiveEmployeesList(false);
 
@@ -81,9 +86,11 @@ class LoanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function loanDetails($id)
     {
-        //
+        $loan = Loan::with('employee', 'repayments')->findOrFail($id);
+
+        return view('loans.loanDetails', compact('loan'));
     }
 
     /**
@@ -137,6 +144,24 @@ class LoanController extends Controller
         return redirect()->route('loanrs')->with('error', 'Something went wrong.');
     }
 
+    public function updateEmi(Request $request, $id)
+    {
+        $loanRepayment = LoanRepayment::findOrFail($id);
+
+        if ($loanRepayment) {
+            $balDue = $loanRepayment->balance_due + $loanRepayment->amount_paid - $request->amount_paid;
+            $loanRepayment->loan_id = $request->loan_id;
+            $loanRepayment->payment_date = $request->payment_date;
+            $loanRepayment->amount_paid = $request->amount_paid;
+            $loanRepayment->balance_due = $balDue;
+            $loanRepayment->save();
+
+            return redirect()->back()->with('success', 'EMI updated successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Something went wrong.');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -155,6 +180,39 @@ class LoanController extends Controller
             $loan->delete();
 
             return redirect()->route('loans')->with('success', 'Loan record deleted successfully!');
+        }
+
+        return redirect()->route('loans')->with('error', 'Something went wrong.');
+    }
+
+    public function destroyEmi($id)
+    {
+        $loanRepayment = LoanRepayment::findOrFail($id);
+
+        if ($loanRepayment) {
+            $loanRepayment->deleted_by = Auth::id();
+            $loanRepayment->save();
+
+            // Soft delete the loan
+            $loanRepayment->delete();
+
+            return redirect()->back()->with('success', 'Loan EMI record deleted successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Something went wrong.');
+    }
+
+    public function payEmi($id, Request $request)
+    {
+        $loan = Loan::findOrFail($id);
+        if (in_array($loan->status, [Loan::APPROVED_LOAN, Loan::ACTIVE_LOAN])) {
+
+            $loanBalance = $loan->loan_amount - $request->amount_paid;
+            $request->merge(['balance_due' => $loanBalance]);
+
+            LoanRepayment::create($request->all());
+
+            return redirect()->route('loans')->with('success', 'Emi paid successfully!');
         }
 
         return redirect()->route('loans')->with('error', 'Something went wrong.');
