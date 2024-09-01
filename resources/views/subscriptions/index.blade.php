@@ -1,7 +1,15 @@
 @extends('layouts.app')
 @section('content')
+<?php
+$currentRole = getUserRoles();
+$dNone = 'd-none';
+if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager']) {
+    $dNone = '';
+}
+?>
+
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Subscriptions</span></h4>
-<ul class="nav nav-pills flex-column flex-md-row mb-3">
+<ul class="nav nav-pills flex-column flex-md-row mb-3 {{$dNone}}">
     <li class="nav-item">
         <a class="nav-link active" href="{{route('subscriptions.add')}}"><i class="bx bx-user me-1"></i> Add Subscription</a>
     </li>
@@ -113,7 +121,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('subscriptions.edit', $subscription->id) }}"><i class="fas fa-edit"></i></a>
+                            <a class="color-unset {{$dNone}}" href="{{ route('subscriptions.edit', $subscription->id) }}"><i class="fas fa-edit"></i></a>
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$subscription->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <div class="modal fade" id="modalCenter{{$subscription->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -166,7 +174,7 @@
                                 </div>
                             </div>
                             <!-- delete -->
-                            <form action="{{ route('subscriptions.destroy', $subscription->id) }}" method="POST">
+                            <form action="{{ route('subscriptions.destroy', $subscription->id) }}" class="{{$dNone}}" method="POST">
                                 @csrf
                                 <a class="pl-3 delete-subscription color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>

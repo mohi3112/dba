@@ -1,8 +1,16 @@
 @extends('layouts.app')
 @section('content')
 
+<?php
+$currentRole = getUserRoles();
+$dNone = 'd-none';
+if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member']) {
+    $dNone = '';
+}
+?>
+
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers</span></h4>
-<ul class="nav nav-pills flex-column flex-md-row mb-3">
+<ul class="nav nav-pills flex-column flex-md-row mb-3 {{$dNone}}">
     <li class="nav-item">
         <a class="nav-link active" href="{{route('users.add')}}"><i class="bx bx-user me-1"></i> Add Lawyer</a>
     </li>
@@ -85,7 +93,7 @@
                     </div>
                 </div>
 
-                @if (auth()->user()->hasRole('president'))
+                @if ($currentRole['president'])
                 <div class="col-md-2">
                     <div class="form-check form-switch" style="margin-top: 25%;">
                         <label class="form-label" for="showToastPlacement">&nbsp;</label>
@@ -131,7 +139,7 @@
                     <th>Licence No</th>
                     <th>DESIGNATION</th>
                     <th>Status</th>
-                    @if (auth()->user()->hasRole('president'))
+                    @if ($currentRole['president'])
                     <th>Deceased</th>
                     @endif
                     <th>Handicaped</th>
@@ -163,7 +171,7 @@
                             <span class="badge bg-label-warning me-1">{{ \App\Models\User::$statuses[$user->status] }}</span>
                             @endif
                         </td>
-                        @if (auth()->user()->hasRole('president'))
+                        @if ($currentRole['president'])
                         <td> {{ ($user->is_deceased) ? 'Yes' : 'No' }} </td>
                         @endif
                         <td> {{ ($user->is_physically_disabled) ? 'Yes' : 'No' }} </td>
@@ -176,11 +184,11 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 <!-- edit -->
-                                <a class="color-unset" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
+                                <a class="color-unset {{$dNone}}" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
                                 <!-- view -->
                                 <a class="pl-3 color-unset" href="{{ route('user.view', $user->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                 <!-- delete -->
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                <form class="{{$dNone}}" action="{{ route('users.destroy', $user->id) }}" method="POST">
                                     @csrf
                                     <a class="pl-3 delete-user color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                                 </form>

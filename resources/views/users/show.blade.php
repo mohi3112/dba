@@ -1,5 +1,12 @@
 @extends('layouts.app')
 @section('content')
+<?php
+$currentRole = getUserRoles();
+$dNone = 'd-none';
+if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member']) {
+    $dNone = '';
+}
+?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Lawyers /</span> Lawyer Details</h4>
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card mb-4">
@@ -7,7 +14,7 @@
             <div class="col-md-10">
                 <h5 class="card-header">Lawyer Details</h5>
             </div>
-            <div class="col-md-2 d-flex" style="flex-direction: column;">
+            <div class="col-md-2 d-flex {{$dNone}}" style="flex-direction: column;">
                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary mt-3 ml-3">
                     Edit
                 </a>

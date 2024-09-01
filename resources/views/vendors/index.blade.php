@@ -1,13 +1,20 @@
 @extends('layouts.app')
 @section('content')
+<?php
+$currentRole = getUserRoles();
+$dNone = 'd-none';
+if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary']) {
+    $dNone = '';
+}
+?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Vendors</span></h4>
-@if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
-<ul class="nav nav-pills flex-column flex-md-row mb-3">
+
+<ul class="nav nav-pills flex-column flex-md-row mb-3 {{$dNone}}">
     <li class="nav-item">
         <a class="nav-link active" href="{{route('users.add')}}?type=vendor"><i class="bx bx-user me-1"></i> Add Vendor</a>
     </li>
 </ul>
-@endif
+
 @if(session('success'))
 <div class="alert alert-success alert-dismissible" role="alert">
     {{ session('success') }}
@@ -106,8 +113,8 @@
                     <td> {{ $vendor->full_name }} </td>
                     <td> {{ $vendor->full_father_name }} </td>
                     <td> {{ $vendor->mobile1 }} {{ ($vendor->mobile2) ? ' ( ' . $vendor->mobile2 . ' )' : '' }} </td>
-                    <td> {{ @$vendor->vendorInfo->business_name ?? '--' }} </td>
-                    <td> {{ ($vendor->vendorInfo) ? $activeLocations[$vendor->vendorInfo->location_id] : '--' }} </td>
+                    <td> {{ ($vendor->vendorInfo) ? $vendor->vendorInfo->business_name : '--' }} </td>
+                    <td> {{ ($vendor->vendorInfo && $vendor->vendorInfo->location_id != null) ? $activeLocations[$vendor->vendorInfo->location_id] : '--' }} </td>
                     <td>
                         @if($vendor->status == true)
                         <span class="badge bg-label-success me-1">{{ \App\Models\User::$statuses[$vendor->status] }}</span>
@@ -118,7 +125,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('users.edit', $vendor->id) }}?type=vendor"><i class="fas fa-edit"></i></a>
+                            <a class="color-unset {{$dNone}}" href="{{ route('users.edit', $vendor->id) }}?type=vendor"><i class="fas fa-edit"></i></a>
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$vendor->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
                             <div class="modal fade" id="modalCenter{{$vendor->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -158,7 +165,7 @@
                                                     <label for="Amount" class="form-label">DOB:</label>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    {{ \Carbon\Carbon::parse($vendor->dob)->format('d-M-Y') }}
+                                                    {{ ($vendor->dob) ? \Carbon\Carbon::parse($vendor->dob)->format('d-M-Y') : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -190,7 +197,7 @@
                                                     <label for="Amount" class="form-label">Location:</label>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    {{ ($vendor->vendorInfo) ? $activeLocations[$vendor->vendorInfo->location_id] : '--' }}
+                                                    {{ ($vendor->vendorInfo && $vendor->vendorInfo->location_id != null) ? $activeLocations[$vendor->vendorInfo->location_id] : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -198,7 +205,7 @@
                                                     <label for="Amount" class="form-label">Residence Address:</label>
                                                 </div>
                                                 <div class="col-md-7">
-                                                    {{ $vendor->address }}
+                                                    {{ $vendor->address ?? '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -223,7 +230,7 @@
                                 </div>
                             </div>
                             <!-- delete -->
-                            <form action="{{ route('users.destroy', $vendor->id) }}" method="POST">
+                            <form class="{{$dNone}}" action="{{ route('users.destroy', $vendor->id) }}" method="POST">
                                 @csrf
                                 <a class="pl-3 delete-vendor color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>

@@ -1,3 +1,7 @@
+<?php
+$currentRole = getUserRoles();
+?>
+
 <!-- Menu -->
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -73,7 +77,7 @@
             </ul>
         </li>
         <!-- End account settings -->
-        @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
         <!-- Start employee -->
         <li class="menu-item {{ request()->is('employee*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -133,7 +137,7 @@
         <!-- End Loan -->
         @endif
 
-        @if(auth()->user()->hasRole('president') || auth()->user()->hasRole('secretary') || auth()->user()->hasRole('finance_secretary'))
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
         <!-- Start requests -->
         <li class="menu-item {{ request()->is('user*') || request()->is('request*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -178,8 +182,8 @@
             </ul>
         </li>
         @endif
-        <!-- End locations -->
-
+        <!-- End roles -->
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
         <!-- Start locations -->
         <li class="menu-item {{ request()->is('location*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -202,9 +206,10 @@
             </ul>
         </li>
         <!-- End locations -->
+        @endif
 
         <!-- Start Lawyers -->
-        @if(!auth()->user()->hasRole('vendor'))
+        @if(!$currentRole['vendor'])
         <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -216,11 +221,13 @@
                         <div data-i18n="Summary">Summary</div>
                     </a>
                 </li>
+                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member'])
                 <li class="menu-item {{ request()->is('lawyers/add') ? 'active' : '' }}">
                     <a href="{{route('users.add')}}" class="menu-link">
                         <div data-i18n="Add Lawyer">Add Lawyer</div>
                     </a>
                 </li>
+                @endif
                 <li class="menu-item {{ request()->is('lawyers/telephone-directory') ? 'active' : '' }}">
                     <a href="{{route('users.telephone-directory')}}" class="menu-link">
                         <div data-i18n="telephone-directory">Telephone Directory</div>
@@ -235,7 +242,7 @@
         </li>
         @endif
         <!-- End Lawyers -->
-
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['vendor'])
         <!-- Start vendors -->
         <li class="menu-item {{ request()->is('vendor*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -248,7 +255,7 @@
                         <div data-i18n="vendors">All Vendors</div>
                     </a>
                 </li>
-                @if(!auth()->user()->hasRole('vendor'))
+                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
                 <li class="menu-item {{ request()->is('vendors/add') ? 'active' : '' }}">
                     <a href="{{route('users.add')}}?type=vendor" class="menu-link">
                         <div data-i18n="Add vendor">Add Vendor</div>
@@ -258,9 +265,10 @@
             </ul>
         </li>
         <!-- End vendors -->
+        @endif
 
         <!-- Start Books -->
-        @if(!auth()->user()->hasRole('vendor'))
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['librarian'])
         <li class="menu-item {{ request()->is('bookCategor*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -307,6 +315,7 @@
         </li>
         @endif
         <!-- End Books -->
+        @if($currentRole['president'] || $currentRole['finance_secretary'])
         <!-- Start Payments -->
         <li class="menu-item {{ request()->is('payment*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -327,8 +336,9 @@
             </ul>
         </li>
         <!-- End Payments -->
+        @endif
         <!-- Start Subscriptions -->
-        @if(!auth()->user()->hasRole('vendor'))
+        @if(!$currentRole['vendor'])
         <li class="menu-item {{ request()->is('subscription*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -340,6 +350,7 @@
                         <div data-i18n="subscriptions">All Subscriptions</div>
                     </a>
                 </li>
+                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
                 <li class="menu-item {{ request()->is('subscriptions/upcoming-subscription') ? 'active' : '' }}">
                     <a href="{{route('subscriptions.getUpcomingSubscriptions')}}" class="menu-link">
                         <div data-i18n="upcoming subscriptions">Upcoming Subscriptions</div>
@@ -350,10 +361,12 @@
                         <div data-i18n="Add subscriptions">Add Subscriptions</div>
                     </a>
                 </li>
+                @endif
             </ul>
         </li>
-
+        @endif
         <!-- End Subscriptions -->
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
         <!-- Start Voucher -->
         <li class="menu-item {{ request()->is('voucher*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -374,6 +387,8 @@
             </ul>
         </li>
         <!-- End Voucher -->
+        @endif
+        @if($currentRole['president'] || $currentRole['finance_secretary'])
         <!-- Start Vakalatnama -->
         <li class="menu-item {{ request()->is('vakalatnama*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -395,6 +410,7 @@
         </li>
         <!-- End Voucher -->
         @endif
+        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
         <!-- Start Rent -->
         <li class="menu-item {{ request()->is('rent*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -420,6 +436,7 @@
             </ul>
         </li>
         <!-- End Rent -->
+        @endif
     </ul>
 </aside>
 <!-- / Menu -->
