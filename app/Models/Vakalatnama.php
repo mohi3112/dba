@@ -13,6 +13,9 @@ class Vakalatnama extends Model
     protected $fillable = [
         "user_id",
         "unique_id",
+        "bulk_issue",
+        "number_of_issue_vakalatnamas",
+        "last_unique_id",
         "deleted_by"
     ];
 
@@ -21,23 +24,35 @@ class Vakalatnama extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function generateUniqueId()
+    public static function generateUniqueId($latestUniqueId = '', $numberOfvakalatnamaIssue = null)
     {
-        $latestUniqueId = DB::table('vakalatnamas')->latest('created_at')->value('unique_id');
+        if ($latestUniqueId == '') {
+            $latestUniqueIdRecord = DB::table('vakalatnamas')->latest('created_at')->first();
+
+            $latestUniqueId = $latestUniqueIdRecord->unique_id;
+            if ($latestUniqueIdRecord->bulk_issue == 1) {
+                $latestUniqueId = $latestUniqueIdRecord->last_unique_id;
+            }
+        }
 
         if ($latestUniqueId) {
             // Extract the serial number part
-            $serialNumber = (int) substr($latestUniqueId, 0, 3);
+            $serialNumber = (int) substr($latestUniqueId, 0, 6);
 
+            $lastNumber = 1;
             // Increment the serial number
-            $newSerialNumber = str_pad($serialNumber + 1, 3, '0', STR_PAD_LEFT);
+            if ($numberOfvakalatnamaIssue != null) {
+                $lastNumber = (int) ($numberOfvakalatnamaIssue > 1) ? $numberOfvakalatnamaIssue - 1 : 1;
+            }
+
+            $newSerialNumber = str_pad($serialNumber + $lastNumber, 6, '0', STR_PAD_LEFT);
         } else {
-            // If there's no record, start with 001
-            $newSerialNumber = '001';
+            // If there's no record, start with 000001
+            $newSerialNumber = '000001';
         }
 
         // Generate a random number
-        $randomNumber = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        $randomNumber = str_pad(rand(0, 9999), 3, '0', STR_PAD_LEFT);
 
         // Get the current month and year
         $currentDate = now()->format('m') . now()->format('y');

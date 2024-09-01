@@ -13,10 +13,10 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="lawyer" class="form-label">Lawyer <span class="text-danger">*</span></label>
-                            <select id="lawyer" name="user_id" class="select2 form-select @error('user_id') is-invalid @enderror">
-                                <option value="">Select Lawyer</option>
+                            <select id="lawyer" name="user_id" class="form-control form-select user-select @error('user_id') is-invalid @enderror">
+                                <option></option>
                                 @foreach($activeLawyers as $lawyerId => $lawyerName)
-                                <option value="{{$lawyerId}}">{{$lawyerName}}</option>
+                                <option value=" {{$lawyerId}}" @if(old('user_id')==$lawyerId) selected @endif>{{$lawyerName}}</option>
                                 @endforeach
                             </select>
                             @error('user_id')
@@ -31,6 +31,19 @@
                                 <input class="form-control" type="text" name="unique_id" readonly value="{{ $uniqueId }}">
                             </div>
                         </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                            <div class="form-check">
+                                <input class="form-check-input" id="bulkIssue" type="checkbox" value="1" name="bulk_issue">
+                                <label class="form-check-label" for="bulk_issue"> Bulk Issue </label>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6 d-none" id="numberOfBulkIssue">
+                            <label class="form-label" for="number_of_issue_vakalatnamas"> Number of Vakalatnama issue <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="number" min="1" name="number_of_issue_vakalatnamas">
+                            </div>
+                        </div>
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Issue</button>
@@ -43,3 +56,22 @@
     </div>
 </form>
 @endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.user-select').select2({
+            placeholder: 'Please select',
+            allowClear: true
+        });
+
+        document.getElementById('bulkIssue').addEventListener('change', function() {
+            const numberOfBulkIssue = document.getElementById('numberOfBulkIssue');
+            if (this.checked) {
+                numberOfBulkIssue.classList.remove('d-none');
+            } else {
+                numberOfBulkIssue.classList.add('d-none');
+            }
+        });
+    });
+</script>
+@endSection

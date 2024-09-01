@@ -23,7 +23,12 @@ class VakalatnamaController extends Controller
     {
         $vakalatnamaQuery = Vakalatnama::query();
 
-        if (!auth()->user()->hasRole('president')) {
+        $lawyerAllow = true;
+        if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary')) {
+            $lawyerAllow = false;
+        }
+
+        if ($lawyerAllow) {
             $vakalatnamaQuery->where('user_id', auth()->user()->id);
         }
 
@@ -54,9 +59,21 @@ class VakalatnamaController extends Controller
     {
         $this->validate($request, [
             'user_id' => 'required',
+            'number_of_issue_vakalatnamas' => 'nullable|numeric',
         ]);
 
-        $request->merge(['unique_id' => Vakalatnama::generateUniqueId()]);
+        $uniqueId = Vakalatnama::generateUniqueId();
+        $request->merge(['unique_id' => $uniqueId]);
+
+        if ($request->input('bulk_issue') && $request->input('bulk_issue') == '1') {
+            $request->merge([
+                'bulk_issue' => 1,
+                'number_of_issue_vakalatnamas' => $request->input('number_of_issue_vakalatnamas'),
+                'last_unique_id' => Vakalatnama::generateUniqueId($uniqueId, $request->input('number_of_issue_vakalatnamas'))
+            ]);
+        } else {
+            $request->merge(['number_of_issue_vakalatnamas' => NULL]);
+        }
 
         Vakalatnama::create($request->all());
 
@@ -65,44 +82,62 @@ class VakalatnamaController extends Controller
 
     public function printVakalatnama($uniqueId)
     {
-        $vakalatnamaQuery = Vakalatnama::where('unique_id', $uniqueId);
+        try {
+            $vakalatnamaQuery = Vakalatnama::where('unique_id', $uniqueId);
 
-        if (!auth()->user()->hasRole('president')) {
-            $vakalatnamaQuery->where('user_id', auth()->user()->id);
+            $lawyerAllow = true;
+            if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary')) {
+                $lawyerAllow = false;
+            }
+
+            if ($lawyerAllow) {
+                $vakalatnamaQuery->where('user_id', auth()->user()->id);
+            }
+
+            $vakalatnama = $vakalatnamaQuery->first();
+
+            $totalVakalatnamas = ($vakalatnama->bulk_issue == 0) ? 1 : $vakalatnama->number_of_issue_vakalatnamas;
+
+            // original file path
+            $filePath = storage_path('attorney.pdf');
+
+            // temp/modified file path
+            $outputPath = storage_path('attorney-copy.pdf');
+            $payloads = [];
+            $tempUniqueId = '';
+            for ($i = 0; $i < $totalVakalatnamas; $i++) {
+                if ($tempUniqueId == '') {
+                    $tempUniqueId = $uniqueId;
+                } else {
+                    $tempUniqueId = Vakalatnama::generateUniqueId($tempUniqueId);
+                }
+                // payload for pdf generation
+                $payload = [];
+                $payload['uniqueId'] = $tempUniqueId;
+                $payload['date'] = Carbon::now()->format('Y-m-d H:i:s');
+
+                $uniqueString = '';
+                if (auth()->user()->hasRole('president')) {
+                    $uniqueString = 'Precured by president';
+                } elseif (auth()->user()->hasRole('finance_secretary')) {
+                    $uniqueString = 'Digitaly signed by finance secretary';
+                }
+                $payload['uniqueString'] = $uniqueString;
+                $payloads[] = $payload;
+            }
+
+            // add the print date and unique ID
+            $this->pdfService->addPrintDateAndUniqueId($filePath, $outputPath, $payloads);
+
+            return response()->stream(function () use ($outputPath) {
+                readfile($outputPath);
+                unlink($outputPath); // Delete the temporary file after sending
+            }, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="modified.pdf"',
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong.');
         }
-
-        $vakalatnama = $vakalatnamaQuery->first();
-
-        // original file path
-        $filePath = storage_path('attorney.pdf');
-
-        // temp/modified file path
-        $outputPath = storage_path('attorney-copy.pdf');
-
-        // payload for pdf generation
-        $payload = [];
-        $payload['uniqueId'] = $vakalatnama->unique_id;
-        $payload['date'] = $vakalatnama->created_at;
-
-        $uniqueString = '';
-        if (auth()->user()->hasRole('president')) {
-            $uniqueString = 'Precured by president';
-        } elseif (auth()->user()->hasRole('finance_secretary')) {
-            $uniqueString = 'Digitaly signed by finance secretary';
-        }
-        $payload['uniqueString'] = $uniqueString;
-
-        // add the print date and unique ID
-        $this->pdfService->addPrintDateAndUniqueId($filePath, $outputPath, $payload);
-
-        return response()->stream(function () use ($outputPath) {
-            readfile($outputPath);
-            unlink($outputPath); // Delete the temporary file after sending
-        }, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="modified.pdf"',
-        ]);
-
-        // return response()->download($outputPath);
     }
 }

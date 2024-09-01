@@ -381,7 +381,7 @@
                 <div data-i18n="vakalatnamas">Vakalatnama</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {{ request()->is('vakalatnamas') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('vakalatnama/summary') ? 'active' : '' }}">
                     <a href="{{route('vakalatnamas')}}" class="menu-link">
                         <div data-i18n="vakalatnamas">All Vakalatnama</div>
                     </a>

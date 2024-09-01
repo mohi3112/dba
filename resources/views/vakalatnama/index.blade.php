@@ -68,7 +68,7 @@
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $activeLawyers[$vakalatnama->user_id] }} </td>
-                    <td> {{ $vakalatnama->unique_id }} </td>
+                    <td> {{ $vakalatnama->unique_id }} @if($vakalatnama->bulk_issue == 1) -- {{$vakalatnama->last_unique_id}} @endif </td>
                     <td> {{ \Carbon\Carbon::parse($vakalatnama->created_at)->format('d-M-Y') }} </td>
                     <td>
                         <a href="{{ route('vakalatnama.view-vakalatnama', $vakalatnama->unique_id) }}" target="_blank" class="color-unset">
