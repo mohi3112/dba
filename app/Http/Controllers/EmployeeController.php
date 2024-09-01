@@ -112,7 +112,9 @@ class EmployeeController extends Controller
             $request->merge(['policies' => !(empty($existingPoliciesData)) ? json_encode($existingPoliciesData) : null]);
 
             $employee->name = $request->input('name');
+            $employee->father_name = $request->input('father_name');
             $employee->gender = $request->input('gender');
+            $employee->aadhaar_no = $request->input('aadhaar_no');
             $employee->email = $request->input('email');
             $employee->dob = $request->input('dob');
             $employee->phone = $request->input('phone');

@@ -28,6 +28,15 @@
                         @enderror
                     </div>
                     <div class="mb-3 col-md-6">
+                        <label for="father_name" class="form-label">Father's Name</label>
+                        <input class="form-control @error('father_name') is-invalid @enderror" type="text" id="father_name" placeholder="Father Name" name="father_name" value="{{ $employee->father_name }}" autofocus="">
+                        @error('father_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
                         <label for="dob" class="form-label">Date of Birth </label>
                         <input class="form-control @error('dob') is-invalid @enderror" type="date" id="dob" placeholder="Date of Birth" name="dob" value="{{ $employee->dob }}" autofocus="">
                         @error('dob')
@@ -53,8 +62,20 @@
                     </div>
 
                     <div class="mb-3 col-md-6">
+                        <label class="form-label" for="aadhaar_no">Aadhaar number</label>
+                        <div class="input-group input-group-merge">
+                            <input type="text" id="aadhaar_no" name="aadhaar_no" maxlength="12" value="{{ $employee->aadhaar_no }}" class="form-control @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
+                            @error('aadhaar_no')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
                         <label for="email" class="form-label">Email</label>
-                        <input class="form-control @error('email') is-invalid @enderror" type="text" id="email" placeholder="Email" name="email" value="{{ $employee->email }}" autofocus="">
+                        <input class="form-control @error('email') is-invalid @enderror" type="email" id="email" placeholder="Email" name="email" value="{{ $employee->email }}" autofocus="">
                         @error('email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -282,7 +303,7 @@
 
                     if (response.success) {
                         console.log(`#row-${index}`);
-                        
+
                         // Remove the row from the table or update the UI accordingly
                         $(`#row-${index}`).remove();
                     } else {

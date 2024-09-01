@@ -77,9 +77,11 @@
                 <tr>
                     <th>Sr. No.</th>
                     <th>Name</th>
+                    <th>Father's Name</th>
                     <th>Date of Birth</th>
                     <th>Gender</th>
                     <th>Phone</th>
+                    <th>Aadhaar No.</th>
                     <th>Position</th>
                     <th>Actions</th>
                 </tr>
@@ -90,9 +92,11 @@
                 <tr>
                     <td> {{ $i }} </td>
                     <td> {{ $employee->name }} </td>
+                    <td> {{ $employee->father_name ?? '--' }} </td>
                     <td> {{ ($employee->dob) ? \Carbon\Carbon::parse($employee->dob)->format('d-M-Y') : '--' }} </td>
                     <td> {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }} </td>
                     <td> {{ $employee->phone ?? '--' }} </td>
+                    <td> {{ $employee->aadhaar_no ?? '--' }} </td>
                     <td> {{ $employee->position ?? '--' }} </td>
                     <td>
                         <div class="d-flex align-items-center">
@@ -117,6 +121,21 @@
                                                     {{ $employee->name }}
                                                 </div>
                                                 <div class="col-md-3">
+                                                    <label for="father_name" class="form-label">Father's Name:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ $employee->father_name ?? '--' }}
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="gender" class="form-label">Gender:</label>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }}
+                                                </div>
+                                                <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">Date of Birth:</label>
                                                 </div>
                                                 <div class="col-md-3">
@@ -125,10 +144,10 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <label for="gender" class="form-label">Gender:</label>
+                                                    <label for="aadhaar_no" class="form-label">Aadhaar No.:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }}
+                                                    {{ $employee->aadhaar_no ?? '--' }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="email" class="form-label">Email:</label>
