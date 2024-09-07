@@ -48,7 +48,9 @@ class UserController extends Controller
             $roles = ['superadmin'];
         }
 
-        $usersQuery = User::whereDoesntHave('roles', function ($query) use ($roles) {
+        $usersQuery = User::query();
+
+        $usersQuery->whereDoesntHave('roles', function ($query) use ($roles) {
             $query->whereIn('name', $roles);
         });
 
@@ -70,7 +72,7 @@ class UserController extends Controller
             $usersQuery->where('designation', $request->designation);
         }
 
-        if (count($_GET) > 0 && !$request->filled('is_active')) {
+        if ($request->filled('is_active') && $request->is_active == 'N') {
             $usersQuery->where('status', User::STATUS_IN_ACTIVE);
         } else {
             $usersQuery->statusActive();

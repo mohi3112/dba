@@ -170,7 +170,7 @@ $currentDate = \Carbon\Carbon::now();
             </tbody>
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
-            {{ $expiredRents->links() }}
+            {{ $expiredRents->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

@@ -96,7 +96,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
-            {{ $booksCategories->links() }}
+            {{ $booksCategories->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

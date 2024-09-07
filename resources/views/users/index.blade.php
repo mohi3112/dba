@@ -85,12 +85,12 @@ if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole[
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-check form-switch" style="margin-top: 25%;">
-                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                        <input class="form-check-input" name="is_active" type="checkbox" id="flexSwitchCheckChecked" {{ (count($_GET) > 0 && !isset($_GET['is_active'])) ? '' : 'checked' }}>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
-                    </div>
+                <div class="col-md-3">
+                    <label for="is_active" class="form-label">Status</label>
+                    <select id="is_active" name="is_active" class="select2 form-select">
+                        <option value="Y" @if(@$_GET['is_active']=='Y') selected @endif>Active</option>
+                        <option value="N" @if(@$_GET['is_active']=='N') selected @endif>In Active</option>
+                    </select>
                 </div>
 
                 @if ($currentRole['president'])
@@ -203,7 +203,7 @@ if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole[
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
             <!-- Add pagination links -->
-            {{ $users->links() }}
+            {{ $users->appends(request()->except('page'))->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

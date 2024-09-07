@@ -299,7 +299,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
-            {{ $employees->links() }}
+            {{ $employees->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

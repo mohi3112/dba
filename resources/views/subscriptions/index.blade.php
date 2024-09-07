@@ -186,7 +186,7 @@ if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole[
             </tbody>
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
-            {{ $subscriptions->links() }}
+            {{ $subscriptions->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

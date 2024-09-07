@@ -121,7 +121,7 @@
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
             <!-- Add pagination links -->
-            {{ $users->links() }}
+            {{ $users->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>

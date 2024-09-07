@@ -423,7 +423,7 @@ $currentRole = getUserRoles();
                         <div data-i18n="rents">All Rent</div>
                     </a>
                 </li>
-                <li class="menu-item {{ request()->is('rents/add') ? 'active' : '' }}">
+                <li class="menu-item {{ request()->is('rent/add') ? 'active' : '' }}">
                     <a href="{{route('rents.add')}}" class="menu-link">
                         <div data-i18n="Add rents">Add Rent</div>
                     </a>

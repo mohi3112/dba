@@ -152,7 +152,7 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-end pt-3 mr-3">
-            {{ $locations->links() }}
+            {{ $locations->appends(request()->except('page'))->links() }}
         </div>
     </div>
 </div>
