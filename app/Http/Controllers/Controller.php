@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\BooksCategory;
 use App\Models\Employee;
+use App\Models\Loan;
 use App\Models\Location;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -65,6 +66,11 @@ class Controller extends BaseController
     public function getCategoriesList()
     {
         return BooksCategory::pluck('category_name', 'id');
+    }
+
+    public function getEmployeesList()
+    {
+        return Employee::pluck('name', 'id');
     }
 
     public function submitChangeRequest($payload = [])
@@ -144,7 +150,12 @@ class Controller extends BaseController
             $activeVendors = $this->getActiveVendorsList();
         }
 
-        return view('requests.view-request', compact('request', 'categories', 'activeLawyers', 'activeVendors'));
+        $activeEmployees = [];
+        if ($request->table_name == 'loans') {
+            $activeEmployees = $this->getEmployeesList();
+        }
+
+        return view('requests.view-request', compact('request', 'categories', 'activeLawyers', 'activeVendors', 'activeEmployees'));
     }
 
     public function actionOnRequest(Request $request)
@@ -218,6 +229,14 @@ class Controller extends BaseController
             $record = Rent::findOrFail($recordId);
         }
 
+        if ($requestRecord->table_name == 'employees') {
+            $record = Employee::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'loans') {
+            $record = Loan::findOrFail($recordId);
+        }
+
         // Set the deleted_by field with the authenticated user's ID
         $record->deleted_by = $requestRecord->requested_by;
         $record->save(); // Save the user to update the deleted_by field
@@ -253,6 +272,14 @@ class Controller extends BaseController
 
         if ($requestRecord->table_name == 'rents') {
             $record = Rent::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'employees') {
+            $record = Employee::findOrFail($recordId);
+        }
+
+        if ($requestRecord->table_name == 'loans') {
+            $record = Loan::findOrFail($recordId);
         }
 
         if ($record) {

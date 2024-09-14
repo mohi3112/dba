@@ -128,17 +128,30 @@ class LoanController extends Controller
 
         if ($loan) {
 
-            $loan->employee_id = $request->employee_id;
-            $loan->loan_amount = $request->loan_amount;
-            $loan->tenure_months = $request->tenure_months;
-            $loan->interest_rate = $request->interest_rate;
-            $loan->emi_amount = $request->emi_amount;
-            $loan->start_date = $request->start_date;
-            $loan->end_date = $request->end_date;
-            $loan->status = $request->status;
-            $loan->save();
+            if (auth()->user()->hasRole('president')) {
+                $loan->employee_id = $request->employee_id;
+                $loan->loan_amount = $request->loan_amount;
+                $loan->tenure_months = $request->tenure_months;
+                $loan->interest_rate = $request->interest_rate;
+                $loan->emi_amount = $request->emi_amount;
+                $loan->start_date = $request->start_date;
+                $loan->end_date = $request->end_date;
+                $loan->status = $request->status;
+                $loan->save();
 
-            return redirect()->route('loans')->with('success', 'Loan updated successfully.');
+                return redirect()->route('loans')->with('success', 'Loan updated successfully.');
+            } else {
+                $changes = $request->except(['_token', '_method']);
+                $this->submitChangeRequest([
+                    "table_name" => 'loans',
+                    "record_id" => $loan->id,
+                    "changes" => $changes,
+                    "action" => ModificationRequest::REQUEST_TYPE_UPDATE,
+                    "requested_by" => Auth::id(),
+                ]);
+
+                return redirect()->route('loans')->with('success', 'Loan updated request submitted successfully.');
+            }
         }
 
         return redirect()->route('loanrs')->with('error', 'Something went wrong.');
@@ -173,13 +186,23 @@ class LoanController extends Controller
         $loan = Loan::findOrFail($id);
 
         if ($loan) {
-            $loan->deleted_by = Auth::id();
-            $loan->save();
+            if (auth()->user()->hasRole('president')) {
+                $loan->deleted_by = Auth::id();
+                $loan->save();
 
-            // Soft delete the loan
-            $loan->delete();
+                // Soft delete the loan
+                $loan->delete();
 
-            return redirect()->route('loans')->with('success', 'Loan record deleted successfully!');
+                return redirect()->route('loans')->with('success', 'Loan record deleted successfully!');
+            } else {
+                $this->submitChangeRequest([
+                    "table_name" => 'employees',
+                    "record_id" => $loan->id,
+                    "action" => ModificationRequest::REQUEST_TYPE_DELETE,
+                    "requested_by" => Auth::id(),
+                ]);
+                return redirect()->route('loans')->with('success', 'Record delete request submitted successfully!');
+            }
         }
 
         return redirect()->route('loans')->with('error', 'Something went wrong.');

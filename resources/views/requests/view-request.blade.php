@@ -24,7 +24,7 @@
     @endif
     <div class="col-lg">
         <div class="card mb-4">
-            <h5 class="card-header">Existing Profile Information
+            <h5 class="card-header">Existing Information
                 <!-- <small class="text-muted ms-1">Default</small> -->
             </h5>
 
@@ -260,6 +260,163 @@
                         </td>
                     </tr>
                     @endif
+                    @if($request->table_name == 'employees')
+                    <tr>
+                        <td>Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Father Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->father_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Renewal Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->employee->dob) ? \Carbon\Carbon::parse($request->employee->dob)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->employee->gender) ? \App\Models\Employee::$employeesGender[$request->employee->gender] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Aadhaar Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->aadhaar_no ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->email ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Phone:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->phone ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Position:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->position ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Salary:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->salary ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ESI Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->esi_number ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bank Account Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->bank_account_number ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bank IFSC Code:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->bank_ifsc_code ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Account Holder Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->account_holder_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Branch Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->branch_name ?? '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>ESI Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->employee->esi_start_date) ? \Carbon\Carbon::parse($request->employee->esi_start_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>ESI End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->employee->esi_end_date) ? \Carbon\Carbon::parse($request->employee->esi_end_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ESI Contribution:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->employee->esi_contribution ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'loans')
+                    <tr>
+                        <td>Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->loan->employee_id) ? $activeEmployees[$request->loan->employee_id] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loan Status:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->loan->status) ? \App\Models\Loan::$loanStatuses[$request->loan->status] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loan Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->loan->loan_amount ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tenure Months:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->loan->tenure_months ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Interest Rate:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->loan->interest_rate ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>EMI Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->loan->emi_amount ?? '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->loan->start_date) ? \Carbon\Carbon::parse($request->loan->start_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->loan->end_date) ? \Carbon\Carbon::parse($request->loan->end_date)->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -267,7 +424,7 @@
 
     <div class="col-lg">
         <div class="card mb-4">
-            <h5 class="card-header">Updated Profile Information
+            <h5 class="card-header">Updated Information
                 <small class="text-muted ms-1"> ( Request Type:
                     @if($request->action == \App\Models\ModificationRequest::REQUEST_TYPE_UPDATE)
                     <span class="badge bg-label-warning me-1">Update</span>
@@ -503,6 +660,163 @@
                         <td>End Date:</td>
                         <td class="py-3">
                             <h5 class="mb-0">{{ ($request->changes['renewal_date']) ? \Carbon\Carbon::parse($request->changes['renewal_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'employees')
+                    <tr>
+                        <td>Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Father Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['father_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Renewal Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['dob']) ? \Carbon\Carbon::parse($request->changes['dob'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['gender']) ? \App\Models\Employee::$employeesGender[$request->changes['gender']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Aadhaar Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['aadhaar_no'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['email'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Phone:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['phone'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Position:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['position'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Salary:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['salary'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ESI Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['esi_number'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bank Account Number:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['bank_account_number'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bank IFSC Code:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['bank_ifsc_code'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Account Holder Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['account_holder_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Branch Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['branch_name'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>ESI Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['esi_start_date']) ? \Carbon\Carbon::parse($request->changes['esi_start_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>ESI End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['esi_end_date']) ? \Carbon\Carbon::parse($request->changes['esi_end_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ESI Contribution:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['esi_contribution'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    @endif
+                    @if($request->table_name == 'loans')
+                    <tr>
+                        <td>Name:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['employee_id']) ? $activeEmployees[$request->changes['employee_id']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loan Status:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['status']) ? \App\Models\Loan::$loanStatuses[$request->changes['status']] : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Loan Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['loan_amount'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tenure Months:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['tenure_months'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Interest Rate:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['interest_rate'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>EMI Amount:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ $request->changes['emi_amount'] ?? '--' }}</h5>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Start Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['start_date']) ? \Carbon\Carbon::parse($request->changes['start_date'])->format('d-M-Y') : '--' }}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td class="py-3">
+                            <h5 class="mb-0">{{ ($request->changes['end_date']) ? \Carbon\Carbon::parse($request->changes['end_date'])->format('d-M-Y') : '--' }}</h5>
                         </td>
                     </tr>
                     @endif

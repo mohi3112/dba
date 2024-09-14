@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\ModificationRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,27 +112,40 @@ class EmployeeController extends Controller
 
             $request->merge(['policies' => !(empty($existingPoliciesData)) ? json_encode($existingPoliciesData) : null]);
 
-            $employee->name = $request->input('name');
-            $employee->father_name = $request->input('father_name');
-            $employee->gender = $request->input('gender');
-            $employee->aadhaar_no = $request->input('aadhaar_no');
-            $employee->email = $request->input('email');
-            $employee->dob = $request->input('dob');
-            $employee->phone = $request->input('phone');
-            $employee->position = $request->input('position');
-            $employee->salary = $request->input('salary');
-            $employee->esi_number = $request->input('esi_number');
-            $employee->esi_start_date = $request->input('esi_start_date');
-            $employee->esi_end_date = $request->input('esi_end_date');
-            $employee->esi_contribution = $request->input('esi_contribution');
-            $employee->bank_account_number = $request->input('bank_account_number');
-            $employee->bank_ifsc_code = $request->input('bank_ifsc_code');
-            $employee->account_holder_name = $request->input('account_holder_name');
-            $employee->branch_name = $request->input('branch_name');
-            $employee->policies = $request->input('policies');
-            $employee->save();
+            if (auth()->user()->hasRole('president')) {
+                $employee->name = $request->input('name');
+                $employee->father_name = $request->input('father_name');
+                $employee->gender = $request->input('gender');
+                $employee->aadhaar_no = $request->input('aadhaar_no');
+                $employee->email = $request->input('email');
+                $employee->dob = $request->input('dob');
+                $employee->phone = $request->input('phone');
+                $employee->position = $request->input('position');
+                $employee->salary = $request->input('salary');
+                $employee->esi_number = $request->input('esi_number');
+                $employee->esi_start_date = $request->input('esi_start_date');
+                $employee->esi_end_date = $request->input('esi_end_date');
+                $employee->esi_contribution = $request->input('esi_contribution');
+                $employee->bank_account_number = $request->input('bank_account_number');
+                $employee->bank_ifsc_code = $request->input('bank_ifsc_code');
+                $employee->account_holder_name = $request->input('account_holder_name');
+                $employee->branch_name = $request->input('branch_name');
+                $employee->policies = $request->input('policies');
+                $employee->save();
 
-            return redirect()->route('employees')->with('success', 'Employee record updated successfully.');
+                return redirect()->route('employees')->with('success', 'Employee record updated successfully.');
+            } else {
+                $changes = $request->except(['_token', '_method']);
+                $this->submitChangeRequest([
+                    "table_name" => 'employees',
+                    "record_id" => $employee->id,
+                    "changes" => $changes,
+                    "action" => ModificationRequest::REQUEST_TYPE_UPDATE,
+                    "requested_by" => Auth::id(),
+                ]);
+
+                return redirect()->route('employees')->with('success', 'Employee updated request submitted successfully.');
+            }
         }
 
         return redirect()->route('employees')->with('error', 'Something went wrong.');
@@ -143,13 +157,23 @@ class EmployeeController extends Controller
         $employee = Employee::findOrFail($id);
 
         if ($employee) {
-            $employee->deleted_by = Auth::id();
-            $employee->save();
+            if (auth()->user()->hasRole('president')) {
+                $employee->deleted_by = Auth::id();
+                $employee->save();
 
-            // Soft delete the rent
-            $employee->delete();
+                // Soft delete the rent
+                $employee->delete();
 
-            return redirect()->route('employees')->with('success', 'Record deleted successfully!');
+                return redirect()->route('employees')->with('success', 'Record deleted successfully!');
+            } else {
+                $this->submitChangeRequest([
+                    "table_name" => 'employees',
+                    "record_id" => $employee->id,
+                    "action" => ModificationRequest::REQUEST_TYPE_DELETE,
+                    "requested_by" => Auth::id(),
+                ]);
+                return redirect()->route('vouchers')->with('success', 'Record delete request submitted successfully!');
+            }
         }
 
         return redirect()->route('employees')->with('error', 'Something went wrong.');
