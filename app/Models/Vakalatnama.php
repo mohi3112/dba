@@ -29,8 +29,8 @@ class Vakalatnama extends Model
         if ($latestUniqueId == '') {
             $latestUniqueIdRecord = DB::table('vakalatnamas')->latest('created_at')->first();
 
-            $latestUniqueId = $latestUniqueIdRecord->unique_id;
-            if ($latestUniqueIdRecord->bulk_issue == 1) {
+            $latestUniqueId = ($latestUniqueIdRecord) ? $latestUniqueIdRecord->unique_id : null;
+            if ($latestUniqueIdRecord && $latestUniqueIdRecord->bulk_issue == 1) {
                 $latestUniqueId = $latestUniqueIdRecord->last_unique_id;
             }
         }
