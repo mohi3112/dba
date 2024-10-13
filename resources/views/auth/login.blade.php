@@ -23,7 +23,7 @@
                         @csrf
                         <div class="mb-3">
                             <label for="email" class="form-label">{{ __('E-Mail Address') }}</label>
-                            <input id="email" type="email" placeholder="Enter your email or username" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                            <input id="email" type="text" placeholder="Enter your email or mobile" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autofocus>
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">
