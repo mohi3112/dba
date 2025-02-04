@@ -42,7 +42,7 @@
 
                 <div class="col-md-1 ml-1">
                     <label class="form-label" for="showToastPlacement">&nbsp;</label>
-                    <a href="{{ route('payments') }}" class="btn btn-secondary">Reset</a>
+                    <a href="{{ route('vakalatnamas') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
         </form>

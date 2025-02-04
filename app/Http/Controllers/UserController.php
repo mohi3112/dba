@@ -147,6 +147,8 @@ class UserController extends Controller
 
             if ($request->has('password')) {
                 $request->merge(['password' => Hash::make($request->input('password'))]);
+            } else {
+                $request->merge(['password' => Hash::make('dba@123')]);
             }
 
             // Handle user role
