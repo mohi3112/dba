@@ -60,8 +60,8 @@ $isVendor = 'disabled';
                             <input class="form-control" type="text" name="last_name" placeholder="Last name" id="lastName" value="{{$user->last_name}}">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
-                            <input class="form-control  @error('email') is-invalid @enderror" type="text" id="email" name="email" value="{{$user->email}}" placeholder="Email">
+                            <label for="email" class="form-label">E-mail </label>
+                            <input class="form-control  @error('email') is-invalid @enderror" type="text" id="email" autocomplete="off" name="email" value="{{$user->email}}" placeholder="Email">
                             @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -77,7 +77,7 @@ $isVendor = 'disabled';
                             <input class="form-control" type="text" id="father_last_name" placeholder="Father's last name" name="father_last_name" value="{{$user->father_last_name}}" autofocus="">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="dob">Date of Birth <span class="text-danger">*</span></label>
+                            <label class="form-label" for="dob">Date of Birth </label>
                             <div class="input-group input-group-merge">
                                 <input class="form-control" type="date" name="dob" value="{{$user->dob}}">
                             </div>
@@ -91,16 +91,21 @@ $isVendor = 'disabled';
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="designation" class="form-label">Designation</label>
-                            <select id="designation" name="designation" class="select2 form-select">
+                            <label for="designation" class="form-label">Designation <span class="text-danger">*</span></label>
+                            <select id="designation" name="designation" class="select2 form-select @error('designation') is-invalid @enderror">
                                 <option value="">Select Designation</option>
                                 @foreach(\App\Models\User::$designationRoles as $key => $designation)
                                 <option value="{{$key}}" {{ $user->designation == $key ? 'selected' : '' }}>{{$designation}}</option>
                                 @endforeach
                             </select>
+                            @error('designation')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <div class="mb-3 col-md-6 not-for-vendor @if($isVendor) d-none @endif">
-                            <label class="form-label" for="licence_no">Licence number <span class="text-danger">*</span></label>
+                            <label class="form-label" for="licence_no">Licence number</label>
                             <div class="input-group input-group-merge">
                                 <input type="text" id="licence_no" name="licence_no" value="{{$user->licence_no}}" maxlength="12" class="form-control @error('licence_no') is-invalid @enderror" placeholder="Licence number">
                                 @error('licence_no')
@@ -111,7 +116,7 @@ $isVendor = 'disabled';
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="aadhaar_no">Aadhaar number <span class="text-danger">*</span></label>
+                            <label class="form-label" for="aadhaar_no">Aadhaar number</label>
                             <div class="input-group input-group-merge">
                                 <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{$user->aadhaar_no}}" maxlength="12" class="form-control numeric-input  @error('aadhaar_no') is-invalid @enderror" placeholder="Aadhaar number">
                                 @error('aadhaar_no')
@@ -122,7 +127,7 @@ $isVendor = 'disabled';
                             </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label class="form-label" for="mobile1">Mobile <span class="text-danger">*</span></label>
+                            <label class="form-label" for="mobile1">Mobile</label>
                             <div class="input-group input-group-merge">
                                 <span class="input-group-text">IN (+91)</span>
                                 <input type="text" id="mobile1" name="mobile1" value="{{$user->mobile1}}" maxlength="10" class="form-control numeric-input @error('mobile1') is-invalid @enderror" placeholder="Mobile number">
@@ -162,7 +167,7 @@ $isVendor = 'disabled';
                         </div>
 
                         <div class="mb-3 col-md-6 for-vendor @if(!$isVendor) d-none @endif">
-                            <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                            <label for="location" class="form-label">Location </label>
                             <select name="location_id" class="select2 form-select  @error('location_id') is-invalid @enderror">
                                 <option value="">Select Location (Shop number, Floor, Complex)</option>
                                 @foreach($activeLocations as $locationId => $location)
@@ -190,7 +195,7 @@ $isVendor = 'disabled';
                             <textarea id="other_details" class="form-control" name="other_details" placeholder="Other details">{{$user->other_details}}</textarea>
                         </div>
 
-                        @if(auth()->user()->hasRole('superadmin') || auth()->user()->hasRole('president'))
+                        @if(auth()->user()->hasRole('superadmin') || auth()->user()->hasRole('president') || auth()->user()->hasRole('clerk'))
                         <div class="mb-3 col-md-6">
                             <label for="password" class="form-label">Password</label>
                             <input id="password" type="password" aria-describedby="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" class="form-control @error('password') is-invalid @enderror" name="password">
@@ -395,7 +400,15 @@ $isVendor = 'disabled';
                     </div>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                        <a type="reset" href="{{route('users')}}" class="btn btn-outline-secondary">Cancel</a>
+                        <?php
+                        $route = route('users');
+                        if (@$_GET['type'] == 'employee') {
+                            $route = route('employees');
+                        } elseif (@$_GET['type'] == 'vendor') {
+                            $route = route('vendors');
+                        }
+                        ?>
+                        <a type="reset" href="{{ $route }}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                     <!-- </form> -->
                 </div>

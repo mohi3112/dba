@@ -3,7 +3,7 @@
 <?php
 $currentRole = getUserRoles();
 $dNone = 'd-none';
-if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary']) {
+if ($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary']) {
     $dNone = '';
 }
 ?>

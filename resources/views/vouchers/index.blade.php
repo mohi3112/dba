@@ -34,9 +34,24 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="date" class="form-label">Date</label>
+                    <label for="startDate" class="form-label">Start Date</label>
                     <div class="input-group">
-                        <input type="date" class="form-control" name="date" value="{{@$_GET['date']}}">
+                        <input type="date" class="form-control" name="startDate" value="{{@$_GET['startDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" name="endDate" value="{{@$_GET['endDate']}}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-check form-switch" style="margin-top: 15%;">
+                        <label class="form-label" for="showToastPlacement">&nbsp;</label>
+                        <input class="form-check-input" name="showTotal" type="checkbox" id="showTotalAmount" {{ (count($_GET) > 0 && isset($_GET['showTotal'])) ? "checked" : "" }}>
+                        <label class="form-check-label" for="showTotalAmount">Show Total Amount</label>
                     </div>
                 </div>
 
@@ -57,6 +72,9 @@
 
 <div class="card">
     <div class="table-responsive text-nowrap">
+        @if($totalPrice > 0)
+        <div class="m-3 d-flex justify-content-end" style="color: #5F61E6;"> Total Amount: ₹{{ number_format($totalPrice, 2) }} </div>
+        @endif
         <table class="table table-striped">
             <thead>
                 <tr>

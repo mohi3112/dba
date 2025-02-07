@@ -129,7 +129,7 @@
                         <td> {{ ($updateRequestUser->dob) ? \Carbon\Carbon::parse($updateRequestUser->dob)->format('d-M-Y') . ' (' . $updateRequestUser->age . ')' : '--' }}</td>
                         <td> {{ ($updateRequestUser->gender) ? \App\Models\User::$genders[$updateRequestUser->gender] : '--' }} </td>
                         <td>
-                            {{ \App\Models\User::$designationRoles[$updateRequestUser->designation] ?? '--' }}
+                            {{ \App\Models\User::$allDesignationRoles[$updateRequestUser->designation] ?? '--' }}
                         </td>
                         <td>
                             @if($updateRequestUser->change_type == \App\Models\UserUpdateRequest::CHANGE_TYPE_EDIT)

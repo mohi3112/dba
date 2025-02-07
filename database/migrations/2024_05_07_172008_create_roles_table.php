@@ -33,6 +33,8 @@ class CreateRolesTable extends Migration
             ['name' => 'librarian', 'description' => 'Librarian Role'],
             ['name' => 'lawyer', 'description' => 'Lawyer Role'],
             ['name' => 'vendor', 'description' => 'Vendor Role'],
+            ['name' => 'clerk', 'description' => 'Clerk Role'],
+            ['name' => 'employee', 'description' => 'Employee Role'],
         ]);
     }
 

@@ -24,7 +24,7 @@ class VakalatnamaController extends Controller
         $vakalatnamaQuery = Vakalatnama::query();
 
         $lawyerAllow = true;
-        if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary')) {
+        if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary') || auth()->user()->hasRole('clerk')) {
             $lawyerAllow = false;
         }
 
@@ -42,14 +42,14 @@ class VakalatnamaController extends Controller
 
         $vakalatnamas = $vakalatnamaQuery->orderBy('created_at', 'desc')->paginate(10);
 
-        $activeLawyers = $this->lawyerService->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getFinanceSecretary();
 
         return view('vakalatnama.index', compact('vakalatnamas', 'activeLawyers'));
     }
 
     public function vakalatnamaForm()
     {
-        $activeLawyers = $this->lawyerService->getActiveLawyers();
+        $activeLawyers = $this->lawyerService->getFinanceSecretary();
         $uniqueId = Vakalatnama::generateUniqueId();
 
         return view('vakalatnama.form', compact('activeLawyers', 'uniqueId'));
@@ -86,7 +86,7 @@ class VakalatnamaController extends Controller
             $vakalatnamaQuery = Vakalatnama::where('unique_id', $uniqueId);
 
             $lawyerAllow = true;
-            if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary')) {
+            if (auth()->user()->hasRole('president') || auth()->user()->hasRole('finance_secretary') || auth()->user()->hasRole('clerk')) {
                 $lawyerAllow = false;
             }
 
@@ -119,7 +119,7 @@ class VakalatnamaController extends Controller
                 $uniqueString = '';
                 if (auth()->user()->hasRole('president')) {
                     $uniqueString = 'Precured by president';
-                } elseif (auth()->user()->hasRole('finance_secretary')) {
+                } elseif (auth()->user()->hasRole('finance_secretary') || auth()->user()->hasRole('clerk')) {
                     $uniqueString = 'Digitaly signed by finance secretary';
                 }
                 $payload['uniqueString'] = $uniqueString;

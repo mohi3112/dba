@@ -118,7 +118,7 @@
                         <tr>
                             <td> Role:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$designationRoles[$updateRequest->user->roles->first()->pivot->role_id] ?? '' }}</h5>
+                                <h5 class="mb-0">{{ \App\Models\User::$allDesignationRoles[$updateRequest->user->roles->first()->pivot->role_id] ?? '' }}</h5>
                             </td>
                         </tr>
                         @endif
@@ -126,7 +126,7 @@
                         <tr>
                             <td> Designation:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ ($updateRequest->user->designation) ? \App\Models\User::$designationRoles[$updateRequest->user->designation] : '' }}</h5>
+                                <h5 class="mb-0">{{ ($updateRequest->user->designation) ? \App\Models\User::$allDesignationRoles[$updateRequest->user->designation] : '' }}</h5>
                             </td>
                         </tr>
 
@@ -258,7 +258,7 @@
                         <tr>
                             <td> Role:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$designationRoles[$updateRequest->designation] ?? '' }}</h5>
+                                <h5 class="mb-0">{{ \App\Models\User::$allDesignationRoles[$updateRequest->designation] ?? '' }}</h5>
                             </td>
                         </tr>
                         @endif
@@ -266,7 +266,7 @@
                         <tr>
                             <td> Designation:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ ($updateRequest->designation) ? \App\Models\User::$designationRoles[$updateRequest->designation] : '' }}</h5>
+                                <h5 class="mb-0">{{ ($updateRequest->designation) ? \App\Models\User::$allDesignationRoles[$updateRequest->designation] : '' }}</h5>
                             </td>
                         </tr>
                         

@@ -77,9 +77,9 @@ $currentRole = getUserRoles();
             </ul>
         </li>
         <!-- End account settings -->
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
+        @if($currentRole['president'] || $currentRole['clerk']  || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['employee'])
         <!-- Start employee -->
-        <li class="menu-item {{ request()->is('employee*') ? 'active open' : '' }}">
+        <li class="menu-item {{ (request()->is('employee*') || request()->query('type') == 'employee') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="account">Employees</div>
@@ -90,9 +90,9 @@ $currentRole = getUserRoles();
                         <div data-i18n="update-requests">All Employees</div>
                     </a>
                 </li>
-
-                <li class="menu-item {{ request()->is('employee/add') ? 'active' : '' }}">
-                    <a href="{{route('employee.add')}}" class="menu-link">
+                @if(!$currentRole['employee'])
+                <li class="menu-item {{ request()->is('employee/add') || request()->query('type') == 'employee' ? 'active' : '' }}">
+                    <a href="{{route('users.add')}}?type=employee" class="menu-link">
                         <div data-i18n="Add role">Add Employee</div>
                     </a>
                 </li>
@@ -107,15 +107,12 @@ $currentRole = getUserRoles();
                         <div data-i18n="Add role">Attendance Report</div>
                     </a>
                 </li>
-                <!-- <li class="menu-item {{ request()->is('employees') ? 'active' : '' }}">
-                    <a href="{{route('employees')}}" class="menu-link">
-                        <div data-i18n="Add role">Attendance Report</div>
-                    </a>
-                </li> -->
+                @endif
             </ul>
         </li>
         <!-- End employee -->
         <!-- Start Loan -->
+        @if(!$currentRole['employee'])
         <li class="menu-item {{ request()->is('loan*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -135,6 +132,7 @@ $currentRole = getUserRoles();
             </ul>
         </li>
         <!-- End Loan -->
+        @endif
         @endif
 
         @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
@@ -183,7 +181,7 @@ $currentRole = getUserRoles();
         </li>
         @endif
         <!-- End roles -->
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
         <!-- Start locations -->
         <li class="menu-item {{ request()->is('location*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -209,8 +207,8 @@ $currentRole = getUserRoles();
         @endif
 
         <!-- Start Lawyers -->
-        @if(!$currentRole['vendor'])
-        <li class="menu-item {{ request()->is('lawyer*') ? 'active open' : '' }}">
+        @if(!$currentRole['vendor'] && !$currentRole['employee'])
+        <li class="menu-item {{ request()->is('lawyer*') && (!in_array(request()->query('type'), ['vendor', 'employee'])) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Lawyers">Lawyers</div>
@@ -221,8 +219,8 @@ $currentRole = getUserRoles();
                         <div data-i18n="Summary">Summary</div>
                     </a>
                 </li>
-                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member'])
-                <li class="menu-item {{ request()->is('lawyers/add') ? 'active' : '' }}">
+                @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member'])
+                <li class="menu-item {{ request()->is('lawyers/add') && (!in_array(request()->query('type'), ['vendor', 'employee'])) ? 'active' : '' }}">
                     <a href="{{route('users.add')}}" class="menu-link">
                         <div data-i18n="Add Lawyer">Add Lawyer</div>
                     </a>
@@ -242,9 +240,9 @@ $currentRole = getUserRoles();
         </li>
         @endif
         <!-- End Lawyers -->
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['vendor'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['vendor'])
         <!-- Start vendors -->
-        <li class="menu-item {{ request()->is('vendor*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->is('vendor*') || request()->query('type') == 'vendor' ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="vendors">Vendors</div>
@@ -255,8 +253,8 @@ $currentRole = getUserRoles();
                         <div data-i18n="vendors">All Vendors</div>
                     </a>
                 </li>
-                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
-                <li class="menu-item {{ request()->is('vendors/add') ? 'active' : '' }}">
+                @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
+                <li class="menu-item {{ request()->is('vendors/add') || request()->query('type') == 'vendor' ? 'active' : '' }}">
                     <a href="{{route('users.add')}}?type=vendor" class="menu-link">
                         <div data-i18n="Add vendor">Add Vendor</div>
                     </a>
@@ -268,7 +266,7 @@ $currentRole = getUserRoles();
         @endif
 
         <!-- Start Books -->
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['librarian'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['librarian'])
         <li class="menu-item {{ request()->is('bookCategor*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -315,7 +313,7 @@ $currentRole = getUserRoles();
         </li>
         @endif
         <!-- End Books -->
-        @if($currentRole['president'] || $currentRole['finance_secretary'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['finance_secretary'])
         <!-- Start Payments -->
         <li class="menu-item {{ request()->is('payment*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -338,7 +336,7 @@ $currentRole = getUserRoles();
         <!-- End Payments -->
         @endif
         <!-- Start Subscriptions -->
-        @if(!$currentRole['vendor'])
+        @if(!$currentRole['vendor'] && !$currentRole['employee'])
         <li class="menu-item {{ request()->is('subscription*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -350,7 +348,7 @@ $currentRole = getUserRoles();
                         <div data-i18n="subscriptions">All Subscriptions</div>
                     </a>
                 </li>
-                @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
+                @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
                 <li class="menu-item {{ request()->is('subscriptions/upcoming-subscription') ? 'active' : '' }}">
                     <a href="{{route('subscriptions.getUpcomingSubscriptions')}}" class="menu-link">
                         <div data-i18n="upcoming subscriptions">Upcoming Subscriptions</div>
@@ -366,7 +364,7 @@ $currentRole = getUserRoles();
         </li>
         @endif
         <!-- End Subscriptions -->
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'])
         <!-- Start Voucher -->
         <li class="menu-item {{ request()->is('voucher*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -388,7 +386,7 @@ $currentRole = getUserRoles();
         </li>
         <!-- End Voucher -->
         @endif
-        @if($currentRole['president'] || $currentRole['finance_secretary'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['finance_secretary'])
         <!-- Start Vakalatnama -->
         <li class="menu-item {{ request()->is('vakalatnama*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -410,7 +408,7 @@ $currentRole = getUserRoles();
         </li>
         <!-- End Voucher -->
         @endif
-        @if($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
+        @if($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'])
         <!-- Start Rent -->
         <li class="menu-item {{ request()->is('rent*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

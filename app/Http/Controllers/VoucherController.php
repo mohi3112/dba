@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ModificationRequest;
 use App\Models\Voucher;
 use App\Services\LawyerService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,15 +30,22 @@ class VoucherController extends Controller
             $vouchersQuery->where('price', $request->price);
         }
 
-        if ($request->filled('date')) {
-            $vouchersQuery->where('date', $request->date);
+        if ($request->filled('startDate') && $request->input('endDate')) {
+            $startDate = Carbon::parse($request->input('startDate'))->startOfDay();
+            $endDate = Carbon::parse($request->input('endDate'))->endOfDay();
+            $vouchersQuery->whereBetween('date', [$startDate, $endDate]);
+        }
+
+        $totalPrice = 0;
+        if (count($_GET) > 0 && $request->filled('showTotal')) {
+            $totalPrice = (clone $vouchersQuery)->sum('price');
         }
 
         $vouchers = $vouchersQuery->orderBy('created_at', 'desc')->paginate(10);
 
         $activeLawyers = $this->lawyerService->getActiveLawyers(false);
 
-        return view('vouchers.index', compact('vouchers', 'activeLawyers'));
+        return view('vouchers.index', compact('vouchers', 'activeLawyers', 'totalPrice'));
     }
 
     public function create()

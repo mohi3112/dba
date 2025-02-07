@@ -47,6 +47,8 @@ class User extends Authenticatable
     const DESIGNATION_LIBRARIAN = 9;
     const DESIGNATION_LAWYER = 10;
     const DESIGNATION_VENDOR = 11;
+    const DESIGNATION_CLERK = 12;
+    const DESIGNATION_EMPLOYEE = 13;
 
     // Define static array for designation
     // Note: the keys are exists same in DB
@@ -61,6 +63,21 @@ class User extends Authenticatable
         self::DESIGNATION_LIBRARIAN => 'Librarian',
         self::DESIGNATION_LAWYER => 'Lawyer',
         self::DESIGNATION_VENDOR => 'Vendor',
+        self::DESIGNATION_CLERK => 'Clerk',
+    ];
+    public static $allDesignationRoles = [
+        self::DESIGNATION_PRESIDENT => 'President',
+        self::DESIGNATION_VICE_PRESIDENT => 'Vice President',
+        self::DESIGNATION_FINANCE_SECRETARY => 'Finance Secretary',
+        self::DESIGNATION_SECRETARY => 'Secretary',
+        self::DESIGNATION_JOINT_SECRETARY => 'Joint Secretary',
+        self::DESIGNATION_EXECUTIVE_MEMBER => 'Executive Member',
+        self::DESIGNATION_MANAGER => 'Manager',
+        self::DESIGNATION_LIBRARIAN => 'Librarian',
+        self::DESIGNATION_LAWYER => 'Lawyer',
+        self::DESIGNATION_VENDOR => 'Vendor',
+        self::DESIGNATION_CLERK => 'Clerk',
+        self::DESIGNATION_EMPLOYEE => 'Employee',
     ];
 
     public static $lawyersDesignations = [
@@ -72,7 +89,8 @@ class User extends Authenticatable
         self::DESIGNATION_EXECUTIVE_MEMBER,
         self::DESIGNATION_MANAGER,
         self::DESIGNATION_LIBRARIAN,
-        self::DESIGNATION_LAWYER
+        self::DESIGNATION_LAWYER,
+        self::DESIGNATION_CLERK
     ];
 
     const PENDING_REQUEST = "Pending";
@@ -227,6 +245,11 @@ class User extends Authenticatable
     public function vendorInfo()
     {
         return $this->hasOne(Vendor::class, 'user_id', 'id');
+    }
+
+    public function employees()
+    {
+        return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
     public static function getAgeOperator($key)

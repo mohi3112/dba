@@ -8,6 +8,9 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+<?php
+$employee = \App\Models\User::find($loan->employee->user_id);
+?>
 
 <div class="card mb-4">
     <h5 class="card-header">Loan Details</h5>
@@ -18,7 +21,7 @@
                 <div class="card col-12">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <label for=""> Employee Name: </label> <span> {{ $loan->employee->name }} </span>
+                            <label for=""> Employee Name: </label> <span> {{ $employee->fullname }} </span>
                         </li>
                         <li class="list-group-item">
                             <label for=""> Loan Amount: </label> <span> ₹{{ $loan->loan_amount }} </span>

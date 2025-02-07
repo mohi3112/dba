@@ -13,8 +13,8 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="lawyer" class="form-label">Lawyer <span class="text-danger">*</span></label>
-                            <select id="lawyer" name="user_id" class="select2 form-select @error('user_id') is-invalid @enderror">
-                                <option value="">Select Lawyer</option>
+                            <select id="userDropdown" name="user_id" class="select2 user-select form-select @error('user_id') is-invalid @enderror">
+                                <option value="" selected disabled>Select user</option>
                                 @foreach($activeLawyers as $lawyerId => $lawyerName)
                                 <option value="{{$lawyerId}}" {{ old('user_id') == $lawyerId ? 'selected' : ''}}>{{$lawyerName}}</option>
                                 @endforeach
@@ -68,3 +68,13 @@
     </div>
 </form>
 @endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.user-select').select2({
+            placeholder: 'Select user',
+            allowClear: true
+        });
+    });
+</script>
+@endSection

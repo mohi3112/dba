@@ -4,7 +4,7 @@
 <?php
 $currentRole = getUserRoles();
 $dNone = 'd-none';
-if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member']) {
+if ($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_president'] || $currentRole['finance_secretary'] || $currentRole['secretary'] || $currentRole['manager'] || $currentRole['joint_secretary'] || $currentRole['executive_member']) {
     $dNone = '';
 }
 ?>
@@ -156,7 +156,7 @@ if ($currentRole['president'] || $currentRole['vice_president'] || $currentRole[
                         <td> {{ $i }} </td>
                         <td> {{ $user->full_name }} </td>
                         <td> {{ ($user->father_first_name) ? $user->father_first_name . ' ' . $user->father_last_name : '--' }}</td>
-                        <td> {{ \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' }}</td>
+                        <td> {{ ($user->dob) ? \Carbon\Carbon::parse($user->dob)->format('d-M-Y') . ' (' . $user->age . ')' : '--' }}</td>
                         <td> {{ ($user->gender) ? \App\Models\User::$genders[$user->gender] : '--' }} </td>
                         <td>
                             {{ $user->licence_no ?? '--' }}

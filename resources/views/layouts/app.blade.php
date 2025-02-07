@@ -104,27 +104,27 @@
                                                                 </div>
                                                             </div>
                                                             <?php
-                                                                $isSameDay = false;
-                                                                if($event->dob) {
-                                                                    $givenDate = \Carbon\Carbon::parse($event->dob);
-                                                                    $today = \Carbon\Carbon::now();
-                                                                    $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
-                                                                }
+                                                            $isSameDay = false;
+                                                            if ($event->dob) {
+                                                                $givenDate = \Carbon\Carbon::parse($event->dob);
+                                                                $today = \Carbon\Carbon::now();
+                                                                $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
+                                                            }
                                                             ?>
                                                             <div class="flex-grow-1">
                                                                 @if($isSameDay)
                                                                 <h6 class="mb-0">Happy birthday <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
                                                                 @else
                                                                 <h6 class="mb-0">Congratulations <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
-                                                                    @if($event->families)
-                                                                        @foreach($event->families as $family)
-                                                                            @if($family->type == \App\Models\Family::SPOUSE)
-                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
-                                                                            @else
-                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    @endif
+                                                                @if($event->families)
+                                                                @foreach($event->families as $family)
+                                                                @if($family->type == \App\Models\Family::SPOUSE)
+                                                                <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
+                                                                @else
+                                                                <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
+                                                                @endif
+                                                                @endforeach
+                                                                @endif
                                                                 @endif
                                                                 <!-- <small class="text-muted">Today</small> -->
                                                             </div>

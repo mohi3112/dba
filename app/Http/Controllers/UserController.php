@@ -15,6 +15,7 @@ use App\Services\LocationService;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Employee;
 
 class UserController extends Controller
 {
@@ -27,11 +28,9 @@ class UserController extends Controller
 
         $this->validationMessages = [
             'first_name.required' => 'The first name field is required.',
-            'email.required' => 'The email field is required.',
+            'designation.required' => 'The designation field is required.',
             'email.email' => 'Please enter a valid email address.',
-            'mobile1.required' => 'The mobile number field is required.',
             'mobile1.numeric' => 'The mobile number must be numeric.',
-            'aadhaar_no.required' => 'The Aadhaar number field is required.',
             'aadhaar_no.numeric' => 'The Aadhaar number must be numeric.',
             'image.image' => 'The image must be a file of type: jpeg, png, jpg, gif.',
             'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
@@ -54,7 +53,7 @@ class UserController extends Controller
             $query->whereIn('name', $roles);
         });
 
-        $usersQuery->where('designation', '<>', User::DESIGNATION_VENDOR);
+        $usersQuery->whereNotIn('designation', [User::DESIGNATION_VENDOR, User::DESIGNATION_EMPLOYEE]);
 
         if ($request->filled('name')) {
             $usersQuery->where('first_name', 'like', '%' . $request->name . '%');
@@ -112,9 +111,9 @@ class UserController extends Controller
         // Validate form data
         $request->validate([
             'first_name' => 'required',
-            'email' => 'required|email|unique:users,email', // Ensure email is unique
-            'mobile1' => 'required|nullable|numeric',
-            'aadhaar_no' => 'required|numeric|unique:users,aadhaar_no', // Ensure Aadhaar number is unique
+            'designation' => 'required',
+            'email' => 'nullable|unique:users,email', // Ensure email is unique
+            'mobile1' => 'nullable|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -155,15 +154,17 @@ class UserController extends Controller
             $userRole = $request->input('designation') ?? User::DESIGNATION_LAWYER; //Assign default user/lawyer role (role_id 3)
 
             $accountApproved = false;
-            if (auth()->user()->hasRole('president')) {
+            if (auth()->user()->hasRole('president') || auth()->user()->hasRole('clerk')) {
                 $accountApproved = true;
             }
             $request->merge(['account_approved' => $accountApproved]);
 
             // Create the user
             $user = User::create($request->all());
+            $redirectRoute = 'users';
 
             if ($user->designation == User::DESIGNATION_VENDOR) {
+                $redirectRoute = 'vendors';
                 $payload = $request->all();
                 $payload['user_id'] = $user->id;
                 $payload['business_name'] = $request->input('business_name');
@@ -171,6 +172,30 @@ class UserController extends Controller
                 $payload['location_id'] = $request->input('location_id');
                 $payload['security_deposit'] = $request->input('security_deposit');
                 Vendor::create($payload);
+            }
+
+            if ($user->designation == User::DESIGNATION_EMPLOYEE) {
+                $redirectRoute = 'employees';
+
+                $payload = $request->all();
+                if ($request->has('policy_name') || $request->has('policy_number')) {
+                    $policiesArray = $this->createPoliciesPayload($request);
+                    $request->merge(['policies' => json_encode($policiesArray)]);
+                }
+
+                $payload['user_id'] = $user->id;
+                $payload['salary'] = $request->input('salary');
+                $payload['esi_number'] = $request->input('esi_number');
+                $payload['bank_account_number'] = $request->input('bank_account_number');
+                $payload['bank_ifsc_code'] = $request->input('bank_ifsc_code');
+                $payload['account_holder_name'] = $request->input('account_holder_name');
+                $payload['branch_name'] = $request->input('branch_name');
+                $payload['policies'] = $request->input('policies');
+                $payload['esi_start_date'] = $request->input('esi_start_date');
+                $payload['esi_end_date'] = $request->input('esi_end_date');
+                $payload['esi_contribution'] = $request->input('esi_contribution');
+
+                Employee::create($payload);
             }
 
             // Assign default role (role_id 8)
@@ -242,13 +267,37 @@ class UserController extends Controller
             // Commit the transaction
             DB::commit();
 
-            return redirect()->route('users')->with('success', 'User created successfully.');
+            return redirect()->route($redirectRoute)->with('success', 'User created successfully.');
         } catch (\Exception $e) {
             // Rollback the transaction on error
             DB::rollback();
-
-            return redirect()->back()->with('error', 'Failed to add user. Please try again.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    private function createPoliciesPayload($request)
+    {
+        $policies = [];
+        $payload = $request->all();
+
+        $policyName = $payload['policy_name'][0] ?? null;
+        $policyNumber = $payload['policy_number'][0] ?? null;
+        if ($policyName == null && $policyNumber == null) {
+            return $policies;
+        }
+
+        $policyArray = ($payload['policy_name']) ? $payload['policy_name'] : $payload['policy_number'];
+
+        $count = count($policyArray);
+        for ($i = 0; $i < $count; $i++) {
+            $policies[] = [
+                'policy_name' => $payload['policy_name'][$i] ?? null,
+                'policy_number' => $payload['policy_number'][$i] ?? null,
+                'policy_issue_date' => $payload['policy_issue_date'][$i] ?? null,
+                'policy_expiry_date' => $payload['policy_expiry_date'][$i] ?? null,
+            ];
+        }
+        return $policies;
     }
 
     // Display the specified resource.
@@ -312,9 +361,9 @@ class UserController extends Controller
         // Validate form data
         $request->validate([
             'first_name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id, // Ensure email is unique except for the current user
+            'email' => 'unique:users,email,' . $id, // Ensure email is unique except for the current user
             'mobile1' => 'nullable|numeric',
-            'aadhaar_no' => 'required|numeric', // Ensure Aadhaar number is unique except for the current user
+            'designation' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'address_proofs.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'degree_pictures.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -400,6 +449,37 @@ class UserController extends Controller
                     } else {
                         $payload['user_id'] = $user->id;
                         Vendor::create($payload);
+                    }
+                }
+
+
+                if ($user->designation == User::DESIGNATION_EMPLOYEE) {
+                    $existingRecord = Employee::where('user_id', $user->id)->first();
+
+                    $existingPoliciesData = ($existingRecord->policies) ? json_decode($existingRecord->policies, true) : [];
+                    if ($request->has('policy_name') || $request->has('policy_number')) {
+                        $policiesArray = $this->createPoliciesPayload($request);
+                        $existingPoliciesData = array_merge($existingPoliciesData, $policiesArray);
+                    }
+
+                    $request->merge(['policies' => !(empty($existingPoliciesData)) ? json_encode($existingPoliciesData) : null]);
+
+                    $payload['salary'] = $request->input('salary');
+                    $payload['esi_number'] = $request->input('esi_number');
+                    $payload['bank_account_number'] = $request->input('bank_account_number');
+                    $payload['bank_ifsc_code'] = $request->input('bank_ifsc_code');
+                    $payload['account_holder_name'] = $request->input('account_holder_name');
+                    $payload['branch_name'] = $request->input('branch_name');
+                    $payload['policies'] = $request->input('policies');
+                    $payload['esi_start_date'] = $request->input('esi_start_date');
+                    $payload['esi_end_date'] = $request->input('esi_end_date');
+                    $payload['esi_contribution'] = $request->input('esi_contribution');
+
+                    if ($existingRecord) {
+                        $existingRecord->update($payload);
+                    } else {
+                        $payload['user_id'] = $user->id;
+                        Employee::create($payload);
                     }
                 }
 
@@ -587,7 +667,7 @@ class UserController extends Controller
             $usersQuery->where('last_name', 'like', '%' . $request->l_name . '%');
         }
 
-        if (count($_GET) > 0 && !$request->filled('is_active')) {
+        if ($request->filled('is_active') && $request->is_active == 'N') {
             $usersQuery->where('status', User::STATUS_IN_ACTIVE);
         } else {
             $usersQuery->statusActive();
@@ -600,6 +680,8 @@ class UserController extends Controller
         if ($request->filled('is_physically_disabled')) {
             $usersQuery->where('is_physically_disabled', true);
         }
+
+        $usersQuery->whereIn('designation', User::$lawyersDesignations);
 
         $users = $usersQuery->paginate(10);
 

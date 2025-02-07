@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\User;
 use App\Models\ModificationRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,84 +15,42 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-        $employeesQuery = Employee::query();
-        if ($request->filled('employeeName')) {
-            $employeesQuery->where('name', 'like', '%' . $request->employeeName . '%');
+        $employeesQuery = User::with('employees')->where('designation', User::DESIGNATION_EMPLOYEE);
+
+        if ($request->filled('name')) {
+            $employeesQuery->where('first_name', 'like', '%' . $request->name . '%');
         }
 
-        if ($request->filled('employeeGender')) {
-            $employeesQuery->where('gender', $request->employeeGender);
+        if ($request->filled('l_name')) {
+            $employeesQuery->where('last_name', 'like', '%' . $request->l_name . '%');
         }
 
-        if ($request->filled('employeeEmail')) {
-            $employeesQuery->where('email', 'like', '%' . $request->employeeEmail . '%');
+        if (count($_GET) > 0 && !$request->filled('is_active')) {
+            $employeesQuery->where('status', User::STATUS_IN_ACTIVE);
+        } else {
+            $employeesQuery->statusActive();
         }
 
-        if ($request->filled('employeePhone')) {
-            $employeesQuery->where('phone', $request->employeePhone);
+        if ($request->filled('gender')) {
+            $employeesQuery->where('gender', $request->gender);
         }
 
-        if ($request->filled('employeePosition')) {
-            $employeesQuery->where('position', $request->employeePosition);
+        if ($request->filled('is_deceased')) {
+            $employeesQuery->where('is_deceased', true);
         }
 
-        $employees = $employeesQuery->orderBy('id', 'desc')->paginate(10);
+        if ($request->filled('is_physically_disabled')) {
+            $employeesQuery->where('is_physically_disabled', true);
+        }
+
+        $employees = $employeesQuery->orderBy('created_at', 'desc')->paginate(10);
 
         return view('employees.index', compact('employees'));
     }
 
     public function create()
     {
-        return view('employees.create');
-    }
-
-    private function createPoliciesPayload($request)
-    {
-        $policies = [];
-        $payload = $request->all();
-
-        $policyName = $payload['policy_name'][0] ?? null;
-        $policyNumber = $payload['policy_number'][0] ?? null;
-        if ($policyName == null && $policyNumber == null) {
-            return $policies;
-        }
-
-        $policyArray = ($payload['policy_name']) ? $payload['policy_name'] : $payload['policy_number'];
-
-        $count = count($policyArray);
-        for ($i = 0; $i < $count; $i++) {
-            $policies[] = [
-                'policy_name' => $payload['policy_name'][$i] ?? null,
-                'policy_number' => $payload['policy_number'][$i] ?? null,
-                'policy_issue_date' => $payload['policy_issue_date'][$i] ?? null,
-                'policy_expiry_date' => $payload['policy_expiry_date'][$i] ?? null,
-            ];
-        }
-        return $policies;
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'gender' => 'required',
-        ]);
-
-        if ($request->has('policy_name') || $request->has('policy_number')) {
-            $policiesArray = $this->createPoliciesPayload($request);
-            $request->merge(['policies' => json_encode($policiesArray)]);
-        }
-
-        Employee::create($request->all());
-
-        return redirect()->route('employees')->with('success', 'Employee record added successfully.');
-    }
-
-    public function edit($id)
-    {
-        $employee = Employee::findOrFail($id);
-
-        return view('employees.edit', compact('employee'));
+        return view('users.create');
     }
 
     public function update(Request $request, $id)
@@ -112,7 +71,7 @@ class EmployeeController extends Controller
 
             $request->merge(['policies' => !(empty($existingPoliciesData)) ? json_encode($existingPoliciesData) : null]);
 
-            if (auth()->user()->hasRole('president')) {
+            if (auth()->user()->hasRole('president') || auth()->user()->hasRole('clerk')) {
                 $employee->name = $request->input('name');
                 $employee->father_name = $request->input('father_name');
                 $employee->gender = $request->input('gender');
@@ -151,34 +110,6 @@ class EmployeeController extends Controller
         return redirect()->route('employees')->with('error', 'Something went wrong.');
     }
 
-    public function destroy($id)
-    {
-        // Find the payment by ID
-        $employee = Employee::findOrFail($id);
-
-        if ($employee) {
-            if (auth()->user()->hasRole('president')) {
-                $employee->deleted_by = Auth::id();
-                $employee->save();
-
-                // Soft delete the rent
-                $employee->delete();
-
-                return redirect()->route('employees')->with('success', 'Record deleted successfully!');
-            } else {
-                $this->submitChangeRequest([
-                    "table_name" => 'employees',
-                    "record_id" => $employee->id,
-                    "action" => ModificationRequest::REQUEST_TYPE_DELETE,
-                    "requested_by" => Auth::id(),
-                ]);
-                return redirect()->route('vouchers')->with('success', 'Record delete request submitted successfully!');
-            }
-        }
-
-        return redirect()->route('employees')->with('error', 'Something went wrong.');
-    }
-
     public function destroyPolicyRecord(Request $request, $id)
     {
         try {
@@ -211,11 +142,17 @@ class EmployeeController extends Controller
 
     public function dailyAttendance(Request $request)
     {
-        $employeesQuery = Employee::query();
+        $employeesQuery = User::query();
 
-        $employeesQuery = $employeesQuery->with('attendances');
+        $employeesQuery->where('users.designation', User::DESIGNATION_EMPLOYEE);
 
-        // Left join the attendances table
+        // Include 'employees' and 'attendances' relationships
+        $employeesQuery = $employeesQuery->with(['employees', 'employees.attendances']);
+
+        // Left join employees (since User has many Employees)
+        $employeesQuery->leftJoin('employees', 'users.id', '=', 'employees.user_id');
+
+        // Left join attendances (linking through employees)
         $employeesQuery->leftJoin('attendances', function ($join) use ($request) {
             $join->on('employees.id', '=', 'attendances.employee_id');
 
@@ -227,31 +164,41 @@ class EmployeeController extends Controller
             }
         });
 
+        // Filters based on `users` table
         if ($request->filled('employeeName')) {
-            $employeesQuery->where('employees.name', 'like', '%' . $request->employeeName . '%');
+            $employeesQuery->where('users.first_name', 'like', '%' . $request->employeeName . '%');
         }
 
         if ($request->filled('employeeGender')) {
-            $employeesQuery->where('employees.gender', $request->employeeGender);
+            $employeesQuery->where('users.gender', $request->employeeGender);
         }
 
         if ($request->filled('employeeEmail')) {
-            $employeesQuery->where('employees.email', 'like', '%' . $request->employeeEmail . '%');
+            $employeesQuery->where('users.email', 'like', '%' . $request->employeeEmail . '%');
         }
 
         if ($request->filled('employeePhone')) {
-            $employeesQuery->where('employees.phone', $request->employeePhone);
+            $employeesQuery->where('users.mobile1', $request->employeePhone);
         }
 
+        // Filter by employee-specific fields
         if ($request->filled('employeePosition')) {
             $employeesQuery->where('employees.position', $request->employeePosition);
         }
 
-        $employeesQuery->select('employees.*', 'attendances.date', 'attendances.check_in', 'attendances.check_out');
+        // Select fields from all related tables
+        $employeesQuery->select(
+            'users.*',
+            'employees.id as employee_id',
+            'employees.position',
+            'attendances.date',
+            'attendances.check_in',
+            'attendances.check_out'
+        );
 
-        // Group by employee ID to handle the potential many-to-one relationship between employees and attendances
+        // Order by User's first name
         $employees = $employeesQuery
-            ->orderBy('employees.name')
+            ->orderBy('users.first_name')
             ->paginate(20);
 
         return view('employees.daily-attendance', compact('employees'));
@@ -330,19 +277,56 @@ class EmployeeController extends Controller
             $startDate = Carbon::now()->subDays(30)->toDateString();
         }
 
-        $query = Attendance::with('employee')->select('employee_id', DB::raw('COUNT(*) as total_attendance'))
-            ->whereBetween('date', [$startDate, $endDate])
-            ->whereNotIn(DB::raw('DAYOFWEEK(date)'), [1, 7]) // Exclude Sundays (1) and Saturdays (7)
-            ->groupBy('employee_id');
+        $query = Attendance::query()
+            ->select('employees.user_id', DB::raw('COUNT(*) as total_attendance'))
+            ->leftJoin('employees', 'attendances.employee_id', '=', 'employees.id') // Join employees table
+            ->leftJoin('users', 'employees.user_id', '=', 'users.id') // Join users table
+            ->whereBetween('attendances.date', [$startDate, $endDate])
+            ->whereNotIn(DB::raw('DAYOFWEEK(attendances.date)'), [1]) // Exclude Sundays (1) and Saturdays (7)
+            ->groupBy('employees.user_id');
 
+        if ($request->filled('calculate_salary')) {
+            if ($request->filled('publicHolidays')) {
+            }
+        }
+        // Search by user name instead of employee name
         if ($name) {
-            $query->whereHas('employee', function ($q) use ($name) {
-                $q->where('name', 'like', '%' . $name . '%');
-            });
+            $query->where('users.first_name', 'like', '%' . $name . '%');
         }
 
-        $attendances = $query->paginate(20);
+        $attendances = $query->paginate(50);
 
         return view('employees.attendance-report', compact('attendances'));
+    }
+
+    public function attendanceDetails($id, Request $request)
+    {
+        $startOfMonth = $request->query('startDate');
+        $endOfMonth = $request->query('endDate');
+
+        if ($startOfMonth && $endOfMonth) {
+            $startDate = Carbon::parse($startOfMonth)->toDateString();
+            $endDate = Carbon::parse($endOfMonth)->toDateString();
+        } else {
+            $endDate = Carbon::now()->toDateString();
+            $startDate = Carbon::now()->subDays(30)->toDateString();
+        }
+
+        $employee = Employee::select(
+            'employees.id as employee_id',
+            'employees.user_id',
+            'employees.salary',
+            'employees.esi_contribution',
+            DB::raw('COUNT(attendances.id) as total_attendance')
+        )
+            ->leftJoin('attendances', 'employees.id', '=', 'attendances.employee_id')
+            ->where('employees.id', $id)
+            ->groupBy('employees.id', 'employees.user_id', 'employees.salary', 'employees.esi_contribution')
+            ->firstOrFail();
+
+        $attendances = Attendance::where('attendances.employee_id', $id)
+            ->whereBetween('attendances.date', [$startDate, $endDate])->get();
+
+        return view('employees.attendance-details', compact('attendances', 'employee', 'startDate', 'endDate'));
     }
 }

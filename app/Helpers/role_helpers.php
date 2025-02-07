@@ -8,7 +8,7 @@ if (!function_exists('getUserRoles')) {
         $user = auth()->user();
         $roleId = $user->roles()->pluck('role_user.role_id')->first();
 
-        $president = $vice_president = $finance_secretary = $secretary = $joint_secretary = $executive_member = $manager = $librarian = $lawyer = $vendor = 0;
+        $president = $vice_president = $finance_secretary = $secretary = $joint_secretary = $executive_member = $manager = $librarian = $lawyer = $vendor = $clerk = $employee = 0;
 
         switch ($roleId) {
             case User::DESIGNATION_PRESIDENT:
@@ -41,11 +41,17 @@ if (!function_exists('getUserRoles')) {
             case User::DESIGNATION_VENDOR:
                 $vendor = 1;
                 break;
+            case User::DESIGNATION_CLERK:
+                $clerk = 1;
+                break;
+            case User::DESIGNATION_EMPLOYEE:
+                $employee = 1;
+                break;
             default:
                 $lawyer = 1;
                 break;
         }
 
-        return compact('president', 'vice_president', 'finance_secretary', 'secretary', 'joint_secretary', 'executive_member', 'manager', 'librarian', 'lawyer', 'vendor');
+        return compact('president', 'vice_president', 'finance_secretary', 'secretary', 'joint_secretary', 'executive_member', 'manager', 'librarian', 'lawyer', 'vendor', 'clerk', 'employee');
     }
 }

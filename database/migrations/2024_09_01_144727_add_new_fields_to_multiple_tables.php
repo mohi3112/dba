@@ -18,11 +18,6 @@ class AddNewFieldsToMultipleTables extends Migration
             $table->string('last_unique_id')->nullable()->after('bulk_issue');
             $table->integer('number_of_issue_vakalatnamas')->nullable()->after('last_unique_id');
         });
-
-        Schema::table('employees', function (Blueprint $table) {
-            $table->string('father_name')->nullable()->after('name');
-            $table->string('aadhaar_no')->nullable()->after('gender');
-        });
     }
 
     /**

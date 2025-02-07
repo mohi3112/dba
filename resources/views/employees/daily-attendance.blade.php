@@ -104,10 +104,10 @@ $disable = 'disabled';
                 @foreach($employees as $employee)
                 <tr>
                     <td> {{ $i }} </td>
-                    <td> <a href="{{ route('employee.edit', $employee->id) }}">{{ $employee->name }}</a> </td>
+                    <td> <a href="{{ route('users.edit', $employee->id) }}">{{ $employee->fullName }}</a> </td>
                     <td> {{ ($employee->dob) ? \Carbon\Carbon::parse($employee->dob)->format('d-M-Y') : '--' }} </td>
                     <td> {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }} </td>
-                    <td> {{ $employee->phone ?? '--' }} </td>
+                    <td> {{ $employee->mobile1 ?? '--' }} </td>
                     <td> {{ $employee->position ?? '--' }} </td>
                     <td>
                         <div class="d-flex align-items-center">
@@ -116,10 +116,10 @@ $disable = 'disabled';
                             @if($employee->check_out && $employee->check_out != null)
                             <button type="button" class="btn rounded-pill btn-secondary" disabled>Out</button>
                             @else
-                            <button type="button" class="btn rounded-pill btn-danger mark-attendance ml-2" {{$disable}} data-attendance-type="out" data-date="{{ $_GET['attendanceDate'] ?? date('Y-m-d') }}" data-employee-id="{{ $employee->id }}">Out</button>
+                            <button type="button" class="btn rounded-pill btn-danger mark-attendance ml-2" {{$disable}} data-attendance-type="out" data-date="{{ $_GET['attendanceDate'] ?? date('Y-m-d') }}" data-employee-id="{{ $employee->employee_id }}">Out</button>
                             @endif
                             @else
-                            <button type="button" class="btn rounded-pill btn-success mark-attendance" {{$disable}} data-attendance-type="in" data-date="{{ $_GET['attendanceDate'] ?? date('Y-m-d') }}" data-employee-id="{{ $employee->id }}">In</button>
+                            <button type="button" class="btn rounded-pill btn-success mark-attendance" {{$disable}} data-attendance-type="in" data-date="{{ $_GET['attendanceDate'] ?? date('Y-m-d') }}" data-employee-id="{{ $employee->employee_id }}">In</button>
                             @endif
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$employee->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
@@ -136,7 +136,7 @@ $disable = 'disabled';
                                                     <label for="name" class="form-label">Name:</label>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    {{ $employee->name }}
+                                                    {{ $employee->fullname ?? '--' }}
 
                                                 </div>
                                             </div>
@@ -169,7 +169,7 @@ $disable = 'disabled';
                                                     <label for="phone" class="form-label">Phone:</label>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    {{ $employee->phone ?? '--' }}
+                                                    {{ $employee->mobile1 ?? '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -177,7 +177,7 @@ $disable = 'disabled';
                                                     <label for="nameWithTitle" class="form-label">Position:</label>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    {{ $employee->position ?? '--' }}
+                                                    {{ $employee->employees->position ?? '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -185,7 +185,7 @@ $disable = 'disabled';
                                                     <label for="nameWithTitle" class="form-label">salary:</label>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    ₹{{ $employee->salary }}
+                                                    ₹{{ $employee->employees->salary }}
                                                 </div>
                                             </div>
                                         </div>

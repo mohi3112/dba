@@ -32,4 +32,25 @@ class LawyerService
             return [$user->id => $user->full_name];
         })->toArray();
     }
+
+    public function getFinanceSecretary($onlyActive = true)
+    {
+        $roles = [User::DESIGNATION_FINANCE_SECRETARY];
+        $lawyers = User::whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn(
+                'id',
+                $roles
+            );
+        });
+
+        if ($onlyActive) {
+            $all_lawyers = $lawyers->get();
+        } else {
+            $all_lawyers = $lawyers->withTrashed()->get();
+        }
+
+        return $all_lawyers->mapWithKeys(function ($user) {
+            return [$user->id => $user->full_name];
+        })->toArray();
+    }
 }

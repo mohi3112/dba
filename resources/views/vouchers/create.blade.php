@@ -4,7 +4,6 @@
 
 <form method="POST" action="{{ route('voucher.store') }}" id="formVoucher">
     @csrf
-    <input type="hidden" name="issued_by" value="{{ Auth::user()->id }}">
     <div class="row">
         <div class="col-md-12">
             <div class="card mb-4">
@@ -48,8 +47,18 @@
                         <div class="mb-3 col-md-6">
                             <label for="issued_to" class="form-label">issued to</label>
                             <select id="userDropdown" name="issued_to" class="form-control form-select user-select">
+                                <option value="" selected disabled>Select user</option>
                                 @foreach($activeLawyers as $ky => $lawyer)
-                                <option value="{{$ky}}" @if(old('userId')==$ky) selected @endif>{{$lawyer}}</option>
+                                <option value="{{$ky}}" >{{$lawyer}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="issued_by" class="form-label">issued by</label>
+                            <select id="userDropdown2" name="issued_by" class="form-control form-select user-select-2">
+                                <option value="" selected disabled>Select user</option>
+                                @foreach($activeLawyers as $ky => $lawyer)
+                                <option value="{{ $ky }}" >{{ $lawyer }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -73,6 +82,10 @@
 <script>
     $(document).ready(function() {
         $('.user-select').select2({
+            placeholder: 'Select user',
+            allowClear: true
+        });
+        $('.user-select-2').select2({
             placeholder: 'Select user',
             allowClear: true
         });

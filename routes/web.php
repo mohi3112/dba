@@ -176,15 +176,12 @@ Route::middleware('auth')->group(function () {
     // employee routes
     Route::get('employees', [EmployeeController::class, 'index'])->name('employees');
     Route::get('employee/add', [EmployeeController::class, 'create'])->name('employee.add');
-    Route::post('employee/store',  [EmployeeController::class, 'store'])->name('employee.store');
-    Route::get('employee/edit/{id}', [EmployeeController::class, 'edit'])->name('employee.edit');
-    Route::put('employee/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
-    Route::post('employee/{id}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
     Route::post('employee-policy/{id}', [EmployeeController::class, 'destroyPolicyRecord'])->name('policyRecord.destroy');
 
     Route::get('employee/daily-attendance', [EmployeeController::class, 'dailyAttendance'])->name('employees.daily-attendance');
     Route::put('employee/mark-attendance', [EmployeeController::class, 'markAttendance'])->name('employees.mark-attendance');
     Route::get('employee/attendance-report', [EmployeeController::class, 'attendanceReport'])->name('employees.attendance-report');
+    Route::get('employee/attendance-details/{id}', [EmployeeController::class, 'attendanceDetails'])->name('employees.attendance-details');
 
     // vakalatnama routes
     Route::get('vakalatnama/summary', [VakalatnamaController::class, 'index'])->name('vakalatnamas');

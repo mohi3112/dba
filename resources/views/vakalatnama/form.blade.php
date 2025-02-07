@@ -16,7 +16,7 @@
                             <select id="lawyer" name="user_id" class="form-control form-select user-select @error('user_id') is-invalid @enderror">
                                 <option></option>
                                 @foreach($activeLawyers as $lawyerId => $lawyerName)
-                                <option value=" {{$lawyerId}}" @if(old('user_id')==$lawyerId) selected @endif>{{$lawyerName}}</option>
+                                <option value="{{$lawyerId}}" @if(old('user_id')==$lawyerId) selected @endif>{{$lawyerName}}</option>
                                 @endforeach
                             </select>
                             @error('user_id')

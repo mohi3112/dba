@@ -1,9 +1,16 @@
 @extends('layouts.app')
 @section('content')
+<?php
+$currentRole = getUserRoles();
+$dNone = '';
+if ($currentRole['employee']) {
+    $dNone = 'd-none';
+}
+?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Employees</span></h4>
-<ul class="nav nav-pills flex-column flex-md-row mb-3">
+<ul class="nav nav-pills flex-column flex-md-row mb-3 {{$dNone}}">
     <li class="nav-item">
-        <a class="nav-link active" href="{{route('employee.add')}}"><i class="bx bx-user me-1"></i> Add Employee</a>
+        <a class="nav-link active" href="{{route('users.add')}}?type=employee"><i class="bx bx-user me-1"></i> Add Employee</a>
     </li>
 </ul>
 @if(session('success'))
@@ -83,7 +90,7 @@
                     <th>Phone</th>
                     <th>Aadhaar No.</th>
                     <th>Position</th>
-                    <th>Actions</th>
+                    <th class="{{$dNone}}">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
@@ -91,17 +98,17 @@
                 @foreach($employees as $employee)
                 <tr>
                     <td> {{ $i }} </td>
-                    <td> {{ $employee->name }} </td>
-                    <td> {{ $employee->father_name ?? '--' }} </td>
+                    <td> {{ $employee->full_name }} </td>
+                    <td> {{ ($employee->father_first_name) ? $employee->father_first_name . ' ' . $employee->father_last_name : '--' }} </td>
                     <td> {{ ($employee->dob) ? \Carbon\Carbon::parse($employee->dob)->format('d-M-Y') : '--' }} </td>
                     <td> {{ ($employee->gender) ? \App\Models\Employee::$employeesGender[$employee->gender] : '--' }} </td>
-                    <td> {{ $employee->phone ?? '--' }} </td>
+                    <td> {{ $employee->mobile1 ?? '--' }} </td>
                     <td> {{ $employee->aadhaar_no ?? '--' }} </td>
-                    <td> {{ $employee->position ?? '--' }} </td>
-                    <td>
+                    <td> {{ $employee->employees ? $employee->employees->position : '--' }} </td>
+                    <td class="{{$dNone}}">
                         <div class="d-flex align-items-center">
                             <!-- edit -->
-                            <a class="color-unset" href="{{ route('employee.edit', $employee->id) }}"><i class="fas fa-edit"></i></a>
+                            <a class="color-unset" href="{{ route('users.edit', $employee->id) }}?type=employee"><i class="fas fa-edit"></i></a>
 
                             <!-- view -->
                             <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalCenter{{$employee->id}}" href="#"><i class="fa fa-eye" aria-hidden="true"></i></a>
@@ -118,13 +125,13 @@
                                                     <label for="name" class="form-label">Name:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->name }}
+                                                    {{ $employee->full_name }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="father_name" class="form-label">Father's Name:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->father_name ?? '--' }}
+                                                    {{ ($employee->father_first_name) ? $employee->father_first_name . ' ' . $employee->father_last_name : '--' }}
                                                 </div>
 
                                             </div>
@@ -161,13 +168,13 @@
                                                     <label for="phone" class="form-label">Phone:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->phone ?? '--' }}
+                                                    {{ $employee->mobile1 ?? '--' }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">Position:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->position ?? '--' }}
+                                                    {{ $employee->employees ? $employee->employees->position : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -175,7 +182,7 @@
                                                     <label for="nameWithTitle" class="form-label">salary:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    ₹{{ $employee->salary ?? '--' }}
+                                                    ₹{{ $employee->employees ? $employee->employees->salary : '--' }}
                                                 </div>
                                             </div>
                                             <div class="divider divider-primary">
@@ -186,13 +193,13 @@
                                                     <label for="nameWithTitle" class="form-label">Bank Account Number:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->bank_account_number ?? '--' }}
+                                                    {{ $employee->employees ? $employee->employees->bank_account_number : '--' }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">IFSC Code:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->bank_ifsc_code ?? '--' }}
+                                                    {{ $employee->employees ? $employee->employees->bank_ifsc_code : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -200,13 +207,13 @@
                                                     <label for="nameWithTitle" class="form-label">Account Holder Name:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->account_holder_name ?? '--' }}
+                                                    {{ $employee->employees ? $employee->employees->account_holder_name : '--' }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">Branch Name:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->branch_name ?? '--' }}
+                                                    {{ $employee->employees ? $employee->employees->branch_name : '--' }}
                                                 </div>
                                             </div>
                                             <div class="divider divider-primary">
@@ -217,13 +224,15 @@
                                                     <label for="nameWithTitle" class="form-label">ESI Number:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->esi_number ?? '--' }}
+                                                    
+                                                {{ $employee->employees ? $employee->employees->esi_number : '--' }}
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">ESI Contribution:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ $employee->esi_contribution ?? '--' }}
+                                                    
+                                                {{ $employee->employees ? $employee->employees->esi_contribution : '--' }}
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -231,17 +240,21 @@
                                                     <label for="nameWithTitle" class="form-label">ESI Start Date:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ ($employee->esi_start_date) ? \Carbon\Carbon::parse($employee->esi_start_date)->format('d-M-Y') : '--' }}
+                                                    @if($employee->employees)
+                                                        {{ ($employee->employees->esi_start_date) ? \Carbon\Carbon::parse($employee->employees->esi_start_date)->format('d-M-Y') : '--' }}
+                                                    @endif
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="nameWithTitle" class="form-label">ESI End Date:</label>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ ($employee->esi_end_date) ? \Carbon\Carbon::parse($employee->esi_end_date)->format('d-M-Y') : '--' }}
+                                                @if($employee->employees)
+                                                    {{ $employee->employees->esi_end_date ? \Carbon\Carbon::parse($employee->employees->esi_end_date) : '--' }}
+                                                    @endif
                                                 </div>
                                             </div>
 
-                                            @if($employee->policies && $employee->policies != '')
+                                            @if($employee->employees->policies && $employee->employees->policies != '')
                                             <div class="divider divider-primary">
                                                 <div class="divider-text">Policy Details</div>
                                             </div>
@@ -259,7 +272,7 @@
                                                         </thead>
                                                         <tbody class="table-border-bottom-0">
                                                             @php($i = 1)
-                                                            @php($policies = json_decode($employee->policies, true))
+                                                            @php($policies = json_decode($employee->employees->policies, true))
                                                             @foreach($policies as $policy)
                                                             <tr>
                                                                 <td> {{ $i }} </td>
@@ -287,7 +300,7 @@
 
 
                             <!-- delete -->
-                            <form action="{{ route('employee.destroy', $employee->id) }}" method="POST">
+                            <form action="{{ route('users.destroy', $employee->id) }}" method="POST">
                                 @csrf
                                 <a class="pl-3 delete-employee color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>

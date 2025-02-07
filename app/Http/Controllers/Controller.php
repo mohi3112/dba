@@ -54,13 +54,24 @@ class Controller extends BaseController
 
     public function getActiveEmployeesList($onlyActive = true)
     {
-        $employeesQuery = Employee::query();
+        $roles = [USer::DESIGNATION_EMPLOYEE];
 
-        if (!$onlyActive) {
-            $employeesQuery->withTrashed();
+        $employeesQuery = User::with('employees')->whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn(
+                'id',
+                $roles
+            );
+        });
+
+        if ($onlyActive) {
+            $all_employees = $employeesQuery->get();
+        } else {
+            $all_employees = $employeesQuery->withTrashed()->get();
         }
 
-        return $employeesQuery->pluck('name', 'id');
+        return $all_employees->mapWithKeys(function ($user) {
+            return [$user->employees->id => $user->full_name];
+        })->toArray();
     }
 
     public function getCategoriesList()
@@ -70,7 +81,7 @@ class Controller extends BaseController
 
     public function getEmployeesList()
     {
-        return Employee::pluck('name', 'id');
+        return self::getActiveEmployeesList(false);
     }
 
     public function submitChangeRequest($payload = [])

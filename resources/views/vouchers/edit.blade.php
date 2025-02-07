@@ -56,8 +56,22 @@
                         <div class="mb-3 col-md-6">
                             <label for="issued_to" class="form-label">issued to</label>
                             <select id="userDropdown" name="issued_to" class="form-control form-select user-select">
+                                @if(!isset($voucher->issued_to) && $voucher->issued_to == null) 
+                                <option value="" selected disabled>Select user</option>
+                                @endif
                                 @foreach($activeLawyers as $ky => $lawyer)
                                 <option value="{{$ky}}" @if($voucher->issued_to==$ky) selected @endif>{{$lawyer}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="issued_by" class="form-label">issued by</label>
+                            <select id="userDropdown2" name="issued_by" class="form-control form-select user-select-2">
+                                @if(!isset($voucher->issued_by) && $voucher->issued_by == null)
+                                <option value="" selected disabled>Select user</option>
+                                @endif
+                                @foreach($activeLawyers as $ky => $lawyer)
+                                <option value="{{ $ky }}" @if($voucher->issued_by==$ky) selected @endif>{{ $lawyer }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -81,6 +95,10 @@
 <script>
     $(document).ready(function() {
         $('.user-select').select2({
+            placeholder: 'Select user',
+            allowClear: true
+        });
+        $('.user-select-2').select2({
             placeholder: 'Select user',
             allowClear: true
         });
