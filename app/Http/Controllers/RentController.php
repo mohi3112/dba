@@ -7,6 +7,7 @@ use App\Models\ModificationRequest;
 use App\Models\Rent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Expr\Cast\Object_;
 use setasign\Fpdi\Fpdi;
 
 class RentController extends Controller
@@ -161,6 +162,20 @@ class RentController extends Controller
 
         $activeVendors = $this->getActiveVendorsList();
 
+        $location = Location::find($activeVendors[$rent->user_id]['location_id']);
+
+        $request = new Request();
+        $request->merge(['userId' => $rent->user_id]);
+
+        $expiredRents = Rent::getLatestExpiredRentsForAllUsers($request)->first();
+
+        $pendingMonths = 0;
+        if ($expiredRents->count()) {
+            $currentDate = \Carbon\Carbon::now();
+            $lastPaidDate = \Carbon\Carbon::parse($expiredRents->end_date);
+            $pendingMonths = $lastPaidDate->diffInMonths($currentDate);
+        }
+
         // Create new PDF instance
         $pdf = new Fpdi();
         $pdf->AddPage();
@@ -179,7 +194,10 @@ class RentController extends Controller
         $pdf->Cell(50, 10, 'Vendor:', 0, 0);
         $pdf->Cell(100, 10, (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--', 0, 1);
 
-        $pdf->Cell(50, 10, 'Amount:', 0, 0);
+        $pdf->Cell(50, 10, 'Location:', 0, 0);
+        $pdf->Cell(100, 10, ($location) ? $location->fullLocationName : '--', 0, 1);
+
+        $pdf->Cell(50, 10, 'Rent Amount:', 0, 0);
         $pdf->Cell(100, 10, 'Rs. ' . number_format($rent->rent_amount, 2), 0, 1);
 
         $pdf->Cell(50, 10, 'Renewal Date:', 0, 0);
@@ -187,6 +205,9 @@ class RentController extends Controller
 
         $pdf->Cell(50, 10, 'End Date:', 0, 0);
         $pdf->Cell(100, 10, date('d-m-Y', strtotime($rent->end_date)), 0, 1);
+
+        $pdf->Cell(50, 10, 'Pending Rent Amount:', 0, 0);
+        $pdf->Cell(100, 10, 'Rs. ' . number_format($rent->rent_amount * $pendingMonths, 2) . ' (' . $pendingMonths . ' Month(s))', 0, 1);
 
         // Line Break
         $pdf->Ln(5);
