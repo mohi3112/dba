@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="vendor" class="form-label">Vendor <span class="text-danger">*</span></label>
-                            <select id="vendor" name="user_id" class="select2 form-select @error('user_id') is-invalid @enderror">
+                            <select id="vendor" name="user_id" class="select2 form-select user-select @error('user_id') is-invalid @enderror">
                                 <option value="">Select Vendor</option>
                                 @foreach($activeVendors as $vendorId => $vendorInfo)
                                 <option value="{{$vendorId}}" data-locationid="{{$vendorInfo['location_id']}}" {{ old('user_id') == $vendorId ? 'selected' : ''}}>{{$vendorInfo['full_name']}}</option>
@@ -94,6 +94,10 @@
             } else {
                 $('#rent_amount').val(0);
             }
+        });
+        $('.user-select').select2({
+            placeholder: 'Select employee',
+            allowClear: true
         });
     });
 </script>

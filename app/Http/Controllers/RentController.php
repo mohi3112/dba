@@ -7,6 +7,7 @@ use App\Models\ModificationRequest;
 use App\Models\Rent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use setasign\Fpdi\Fpdi;
 
 class RentController extends Controller
 {
@@ -151,5 +152,50 @@ class RentController extends Controller
         $activeVendors = $this->getActiveVendorsList();
 
         return view('rents.pending-rents', compact('expiredRents', 'activeVendors'));
+    }
+
+    public function generateReceipt($id)
+    {
+        // Fetch rent details by ID
+        $rent = Rent::findOrFail($id);
+
+        $activeVendors = $this->getActiveVendorsList();
+
+        // Create new PDF instance
+        $pdf = new Fpdi();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', '', 12);
+
+        // Set the title
+        $pdf->SetXY(10, 10);
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(190, 10, 'Rent Receipt', 0, 1, 'C');
+
+        // Line Break
+        $pdf->Ln(10);
+
+        // Add rent details
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(50, 10, 'Vendor:', 0, 0);
+        $pdf->Cell(100, 10, (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--', 0, 1);
+
+        $pdf->Cell(50, 10, 'Amount:', 0, 0);
+        $pdf->Cell(100, 10, 'Rs. ' . number_format($rent->rent_amount, 2), 0, 1);
+
+        $pdf->Cell(50, 10, 'Renewal Date:', 0, 0);
+        $pdf->Cell(100, 10, date('d-m-Y', strtotime($rent->renewal_date)), 0, 1);
+
+        $pdf->Cell(50, 10, 'End Date:', 0, 0);
+        $pdf->Cell(100, 10, date('d-m-Y', strtotime($rent->end_date)), 0, 1);
+
+        // Line Break
+        $pdf->Ln(5);
+
+        // Footer message
+        $pdf->SetFont('Arial', 'I', 10);
+        $pdf->Cell(190, 10, 'Thank you for your payment!', 0, 1, 'C');
+
+        // Output PDF to the browser
+        return response($pdf->Output('S'))->header('Content-Type', 'application/pdf');
     }
 }

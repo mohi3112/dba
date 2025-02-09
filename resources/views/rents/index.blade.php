@@ -22,7 +22,7 @@
                 <div class="col-md-3">
                     <label for="userId" class="form-label">Vendor Name</label>
                     <div class="input-group">
-                        <select id="vendor" name="userId" class="select2 form-select">
+                        <select id="vendor" name="userId" class="select2 form-select user-select">
                             <option value="">Select Vendor</option>
                             @foreach($activeVendors as $ky => $vendor)
                             <option value="{{$ky}}" @if(@$_GET['userId']==$ky) selected @endif>{{$vendor['full_name']}}</option>
@@ -149,6 +149,10 @@
                                 @csrf
                                 <a class="pl-3 delete-rent color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>
+                            <!-- print -->
+                            <a href="{{ route('rent.receipt', $rent->id) }}" target="_blank" class="color-unset ml-2">
+                                <i class='bx bx-printer' style="font-size: 18px;"></i>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -178,6 +182,12 @@
                     this.closest('form').submit();
                 }
             });
+        });
+    });
+    $(document).ready(function() {
+        $('.user-select').select2({
+            placeholder: 'Select employee',
+            allowClear: true
         });
     });
 </script>

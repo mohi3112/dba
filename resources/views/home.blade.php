@@ -99,7 +99,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/lawyer.webp')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/lawyer.webp')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Lawyers</span>
@@ -112,7 +112,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/user.png')}}" alt="Credit Card" class="rounded">
+                                    <img src="{{url('public/icons/user.png')}}" alt="Credit Card" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Vendors</span>
@@ -129,7 +129,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/subscription.png')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/subscription.png')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Pending Subscriptions</span>
@@ -142,7 +142,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/rent.png')}}" alt="Credit Card" class="rounded">
+                                    <img src="{{url('public/icons/rent.png')}}" alt="Credit Card" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Pending Rents</span>
@@ -159,7 +159,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/wallet-info.png')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/wallet-info.png')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Received Subscriptions</span>
@@ -172,7 +172,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/cc-primary.png')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/cc-primary.png')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Rent Received</span>
@@ -189,7 +189,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/paypal.png')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/paypal.png')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Spent Amount</span>
@@ -202,7 +202,7 @@
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
                                 <div class="avatar flex-shrink-0">
-                                    <img src="{{url('icons/attorney.png')}}" alt="chart success" class="rounded">
+                                    <img src="{{url('public/icons/attorney.png')}}" alt="chart success" class="rounded">
                                 </div>
                             </div>
                             <span class="fw-semibold d-block mb-1">Total Vakalatnama(s)</span>

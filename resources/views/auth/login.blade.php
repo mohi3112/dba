@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-<link href="{{ asset('css/page-auth.css') }}" rel="stylesheet">
+<link href="{{ asset('public/css/page-auth.css') }}" rel="stylesheet">
 
 @section('content')
 <div class="container-xxl">

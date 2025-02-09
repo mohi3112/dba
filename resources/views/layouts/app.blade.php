@@ -11,9 +11,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/helpers.js') }}" defer></script>
-    <script src="{{ asset('js/config.js') }}" defer></script>
+    <script src="{{ asset('public/js/app.js') }}" defer></script>
+    <script src="{{ asset('public/js/helpers.js') }}" defer></script>
+    <script src="{{ asset('public/js/config.js') }}" defer></script>
     <!-- Font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -24,12 +24,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/core.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/theme-default.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/demo.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/perfect-scrollbar.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/core.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/theme-default.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/demo.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/perfect-scrollbar.css') }}" rel="stylesheet">
+    <link href="{{ asset('public/css/custom.css') }}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -104,27 +104,27 @@
                                                                 </div>
                                                             </div>
                                                             <?php
-                                                            $isSameDay = false;
-                                                            if ($event->dob) {
-                                                                $givenDate = \Carbon\Carbon::parse($event->dob);
-                                                                $today = \Carbon\Carbon::now();
-                                                                $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
-                                                            }
+                                                                $isSameDay = false;
+                                                                if($event->dob) {
+                                                                    $givenDate = \Carbon\Carbon::parse($event->dob);
+                                                                    $today = \Carbon\Carbon::now();
+                                                                    $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
+                                                                }
                                                             ?>
                                                             <div class="flex-grow-1">
                                                                 @if($isSameDay)
                                                                 <h6 class="mb-0">Happy birthday <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
                                                                 @else
                                                                 <h6 class="mb-0">Congratulations <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
-                                                                @if($event->families)
-                                                                @foreach($event->families as $family)
-                                                                @if($family->type == \App\Models\Family::SPOUSE)
-                                                                <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
-                                                                @else
-                                                                <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
-                                                                @endif
-                                                                @endforeach
-                                                                @endif
+                                                                    @if($event->families)
+                                                                        @foreach($event->families as $family)
+                                                                            @if($family->type == \App\Models\Family::SPOUSE)
+                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
+                                                                            @else
+                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @endif
                                                                 @endif
                                                                 <!-- <small class="text-muted">Today</small> -->
                                                             </div>
@@ -185,10 +185,10 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
 
-    <script src="{{ asset('js/popper.js') }}" defer></script>
-    <script src="{{ asset('js/menu.js') }}" defer></script>
-    <script src="{{ asset('js/main.js') }}" defer></script>
-    <script src="{{ asset('js/bootstrap.js') }}" defer></script>
+    <script src="{{ asset('public/js/popper.js') }}" defer></script>
+    <script src="{{ asset('public/js/menu.js') }}" defer></script>
+    <script src="{{ asset('public/js/main.js') }}" defer></script>
+    <script src="{{ asset('public/js/bootstrap.js') }}" defer></script>
     @yield('scripts')
     <script>
         $(document).ready(function() {

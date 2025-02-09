@@ -172,6 +172,7 @@ Route::middleware('auth')->group(function () {
     Route::post('rent/{id}', [RentController::class, 'destroy'])->name('rents.destroy');
     Route::get('get-rent/{locationId}', [RentController::class, 'getRent'])->name('get-rent');
     Route::get('rent/pending-rents', [RentController::class, 'pendingRents'])->name('rents.pending-rents');
+    Route::get('/rent-receipt/{id}', [RentController::class, 'generateReceipt'])->name('rent.receipt');
 
     // employee routes
     Route::get('employees', [EmployeeController::class, 'index'])->name('employees');

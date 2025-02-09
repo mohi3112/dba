@@ -18,7 +18,7 @@ $currentDate = \Carbon\Carbon::now();
                 <div class="col-md-3">
                     <label for="userId" class="form-label">Vendor Name</label>
                     <div class="input-group">
-                        <select id="vendor" name="userId" class="select2 form-select">
+                        <select id="vendor" name="userId" class="select2 form-select user-select">
                             <option value="">Select Vendor</option>
                             @foreach($activeVendors as $ky => $vendor)
                             <option value="{{$ky}}" @if(@$_GET['userId']==$ky) selected @endif>{{$vendor['full_name']}}</option>
@@ -175,4 +175,14 @@ $currentDate = \Carbon\Carbon::now();
     </div>
 </div>
 <!--/ Striped Rows -->
+@endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.user-select').select2({
+            placeholder: 'Select employee',
+            allowClear: true
+        });
+    });
+</script>
 @endsection
