@@ -116,12 +116,12 @@ class VakalatnamaController extends Controller
                 $payload['uniqueId'] = $tempUniqueId;
                 $payload['date'] = Carbon::now()->format('Y-m-d H:i:s');
 
-                $uniqueString = '';
-                if (auth()->user()->hasRole('president')) {
-                    $uniqueString = 'Precured by president';
-                } elseif (auth()->user()->hasRole('finance_secretary') || auth()->user()->hasRole('clerk')) {
-                    $uniqueString = 'Digitaly signed by finance secretary';
-                }
+                // $uniqueString = '';
+                // if (auth()->user()->hasRole('president')) {
+                //     $uniqueString = 'Precured by president';
+                // } elseif (auth()->user()->hasRole('finance_secretary') || auth()->user()->hasRole('clerk')) {
+                $uniqueString = 'Digitaly signed by finance secretary';
+                // }
                 $payload['uniqueString'] = $uniqueString;
                 $payloads[] = $payload;
             }

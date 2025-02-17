@@ -73,6 +73,7 @@
             <thead>
                 <tr>
                     <th>Sr. No.</th>
+                    <th>Serial Number</th>
                     <th>Vendor Name</th>
                     <th>Amount</th>
                     <th>Renewal Date</th>
@@ -85,6 +86,7 @@
                 @foreach($rents as $rent)
                 <tr>
                     <td> {{ $i }} </td>
+                    <td> R-{{ $rent->id }} </td>
                     <td> {{ (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--' }} </td>
                     <td>₹{{ $rent->rent_amount }} </td>
                     <td>{{ \Carbon\Carbon::parse($rent->renewal_date)->format('d-M-Y') }} </td>
@@ -103,6 +105,14 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="lawyerName" class="form-label">Serial Number:</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                R-{{ $rent->id }}
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-5">
                                                     <label for="lawyerName" class="form-label">Vendor Name:</label>
@@ -150,8 +160,8 @@
                                 <a class="pl-3 delete-rent color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>
                             <!-- print -->
-                            <a href="{{ route('rent.receipt', $rent->id) }}" target="_blank" class="color-unset ml-2">
-                                <i class='bx bx-printer' style="font-size: 18px;"></i>
+                            <a href="{{ route('rent.receipt', $rent->id) }}" target="_blank" class="pl-3 color-unset" title="Print">
+                                <i class='fa fa-print'></i>
                             </a>
                         </div>
                     </td>

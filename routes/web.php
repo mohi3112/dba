@@ -150,6 +150,9 @@ Route::middleware('auth')->group(function () {
     Route::get('voucher/edit/{id}', [VoucherController::class, 'edit'])->name('vouchers.edit');
     Route::put('vouchers/update/{id}', [VoucherController::class, 'update'])->name('vouchers.update');
     Route::post('voucher/{id}', [VoucherController::class, 'destroy'])->name('vouchers.destroy');
+    Route::get('/voucher-receipt/{id}', [VoucherController::class, 'generateVoucherReceipt'])->name('vouchers.receipt');
+    Route::post('voucher/{id}/upload', [VoucherController::class, 'upload'])->name('vouchers.upload');
+
 
     // Routes for loan
     Route::get('loans', [LoanController::class, 'index'])->name('loans');

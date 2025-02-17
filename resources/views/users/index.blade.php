@@ -184,7 +184,7 @@ if ($currentRole['president'] || $currentRole['clerk'] || $currentRole['vice_pre
                         <td>
                             <div class="d-flex align-items-center">
                                 <!-- edit -->
-                                <a class="color-unset {{$dNone}}" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i></a>
+                                <a class="color-unset {{$dNone}}" href="{{ route('users.edit', $user->id) }}?type=lawyer"><i class="fas fa-edit"></i></a>
                                 <!-- view -->
                                 <a class="pl-3 color-unset" href="{{ route('user.view', $user->id) }}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                                 <!-- delete -->

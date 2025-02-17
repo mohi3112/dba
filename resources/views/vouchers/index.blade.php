@@ -13,6 +13,15 @@
 </div>
 @endif
 
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible" role="alert">
+    {{ $error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endforeach
+@endif
+
 <div class="card mb-4">
     <h5 class="card-header">Filters</h5>
     <div class="card-body">
@@ -78,7 +87,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Sr. No.</th>
+                    <th>#</th>
+                    <th>Serial Number</th>
                     <th>Title</th>
                     <th>Amount</th>
                     <th>Voucher Date</th>
@@ -90,6 +100,7 @@
                 @foreach($vouchers as $voucher)
                 <tr>
                     <td> {{ $i }} </td>
+                    <td> E-{{ $voucher->id }} </td>
                     <td> {{ $voucher->title }} </td>
                     <td>₹{{ $voucher->price }} </td>
                     <td>{{ \Carbon\Carbon::parse($voucher->date)->format('d-M-Y') }} </td>
@@ -107,6 +118,14 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="lawyerName" class="form-label">Serial Number:</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                E-{{ $voucher->id }}
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-5">
                                                     <label for="lawyerName" class="form-label">Title:</label>
@@ -159,6 +178,21 @@
                                                 </div>
                                             </div>
 
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label for="description" class="form-label">Uploaded Scanned Voucher:</label>
+                                                </div>
+                                                @if($voucher->image)
+                                                <div class="col-md-7">
+                                                    <div class="d-flex pt-1 pb-3">
+                                                        <div class="">
+                                                            <a href="data:image/jpeg;base64,{!! $voucher->image !!}" download="receipt.jpg"><span type="button" class="badge bg-label-dark">Uploaded Receipt</span></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                            </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
@@ -173,6 +207,99 @@
                                 @csrf
                                 <a class="pl-3 delete-voucher color-unset" href="javascript:void(0);"><i class="fa fa-trash" aria-hidden="true"></i></a>
                             </form>
+
+                            <!-- print -->
+                            <a href="{{ route('vouchers.receipt', $voucher->id) }}" target="_blank" class="pl-3 color-unset" title="Print">
+                                <i class='fa fa-print'></i>
+                            </a>
+
+                            <!-- Hidden File Input -->
+                            <a class="pl-3 color-unset" data-bs-toggle="modal" data-bs-target="#modalDocumentUpload{{$voucher->id}}" title="Upload" href="#">
+                                <i class="fa fa-upload" aria-hidden="true"></i>
+                            </a>
+
+                            <div class="modal fade" id="modalDocumentUpload{{$voucher->id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalDocumentTitle">Upload Scanned Voucher</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('vouchers.upload', $voucher->id) }}" method="POST" id="upload-form-{{ $voucher->id }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="voucherTitle" class="form-label">Title:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        {{ $voucher->title }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="voucherAmount" class="form-label">Amount:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        ₹{{ $voucher->price }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="voucherDate" class="form-label">Voucher Date:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        {{ \Carbon\Carbon::parse($voucher->date)->format('d-M-Y') }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="issued_to" class="form-label">Issued To:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        {{ ($voucher->issued_to) ? $activeLawyers[$voucher->issued_to] : '--' }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="issued_by" class="form-label">Issued By:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        {{ ($voucher->issued_by) ? $activeLawyers[$voucher->issued_by] : '--' }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="description" class="form-label">Description:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        {{ $voucher->description ?? '--' }}
+                                                    </div>
+                                                </div>
+                                                <!-- File Upload Section -->
+                                                <div class="row mt-3">
+                                                    <div class="col-md-5">
+                                                        <label for="image" class="form-label">Upload Scanned Voucher:</label>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <input type="file" class="form-control" name="image" accept="application/pdf,image/*" id="image_{{ $voucher->id }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Upload</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </td>
                 </tr>

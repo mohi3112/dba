@@ -8,6 +8,7 @@ use App\Services\LawyerService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use setasign\Fpdi\Fpdi;
 
 class VoucherController extends Controller
 {
@@ -140,5 +141,81 @@ class VoucherController extends Controller
         }
 
         return redirect()->route('vouchers')->with('error', 'Something went wrong.');
+    }
+
+    public function generateVoucherReceipt($id)
+    {
+        // Fetch rent details by ID
+        $voucher = Voucher::findOrFail($id);
+
+        $serialNumber = 'E-' . $voucher->id;
+
+        $activeLawyers = $this->lawyerService->getActiveLawyers(false);
+
+        // Create new PDF instance
+        $pdf = new Fpdi();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', '', 12);
+
+        // Set the title
+        $pdf->SetXY(10, 10);
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(190, 10, 'Voucher Receipt', 0, 1, 'C');
+
+        // Line Break
+        $pdf->Ln(10);
+
+        // Add rent details
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(50, 10, 'Serial Number:', 0, 0);
+        $pdf->Cell(100, 10, $serialNumber, 0, 1);
+
+        $pdf->Cell(50, 10, 'Title:', 0, 0);
+        $pdf->Cell(100, 10, $voucher->title, 0, 1);
+
+        $pdf->Cell(50, 10, 'Amount:', 0, 0);
+        $pdf->Cell(100, 10, 'Rs. ' . number_format($voucher->price, 2), 0, 1);
+
+        $pdf->Cell(50, 10, 'Voucher Date:', 0, 0);
+        $pdf->Cell(100, 10, $voucher->date ? date('d-m-Y', strtotime($voucher->date)) : '--', 0, 1);
+
+        $pdf->Cell(50, 10, 'Issued To:', 0, 0);
+        $pdf->Cell(100, 10, (!empty($activeLawyers) && $voucher->issued_to && $activeLawyers[$voucher->issued_to]) ? $activeLawyers[$voucher->issued_to] : '--', 0, 1);
+
+        $pdf->Cell(50, 10, 'Issued By:', 0, 0);
+        $pdf->Cell(100, 10, (!empty($activeLawyers) && $voucher->issued_by && $activeLawyers[$voucher->issued_by]) ? $activeLawyers[$voucher->issued_by] : '--', 0, 1);
+
+        $pdf->Cell(50, 10, 'Description:', 0, 0);
+        $pdf->Cell(100, 10, $voucher->description ?? '--', 0, 1);
+
+        // Output PDF to the browser
+        return response($pdf->Output('S'))->header('Content-Type', 'application/pdf');
+    }
+
+    public function upload(Request $request, $id)
+    {
+        // Validate the file input
+        $request->validate([
+            'image' => 'required|file|mimes:pdf,jpeg,jpg,png|max:2048',
+        ]);
+
+        // Retrieve the voucher
+        $voucher = Voucher::findOrFail($id);
+
+        if ($voucher) {
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $base64Picture = base64_encode(file_get_contents($file->getPathname()));
+            }
+
+            $voucher->image = $base64Picture;
+            $voucher->save();
+
+            // Redirect back with a success message
+            return redirect()->back()->with('success', 'Scanned copy uploaded successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Something went wrong.');
     }
 }

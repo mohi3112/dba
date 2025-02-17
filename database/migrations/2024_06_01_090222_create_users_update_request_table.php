@@ -39,6 +39,17 @@ class CreateUsersUpdateRequestTable extends Migration
             $table->string('business_name')->nullable();
             $table->string('employees')->nullable();
             $table->integer('location_id')->nullable();
+            $table->string('position')->nullable();
+            $table->float('salary')->nullable();
+            $table->string('esi_number')->nullable();
+            $table->date('esi_start_date')->nullable();
+            $table->date('esi_end_date')->nullable();
+            $table->string('esi_contribution')->nullable();
+            $table->bigInteger('bank_account_number')->nullable();
+            $table->string('bank_ifsc_code')->nullable();
+            $table->string('account_holder_name')->nullable();
+            $table->string('branch_name')->nullable();
+            $table->json('policies')->nullable();
             $table->integer('change_type')->nullable()->comment('Edited = 1, Deleted = 2');
             $table->bigInteger('changes_requested_by');
             $table->tinyInteger('approved_by_secretary')->nullable();

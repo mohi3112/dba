@@ -290,12 +290,14 @@ class UserController extends Controller
 
         $count = count($policyArray);
         for ($i = 0; $i < $count; $i++) {
-            $policies[] = [
-                'policy_name' => $payload['policy_name'][$i] ?? null,
-                'policy_number' => $payload['policy_number'][$i] ?? null,
-                'policy_issue_date' => $payload['policy_issue_date'][$i] ?? null,
-                'policy_expiry_date' => $payload['policy_expiry_date'][$i] ?? null,
-            ];
+            if ($payload['policy_name'][$i] != null) {
+                $policies[] = [
+                    'policy_name' => $payload['policy_name'][$i] ?? null,
+                    'policy_number' => $payload['policy_number'][$i] ?? null,
+                    'policy_issue_date' => $payload['policy_issue_date'][$i] ?? null,
+                    'policy_expiry_date' => $payload['policy_expiry_date'][$i] ?? null,
+                ];
+            }
         }
         return $policies;
     }
@@ -327,6 +329,9 @@ class UserController extends Controller
         $user = User::find($id);
         if ($user->designation == User::DESIGNATION_VENDOR) {
             $user = User::with('vendorInfo')->find($id);
+        }
+        if ($user->designation == User::DESIGNATION_EMPLOYEE) {
+            $user = User::with('employees')->find($id);
         }
         $activeLocations = $this->locationService->getActiveLocations();
 
@@ -361,7 +366,7 @@ class UserController extends Controller
         // Validate form data
         $request->validate([
             'first_name' => 'required',
-            'email' => 'unique:users,email,' . $id, // Ensure email is unique except for the current user
+            'email' => 'nullable|unique:users,email,' . $id, // Ensure email is unique except for the current user
             'mobile1' => 'nullable|numeric',
             'designation' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -529,6 +534,22 @@ class UserController extends Controller
                 DegreeImage::insert($degreeImagesData);
             }
 
+            if ($request->hasFile('document')) {
+                $otherDocuments = [];
+                foreach ($request->file('document') as $otherDoc_key => $otherDocumentFile) {
+                    $file = base64_encode(file_get_contents($otherDocumentFile->getPathname()));
+                    $otherDocuments[] = [
+                        'doc_type' => !empty($request->doc_type) ? $request->doc_type[$otherDoc_key] : null,
+                        'document' => $file,
+                        'user_id' => $user->id,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+
+                OtherDocument::insert($otherDocuments);
+            }
+
             // Commit the transaction
             DB::commit();
 
@@ -544,6 +565,11 @@ class UserController extends Controller
     {
         // user submitted for approval
         $loggedInUserId = Auth::id();
+        if ($request->has('policy_name') || $request->has('policy_number')) {
+            $policiesArray = $this->createPoliciesPayload($request);
+            $request->merge(['policies' => json_encode($policiesArray)]);
+        }
+
         $payload = $request->all();
         $payload['change_type'] = UserUpdateRequest::CHANGE_TYPE_EDIT;
         $payload['user_id'] = $id;
@@ -899,6 +925,30 @@ class UserController extends Controller
             } else {
                 $payload['user_id'] = $user->id;
                 Vendor::create($payload);
+            }
+        }
+
+        if ($userUpdateRequest->designation == User::DESIGNATION_EMPLOYEE) {
+            $existingEmpRecord = Employee::where('user_id', $user->id)->first();
+
+            $payload = [];
+            $payload["position"] = $userUpdateRequest->position;
+            $payload["salary"] = $userUpdateRequest->salary;
+            $payload["esi_number"] = $userUpdateRequest->esi_number;
+            $payload["esi_start_date"] = $userUpdateRequest->esi_start_date;
+            $payload["esi_end_date"] = $userUpdateRequest->esi_end_date;
+            $payload["esi_contribution"] = $userUpdateRequest->esi_contribution;
+            $payload["bank_account_number"] = $userUpdateRequest->bank_account_number;
+            $payload["bank_ifsc_code"] = $userUpdateRequest->bank_ifsc_code;
+            $payload["account_holder_name"] = $userUpdateRequest->account_holder_name;
+            $payload["branch_name"] = $userUpdateRequest->branch_name;
+            $payload["policies"] = $userUpdateRequest->policies;
+
+            if ($existingEmpRecord) {
+                $existingEmpRecord->update($payload);
+            } else {
+                $payload['user_id'] = $user->id;
+                Employee::create($payload);
             }
         }
     }

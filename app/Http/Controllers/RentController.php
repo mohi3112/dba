@@ -7,7 +7,6 @@ use App\Models\ModificationRequest;
 use App\Models\Rent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Node\Expr\Cast\Object_;
 use setasign\Fpdi\Fpdi;
 
 class RentController extends Controller
@@ -160,6 +159,8 @@ class RentController extends Controller
         // Fetch rent details by ID
         $rent = Rent::findOrFail($id);
 
+        $serialNumber = 'R-' . $rent->id;
+
         $activeVendors = $this->getActiveVendorsList();
 
         $location = Location::find($activeVendors[$rent->user_id]['location_id']);
@@ -191,6 +192,9 @@ class RentController extends Controller
 
         // Add rent details
         $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(50, 10, 'Serial Number:', 0, 0);
+        $pdf->Cell(100, 10, $serialNumber ?? '--', 0, 1);
+
         $pdf->Cell(50, 10, 'Vendor:', 0, 0);
         $pdf->Cell(100, 10, (!empty($activeVendors) && $activeVendors[$rent->user_id]) ? $activeVendors[$rent->user_id]['full_name'] : '--', 0, 1);
 

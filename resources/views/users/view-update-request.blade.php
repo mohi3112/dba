@@ -33,7 +33,7 @@
                         <tr>
                             <td> Name:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->fullname }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->fullname ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -45,13 +45,13 @@
                         <tr>
                             <td> Email:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->email }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->email ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
                             <td> Gender:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$genders[$updateRequest->user->gender] }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->gender ? \App\Models\User::$genders[$updateRequest->user->gender] : '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -60,16 +60,18 @@
                                 <h5 class="mb-0">{{ ($updateRequest->user->dob) ? \Carbon\Carbon::parse($updateRequest->user->dob)->format('d-M-Y') . ' (' . $updateRequest->user->age . ')' : '' }}</h5>
                             </td>
                         </tr>
+                        @if(!in_array($updateRequest->user->designation, [\App\Models\User::DESIGNATION_VENDOR, \App\Models\User::DESIGNATION_EMPLOYEE]))
                         <tr>
                             <td> Licence number:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->licence_no }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->licence_no ?? '' }}</h5>
                             </td>
                         </tr>
+                        @endif
                         <tr>
                             <td> Aadhaar number:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->aadhaar_no }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->aadhaar_no ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -81,7 +83,7 @@
                         <tr>
                             <td> Residence Address:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->user->address ?: '' }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->user->address ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -130,6 +132,93 @@
                             </td>
                         </tr>
 
+                        @if($updateRequest->designation == \App\Models\User::DESIGNATION_EMPLOYEE)
+                        <tr>
+                            <td> Position:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->position) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Salary:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->salary) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->esi_number) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Start Date:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->esi_start_date) ? \Carbon\Carbon::parse($updateRequest->user->employees->esi_start_date)->format('d-M-Y') : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI End Date:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->esi_end_date) ? \Carbon\Carbon::parse($updateRequest->user->employees->esi_end_date)->format('d-M-Y') : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Contribution:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->esi_contribution) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Bank Account Number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->bank_account_number) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Bank IFSC Code:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->bank_ifsc_code) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Account Holder Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->account_holder_name) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Branch Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->user->employees->branch_name) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Policies:</td>
+                            @if($updateRequest->user->employees->policies)
+                            <?php
+                            $i = 1;
+                            $policies = json_decode($updateRequest->user->employees->policies, true);
+                            ?>
+                            @foreach($policies as $policy)
+                            @if($i > 1)
+                                <tr>
+                                    <td></td>
+                            @endif
+                            <td> {{ $i }}. {{ $policy['policy_name'] ?? '' }} - {{ $policy['policy_number'] ?? '' }} ( {{ ($policy['policy_issue_date']) ? \Carbon\Carbon::parse($policy['policy_issue_date'])->format('d-M-Y') : '' }} : {{ ($policy['policy_expiry_date']) ? \Carbon\Carbon::parse($policy['policy_expiry_date'])->format('d-M-Y') : '' }})</td>
+                            @if($i > 1)
+                                </tr>
+                            @endif
+                            @php($i++)
+                            @endforeach
+                            @else
+                            <td class="py-3">
+                                <h5 class="mb-0"></h5>
+                            </td>
+                            @endif
+                        </tr>
+                        @endif
+
                         @if($updateRequest->user->designation == \App\Models\User::DESIGNATION_VENDOR)
                         <tr>
                             <td> Business Name:</td>
@@ -173,7 +262,7 @@
                         <tr>
                             <td> Name:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->fullname }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->fullname ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -185,13 +274,13 @@
                         <tr>
                             <td> Email:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->email }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->email ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
                             <td> Gender:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$genders[$updateRequest->gender] }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->gender ? \App\Models\User::$genders[$updateRequest->gender] : '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -200,16 +289,18 @@
                                 <h5 class="mb-0">{{ ($updateRequest->dob) ? \Carbon\Carbon::parse($updateRequest->dob)->format('d-M-Y') . ' (' . $updateRequest->age . ')' : '' }}</h5>
                             </td>
                         </tr>
+                        @if(!in_array($updateRequest->user->designation, [\App\Models\User::DESIGNATION_VENDOR, \App\Models\User::DESIGNATION_EMPLOYEE]))
                         <tr>
                             <td> Licence number:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->licence_no }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->licence_no ?? '' }}</h5>
                             </td>
                         </tr>
+                        @endif
                         <tr>
                             <td> Aadhaar number:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->aadhaar_no }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->aadhaar_no ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -221,7 +312,7 @@
                         <tr>
                             <td> Residence Address:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ $updateRequest->address ?: '' }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->address ?? '' }}</h5>
                             </td>
                         </tr>
                         <tr>
@@ -258,7 +349,7 @@
                         <tr>
                             <td> Role:</td>
                             <td class="py-3">
-                                <h5 class="mb-0">{{ \App\Models\User::$allDesignationRoles[$updateRequest->designation] ?? '' }}</h5>
+                                <h5 class="mb-0">{{ $updateRequest->designation ? \App\Models\User::$allDesignationRoles[$updateRequest->designation] : '' }}</h5>
                             </td>
                         </tr>
                         @endif
@@ -269,7 +360,95 @@
                                 <h5 class="mb-0">{{ ($updateRequest->designation) ? \App\Models\User::$allDesignationRoles[$updateRequest->designation] : '' }}</h5>
                             </td>
                         </tr>
-                        
+
+                        @if($updateRequest->designation == \App\Models\User::DESIGNATION_EMPLOYEE)
+                        <tr>
+                            <td> Position:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->position) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Salary:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->salary) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->esi_number) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Start Date:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->esi_start_date) ? \Carbon\Carbon::parse($updateRequest->esi_start_date)->format('d-M-Y') : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI End Date:</td>
+                            <td class="py-3">
+
+                                <h5 class="mb-0">{{ ($updateRequest->esi_end_date) ? \Carbon\Carbon::parse($updateRequest->esi_end_date)->format('d-M-Y') : '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> ESI Contribution:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->esi_contribution) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Bank Account Number:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->bank_account_number) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Bank IFSC Code:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->bank_ifsc_code) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Account Holder Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->account_holder_name) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Branch Name:</td>
+                            <td class="py-3">
+                                <h5 class="mb-0">{{ ($updateRequest->branch_name) ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> Policies:</td>
+                            @if($updateRequest->policies)
+                            <?php
+                            $i = 1;
+                            $policies = json_decode($updateRequest->policies, true);
+                            ?>
+                            @foreach($policies as $policy)
+                            @if($i > 1)
+                                <tr>
+                                    <td></td>
+                            @endif
+                            <td> {{ $i }}. {{ $policy['policy_name'] ?? '' }} - {{ $policy['policy_number'] ?? '' }} ({{ ($policy['policy_issue_date']) ? \Carbon\Carbon::parse($policy['policy_issue_date'])->format('d-M-Y') : '' }} : {{ ($policy['policy_expiry_date']) ? \Carbon\Carbon::parse($policy['policy_expiry_date'])->format('d-M-Y') : '' }})</td>
+                            @if($i > 1)
+                                </tr>
+                            @endif
+                            @php($i++)
+                            @endforeach
+                            @else
+                            <td class="py-3">
+                                <h5 class="mb-0"></h5>
+                            </td>
+                            @endif
+                        </tr>
+                        @endif
+
                         @if($updateRequest->designation == \App\Models\User::DESIGNATION_VENDOR)
                         <tr>
                             <td> Business Name:</td>

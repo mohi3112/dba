@@ -18,6 +18,7 @@ class CreateVoucherTable extends Migration
             $table->string('title')->nullable();
             $table->float('price')->nullable();
             $table->date('date')->nullable();
+            $table->longText('image')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">@if($_GET && $_GET['type'] == 'vendor') Vendors @elseif($_GET && $_GET['type'] =='employee') Employees @else Lawyers @endif /</span> Add User</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">@if(@$_GET['type'] == 'vendor') Vendors @elseif(@$_GET['type'] =='employee') Employees @else Lawyers @endif /</span> Add User</h4>
 @if ($errors->any())
 @foreach ($errors->all() as $error)
 <div class="alert alert-danger alert-dismissible" role="alert">
@@ -89,11 +89,11 @@
                             <label for="designation" class="form-label">Designation <span class="text-danger">*</span></label>
                             <select id="designation" name="designation" class="select2 form-select @error('designation') is-invalid @enderror">
                                 <option value="">Select Designation</option>
-                                @if($_GET && $_GET['type'] =='employee')
+                                @if(@$_GET['type'] =='employee')
                                 <option value="{{\App\Models\User::DESIGNATION_EMPLOYEE}}" selected>Employee</option>
                                 @else
                                 @foreach(\App\Models\User::$designationRoles as $key => $designation)
-                                <option value="{{$key}}" {{ old('designation') == $key || ($_GET && $_GET['type'] == 'vendor' && $key == 'vendor' ) ? 'selected' : '' }}>{{$designation}}</option>
+                                <option value="{{$key}}" {{ old('designation') == $key || (@$_GET['type'] == 'vendor' && $key == 'vendor' ) ? 'selected' : '' }}>{{$designation}}</option>
                                 @endforeach
                                 @endif
                             </select>
@@ -103,7 +103,7 @@
                             </span>
                             @enderror
                         </div>
-                        @if($_GET && $_GET['type'] != 'employee')
+                        @if(@$_GET['type'] != 'employee')
                         <div class="mb-3 col-md-6 not-for-vendor">
                             <label class="form-label" for="licence_no">Licence number</label>
                             <div class="input-group input-group-merge">
@@ -146,7 +146,7 @@
                                 <input type="text" id="mobile2" name="mobile2" maxlength="10" value="{{ old('mobile2') }}" class="form-control numeric-input" placeholder="Alternate mobile number">
                             </div>
                         </div>
-                        @if($_GET && $_GET['type'] != 'employee')
+                        @if(@$_GET['type'] != 'employee')
                         <div class="mb-3 col-md-6 not-for-vendor">
                             <label for="degrees" class="form-label">Degrees</label>
                             <input type="text" class="form-control" placeholder="Degrees" value="{{ old('degrees') }}" id="degrees" name="degrees">
@@ -181,7 +181,7 @@
                             </span>
                             @enderror
                         </div>
-                        @if($_GET && $_GET['type'] =='employee')
+                        @if(@$_GET['type'] =='employee')
                         <div class="mb-3 col-md-6">
                             <label for="position" class="form-label">Position</label>
                             <input class="form-control @error('position') is-invalid @enderror" type="text" id="position" placeholder="Position" name="position" value="{{ old('position') }}" autofocus="">
@@ -275,14 +275,14 @@
                             </div>
                         </div>
                     </div>
-                    @if($_GET && $_GET['type'] =='employee')
+                    @if(@$_GET['type'] =='employee')
                     <div class="divider divider-primary">
                         <div class="divider-text">Bank Details</div>
                     </div>
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="bank_account_number" class="form-label">Bank Account Number</label>
-                            <input class="form-control @error('bank_account_number') is-invalid @enderror" type="text" id="bank_account_number" placeholder="Bank Account Number" name="bank_account_number" value="{{ old('bank_account_number') }}" autofocus="">
+                            <input class="form-control @error('bank_account_number') is-invalid @enderror" type="number" id="bank_account_number" placeholder="Bank Account Number" name="bank_account_number" value="{{ old('bank_account_number') }}" autofocus="">
                             @error('bank_account_number')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
