@@ -192,6 +192,8 @@ Route::middleware('auth')->group(function () {
     Route::get('vakalatnama/vakalatnama-form', [VakalatnamaController::class, 'vakalatnamaForm'])->name('vakalatnama.form');
     Route::post('vakalatnama/generate-vakalatnama', [VakalatnamaController::class, 'issueVakalatnama'])->name('vakalatnama.generate-vakalatnama');
     Route::get('vakalatnama/view-vakalatnama/{uniqueId}', [VakalatnamaController::class, 'printVakalatnama'])->name('vakalatnama.view-vakalatnama');
+
+    Route::post('/profile-view/mark-seen', [UserController::class, 'markAsSeenNotifications'])->name('profile-view.mark-seen');
     // Define routes that require authentication here
     // Route::get('/admin/dashboard', 'AdminController@dashboard');
     // ->middleware('checkrole:superadmin');

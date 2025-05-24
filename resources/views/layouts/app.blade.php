@@ -76,25 +76,28 @@
                                     </li>
                                     @endif
                                     @else
-                                    @php($eventAvailable = false)
-                                    @if($events->count() > 0)
-                                    @php($eventAvailable = true)
+                                        @php($eventAvailable = false)
+                                        @php($profileViewRecords = false)
+                                    @if($events->count() > 0 || $unseenCount > 0)
+                                        @php($eventAvailable = true)
+                                    @elseif($profileViews->count() > 0)
+                                        @php($profileViewRecords = true)
                                     @endif
                                     <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
                                         <a class="nav-link dropdown-toggle notification-bell hide-arrow show" href="javascript:void(0);">
                                             <span class="position-relative">
                                                 @if($eventAvailable)
-                                                <i class='bx bxs-bell-ring bx-sm'></i>
+                                                <i class='bx bxs-bell-ring bx-sm' onclick="markViewsAsSeen()"></i>
                                                 @else
                                                 <i class="bx bx-bell bx-sm"></i>
                                                 @endif
                                             </span>
                                         </a>
-                                        @if($eventAvailable)
+                                        @if($eventAvailable || $profileViewRecords)
                                         <ul class="dropdown-menu dropdown-menu-end p-0 notifications-menu" style="min-width: 22rem;right: 0;left: auto;">
                                             <li class="dropdown-notifications-list scrollable-container ps ps--active-y">
                                                 <ul class="list-group list-group-flush">
-                                                    @foreach($events as $event)
+                                                    @foreach(@$events as $event)
                                                     <li class="list-group-item list-group-item-action dropdown-notifications-item">
                                                         <div class="d-flex">
                                                             <div class="flex-shrink-0 me-3 mt-1">
@@ -104,27 +107,27 @@
                                                                 </div>
                                                             </div>
                                                             <?php
-                                                                $isSameDay = false;
-                                                                if($event->dob) {
-                                                                    $givenDate = \Carbon\Carbon::parse($event->dob);
-                                                                    $today = \Carbon\Carbon::now();
-                                                                    $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
-                                                                }
+                                                            $isSameDay = false;
+                                                            if ($event->dob) {
+                                                                $givenDate = \Carbon\Carbon::parse($event->dob);
+                                                                $today = \Carbon\Carbon::now();
+                                                                $isSameDay = $givenDate->month === $today->month && $givenDate->day === $today->day;
+                                                            }
                                                             ?>
                                                             <div class="flex-grow-1">
                                                                 @if($isSameDay)
                                                                 <h6 class="mb-0">Happy birthday <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
                                                                 @else
                                                                 <h6 class="mb-0">Congratulations <a class="color-unset" href="{{ route('user.view', $event->id) }}">{{ $event->full_name }}</a></h6>
-                                                                    @if($event->families)
-                                                                        @foreach($event->families as $family)
-                                                                            @if($family->type == \App\Models\Family::SPOUSE)
-                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
-                                                                            @else
-                                                                            <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
-                                                                            @endif
-                                                                        @endforeach
-                                                                    @endif
+                                                                @if($event->families)
+                                                                @foreach($event->families as $family)
+                                                                @if($family->type == \App\Models\Family::SPOUSE)
+                                                                <small class="mb-1 mt-1 d-block text-body">Happy Marriage Anniversary</small>
+                                                                @else
+                                                                <small class="mb-1 mt-1 d-block text-body">Happy Birthday to {{ $family->name }} ({{ ucfirst($family->type) }})</small>
+                                                                @endif
+                                                                @endforeach
+                                                                @endif
                                                                 @endif
                                                                 <!-- <small class="text-muted">Today</small> -->
                                                             </div>
@@ -132,6 +135,25 @@
                                                                 <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
                                                                 <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
                                                             </div> -->
+                                                        </div>
+                                                    </li>
+                                                    @endforeach
+                                                    @foreach(@$profileViews as $profileView)
+                                                    <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                                                        <div class="d-flex">
+                                                            <div class="flex-shrink-0 me-3 mt-1">
+                                                                <div class="avatar">
+                                                                    @if($profileView->notification_viewed)
+                                                                    <i class='bx bx-user-check bx-sm rounded-circle'></i>
+                                                                    @else
+                                                                    <i class='bx bxs-user-check bx-sm rounded-circle'></i>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="mb-0">{{ $profileView->viewer_full_name }} visited your profile</h6>
+                                                                <small class="mb-1 mt-1 d-block text-body">on {{ ($profileView->viewed_at) ? \Carbon\Carbon::parse($profileView->viewed_at)->format('d-M-Y h:i A') : '' }}</small>
+                                                            </div>
                                                         </div>
                                                     </li>
                                                     @endforeach
@@ -191,6 +213,19 @@
     <script src="{{ asset('public/js/bootstrap.js') }}" defer></script>
     @yield('scripts')
     <script>
+        function markViewsAsSeen() {
+            fetch('/profile-view/mark-seen', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data.message);
+                });
+        }
         $(document).ready(function() {
             $('.notification-bell').on('click', function() {
                 $('.bs-toast').toast('show');

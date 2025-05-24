@@ -320,6 +320,11 @@ class UserController extends Controller
             }
         ])->findOrFail($id);
 
+        // Record the profile view
+        if (auth()->check() && auth()->id() != $user->id && in_array($user->designation, User::$lawyersDesignations)) {
+            auth()->user()->recordProfileView($user->id);
+        }
+
         return view('users.show', compact('user'));
     }
 
@@ -1004,5 +1009,31 @@ class UserController extends Controller
         $family->delete();
 
         return redirect()->back()->with('success', 'Record deleted successfully.');
+    }
+
+    /**
+     * Marks all unseen notifications as seen for the current user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsSeenNotifications()
+    {
+        try {
+            $userId = Auth::id();
+
+            $unreadCount = \App\Models\ProfileView::where('viewed_user_id', $userId)
+                ->where('notification_viewed', false)
+                ->count();
+
+            if ($unreadCount > 0) {
+                \App\Models\ProfileView::where('viewed_user_id', $userId)
+                    ->where('notification_viewed', false)
+                    ->update(['notification_viewed' => true]);
+            }
+
+            return response()->json(['status' => 1, 'message' => 'All notifications marked as seen']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 0, 'message' => $e]);
+        }
     }
 }

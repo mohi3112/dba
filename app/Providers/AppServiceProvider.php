@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Family;
 use App\Models\User;
+use App\Models\ProfileView;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -60,7 +62,22 @@ class AppServiceProvider extends ServiceProvider
                         });
                 })->get();
 
-            $view->with('events', $events);
+            $profileViews = collect();
+            $unseenCount = 0;
+            if (Auth::check()) {
+                $userId = Auth::id();
+                $fiveDaysAgo = Carbon::now()->subDays(5)->startOfDay();
+
+                $unseenCount = ProfileView::where('viewed_user_id', $userId)
+                    ->where('notification_viewed', false)
+                    ->count();
+
+                $profileViews = ProfileView::where('viewed_user_id', $userId)
+                    ->where('viewed_at', '>=', $fiveDaysAgo)
+                    ->orderByDesc('viewed_at')
+                    ->get();
+            }
+            $view->with(['events' => $events, 'profileViews' => $profileViews, 'unseenCount' => $unseenCount]);
         });
     }
 }

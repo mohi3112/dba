@@ -7,11 +7,13 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use App\Traits\HasProfileViews;
 
 class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use HasProfileViews;
 
     // Define static array for gender
     public static $genders = [
